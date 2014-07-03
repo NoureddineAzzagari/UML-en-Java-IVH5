@@ -1,6 +1,6 @@
-# README #
+# Java Bibliotheek Info Systeem #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+Dit project bevat de Java code voor het bibliotheek informatie systeem dat in periodes IVP3 en IVP4 als worked example voor de studenten beschikbaar is.
 
 Een nieuwe paragraaf begint op de volgende regel.
 
@@ -10,12 +10,13 @@ Een nieuwe paragraaf begint op de volgende regel.
 > Donec sit amet nisl. Aliquam semper ipsum sit amet velit. Suspendisse
 > id sem consectetuer libero luctus adipiscing.
 
-
+# Hier staat een opsomming met nummers #
 1. Item one
 2. Item two 
 3. Item three
 
-
+# Hier een tabel #
+In de volgende tabel zou een lijst van mogelijke gradle commando's met hun functie kunnen staan.
 | Function name | Description                    |
 | ------------- | ------------------------------ |
 | `help()`      | Display the __help__ window.   |
@@ -23,7 +24,9 @@ Een nieuwe paragraaf begint op de volgende regel.
 
 Als je code wilt laten zien, spring dan in met tenminste 4 spaties of een tab.
 
-		deze regel wordt getoond als code.
+	gradle buildJava
+
+Code kun je ook in een regel laten zien, inline, via `gradle build` of `gradle test`.
 
 ### What is this repository for? ###
 
