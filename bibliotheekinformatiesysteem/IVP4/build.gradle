@@ -1,0 +1,50 @@
+apply plugin: "java"
+apply plugin: "jacoco"
+
+jacoco {
+    toolVersion = "0.6.2.201302030002"
+    reportsDir = file("$buildDir/customJacocoReportDir")
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile "junit:junit:4.+"
+}
+
+test {
+    jacoco {
+        append = false
+        destinationFile = file("$buildDir/jacoco/jacocoTest.exec")
+        classDumpFile = file("$buildDir/jacoco/classpathdumps")
+    }
+}
+
+
+jacocoTestReport {
+    reports {
+        xml.enabled false
+        csv.enabled false
+        html.destination "${buildDir}/reports/jacoco"
+    }
+}
+
+sourceSets {
+    main {
+        java { srcDir 'src/java' }
+        resources { srcDir 'src/resources' }
+    }
+    test {
+        java { srcDir 'test/java' }
+        resources { srcDir 'test/resources' }
+    }
+}
+
+task showReport(type:Exec) {
+  workingDir './build/reports/tests'
+
+  //on windows:
+  commandLine 'cmd', '/c', 'start index.html'
+}  
