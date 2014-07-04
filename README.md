@@ -10,12 +10,14 @@ Een nieuwe paragraaf begint op de volgende regel.
 > Donec sit amet nisl. Aliquam semper ipsum sit amet velit. Suspendisse
 > id sem consectetuer libero luctus adipiscing.
 
-## Hier staat een opsomming met nummers ##
-1. Item one
-2. Item two 
-3. Item three
+## Vereisten ##
+1. Java JDK
+2. Werkende en draaiende database 
+3. Eventueel Eclipse, NetBeans, Notepad++
+4. Gradle 
+5. GIT versie beheer software
 
-## Hier een tabel ##
+## Gradle commando's ##
 In de volgende tabel zou een lijst van mogelijke gradle commando's met hun functie kunnen staan. 
 
 | Function name | Description                    |
