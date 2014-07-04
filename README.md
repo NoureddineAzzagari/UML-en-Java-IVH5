@@ -13,17 +13,22 @@ Een nieuwe paragraaf begint op de volgende regel.
 ## Vereisten ##
 1. Java JDK
 2. Werkende en draaiende database 
-3. Eventueel Eclipse, NetBeans, Notepad++
-4. Gradle 
-5. GIT versie beheer software
+3. Eventueel [Eclipse Luna](http://www.eclipse.org/), NetBeans, [Notepad++](http://www.http://notepad-plus-plus.org/)
+4. [Gradle](http://www.gradle.org/) 
+5. [GIT](http://www.git-scm.com/) versie beheer software
 
-## Gradle commando's ##
-In de volgende tabel zou een lijst van mogelijke gradle commando's met hun functie kunnen staan. 
+## Gradle ##
+Download en installeer Gradle. Je kunt met Gradle werken vanuit Eclipse of NetBeans, maar vanaf de commandline heb je meer controle. Als je op Windows werkt is het handig om het pad naar gradle\bin in je PATH environment variabele op te nemen (rechts klikken op My Computer > Properties > Advanced system settings > Environment variables). Je kunt dan direct `gradle` aanroepen.
 
-| Function name | Description                    |
+Het is handig om iets over Gradle te lezen, dat kan in de [User Guide](http://www.gradle.org/docs/current/userguide/userguide.html). [Hoofdstuk 7](http://www.gradle.org/docs/current/userguide/tutorial_java_projects.html) behandelt Java projecten.
+
+In de volgende tabel vind je een overzicht van de belangrijkste Gradle commando's. 
+
+| Command | Actie                    |
 | ------------- | ------------------------------ |
-| `help()`      | Display the __help__ window.   |
-| `destroy()`   | **Destroy your computer!**     |
+| `gradle build`      | Display the __help__ window.   |
+| `gradle test`   | **Destroy your computer!**     |
+| `gradle showTestReport` | Opent het test rapport in je browser. |
 
 Als je code wilt laten zien, spring dan in met tenminste 4 spaties of een tab.
 
