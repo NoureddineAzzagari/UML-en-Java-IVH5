@@ -26,24 +26,27 @@ Download en installeer Gradle. Je kunt met Gradle werken vanuit Eclipse of NetBe
 
 Handige informatie vind je in de [User Guide](http://www.gradle.org/docs/current/userguide/userguide.html). [Hoofdstuk 7](http://www.gradle.org/docs/current/userguide/tutorial_java_projects.html) behandelt Java projecten.
 
-### Gradle ###
+### Gradle commands ###
 In de volgende tabel vind je een overzicht van de belangrijkste Gradle commando's. Gebruik: `gradle command`. 
 
 | Command | Actie                    |
 | ------------- | ------------------------------ |
-| `build`      | Display the __help__ window.   |
-| `test`   | **Destroy your computer!**     |
-| `showReport` | Opent het test rapport in je browser. |
+| `build`      | Compileert het project en voert de Junit tests uit.   |
+| `test`   | Voert de testcases uit.     |
+| `compileJava` | Compileert. |
 | `clean` | Verwijdert alle gegenereerde bestanden. |
 | `eclipse` | Genereert projectbestanden, zoals .classpath, .project en .settings\, waarmee je dit gradle project kunt openen als Eclipse project. |
 | `cleanEclipse` | Verwijdert alle gegenereerde Eclipse bestanden. |
+| `showReport` | Opent het test rapport in je browser. |
 | `properties` | Toont alle properties die Gradle binnen dit project kent. |
 
-Als je code wilt laten zien, spring dan in met tenminste 4 spaties of een tab.
+Om het project te compileren voer je dus in een command venster uit:
 
 	gradle buildJava
 
-Code kun je ook in een regel laten zien, inline, via `gradle build` of `gradle test`.
+## Running the code ###
+
+     java -jar IVP4-1.0.jar
 
 ### What is this repository for? ###
 
