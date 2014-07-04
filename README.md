@@ -2,32 +2,45 @@
 
 Dit project bevat de Java code voor het bibliotheek informatie systeem dat in periodes IVP3 en IVP4 als worked example voor de studenten beschikbaar is.
 
-Een nieuwe paragraaf begint op de volgende regel.
+## Vereisten ##
+1. Java JDK
+2. Werkende en draaiende database
+3. Eventueel [Eclipse Luna](http://www.eclipse.org/), NetBeans, [Notepad++](http://www.notepad-plus-plus.org/)
+4. [Gradle](http://www.gradle.org/) build automation tool 
+5. [GIT](http://www.git-scm.com/) versie beheer software
 
-> This is a blockquote with two paragraphs. Lorem ipsum dolor sit amet,
-> consectetuer adipiscing elit. Aliquam hendrerit mi posuere lectus.
-> 
-> Donec sit amet nisl. Aliquam semper ipsum sit amet velit. Suspendisse
-> id sem consectetuer libero luctus adipiscing.
+## Gradle ##
+Download en installeer Gradle. Je kunt met Gradle werken vanuit Eclipse of NetBeans, maar vanaf de commandline heb je meer controle. 
 
-## Hier staat een opsomming met nummers ##
-1. Item one
-2. Item two 
-3. Item three
+> Als je op Windows werkt is het handig om het pad naar gradle\bin in je PATH environment 
+> variabele op te nemen, via
+> My Computer > Properties > Advanced system settings > Environment variables. 
+> Je kunt dan direct `gradle` aanroepen.
 
-## Hier een tabel ##
-In de volgende tabel zou een lijst van mogelijke gradle commando's met hun functie kunnen staan. 
+Handige informatie vind je in de [User Guide](http://www.gradle.org/docs/current/userguide/userguide.html). [Hoofdstuk 7](http://www.gradle.org/docs/current/userguide/tutorial_java_projects.html) behandelt Java projecten.
 
-| Function name | Description                    |
+### Gradle commands ###
+In de volgende tabel vind je een overzicht van de belangrijkste Gradle commando's. Gebruik: `gradle command`. 
+
+| Command | Actie                    |
 | ------------- | ------------------------------ |
-| `help()`      | Display the __help__ window.   |
-| `destroy()`   | **Destroy your computer!**     |
+| `build`      | Compileert het project en voert de Junit tests uit.   |
+| `test`   | Voert de testcases uit.     |
+| `compileJava` | Compileert. |
+| `clean` | Verwijdert alle gegenereerde bestanden. |
+| `eclipse` | Genereert projectbestanden, zoals .classpath, .project en .settings\, waarmee je dit gradle project kunt openen als Eclipse project. |
+| `cleanEclipse` | Verwijdert alle gegenereerde Eclipse bestanden. |
+| `showJunit` | Opent het jUnit test rapport in je browser. |
+| `showJacoco` | Opent het Jacoco test coverage rapport in je browser. |
+| `properties` | Toont alle properties die Gradle binnen dit project kent. |
 
-Als je code wilt laten zien, spring dan in met tenminste 4 spaties of een tab.
+Om het project te compileren voer je dus in een command venster uit:
 
 	gradle buildJava
 
-Code kun je ook in een regel laten zien, inline, via `gradle build` of `gradle test`.
+## Running the code ###
+
+     java -jar IVP4-1.0.jar
 
 ### What is this repository for? ###
 
