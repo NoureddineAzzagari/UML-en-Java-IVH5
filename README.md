@@ -13,7 +13,7 @@ Een nieuwe paragraaf begint op de volgende regel.
 ## Vereisten ##
 1. Java JDK
 2. Werkende en draaiende database 
-3. Eventueel [Eclipse Luna](http://www.eclipse.org/), NetBeans, [Notepad++](http://www.http://notepad-plus-plus.org/)
+3. Eventueel [Eclipse Luna](http://www.eclipse.org/), NetBeans, [Notepad++](http://www.notepad-plus-plus.org/)
 4. [Gradle](http://www.gradle.org/) 
 5. [GIT](http://www.git-scm.com/) versie beheer software
 
