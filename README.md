@@ -29,8 +29,9 @@ In de volgende tabel vind je een overzicht van de belangrijkste Gradle commando'
 | `gradle build`      | Display the __help__ window.   |
 | `gradle test`   | **Destroy your computer!**     |
 | `gradle showReport` | Opent het test rapport in je browser. |
-| `gradle eclipse` | Genereert projectbestanden waarmee je dit gradle project kunt openen als Eclipse project. |
 | `gradle clean` | Verwijdert alle gegenereerde bestanden. |
+| `gradle eclipse` | Genereert projectbestanden, zoals .classpath, .project en .settings\, waarmee je dit gradle project kunt openen als Eclipse project. |
+| `gradle cleanEclipse` | Verwijdert alle gegenereerde Eclipse bestanden. |
 
 Als je code wilt laten zien, spring dan in met tenminste 4 spaties of een tab.
 
