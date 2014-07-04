@@ -18,10 +18,15 @@ Een nieuwe paragraaf begint op de volgende regel.
 5. [GIT](http://www.git-scm.com/) versie beheer software
 
 ## Gradle ##
-Download en installeer Gradle. Je kunt met Gradle werken vanuit Eclipse of NetBeans, maar vanaf de commandline heb je meer controle. Als je op Windows werkt is het handig om het pad naar gradle\bin in je PATH environment variabele op te nemen (rechts klikken op My Computer > Properties > Advanced system settings > Environment variables). Je kunt dan direct `gradle` aanroepen.
+Download en installeer Gradle. Je kunt met Gradle werken vanuit Eclipse of NetBeans, maar vanaf de commandline heb je meer controle. 
 
-Het is handig om iets over Gradle te lezen, dat kan in de [User Guide](http://www.gradle.org/docs/current/userguide/userguide.html). [Hoofdstuk 7](http://www.gradle.org/docs/current/userguide/tutorial_java_projects.html) behandelt Java projecten.
+> Als je op Windows werkt is het handig om het pad naar gradle\bin in je PATH environment 
+> variabele op te nemen (rechts klikken op My Computer > Properties > Advanced system settings > 
+> Environment variables). Je kunt dan direct `gradle` aanroepen.
 
+Handige informatie vind je in de [User Guide](http://www.gradle.org/docs/current/userguide/userguide.html). [Hoofdstuk 7](http://www.gradle.org/docs/current/userguide/tutorial_java_projects.html) behandelt Java projecten.
+
+### Gradle ###
 In de volgende tabel vind je een overzicht van de belangrijkste Gradle commando's. 
 
 | Command | Actie                    |
