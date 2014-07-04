@@ -28,7 +28,7 @@ In de volgende tabel vind je een overzicht van de belangrijkste Gradle commando'
 | ------------- | ------------------------------ |
 | `gradle build`      | Display the __help__ window.   |
 | `gradle test`   | **Destroy your computer!**     |
-| `gradle showTestReport` | Opent het test rapport in je browser. |
+| `gradle showReport` | Opent het test rapport in je browser. |
 
 Als je code wilt laten zien, spring dan in met tenminste 4 spaties of een tab.
 
