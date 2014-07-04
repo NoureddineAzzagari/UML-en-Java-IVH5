@@ -6,7 +6,7 @@
 
 -- Database setup:
 --
--- de datase connectie gebruikt de voglende login:
+-- de datase connectie gebruikt de volgende login:
 -- username: biblio1
 -- password: boekje
 

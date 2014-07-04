@@ -4,7 +4,12 @@
  */
 package library.datastorage;
 
-import java.sql.*;
+// import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.ResultSet;
 
 /**
  *
@@ -24,6 +29,15 @@ public class DatabaseConnection {
     {
         connection = null;
         statement = null;
+		
+		try {
+            // The newInstance() call is a work around for some
+            // broken Java implementations
+
+            Class.forName("com.mysql.jdbc.Driver").newInstance();
+        } catch (Exception e) {
+                System.out.println(e);
+        }
     }
     
     public boolean openConnection()
