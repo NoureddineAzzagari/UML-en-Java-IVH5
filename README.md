@@ -27,16 +27,17 @@ Download en installeer Gradle. Je kunt met Gradle werken vanuit Eclipse of NetBe
 Handige informatie vind je in de [User Guide](http://www.gradle.org/docs/current/userguide/userguide.html). [Hoofdstuk 7](http://www.gradle.org/docs/current/userguide/tutorial_java_projects.html) behandelt Java projecten.
 
 ### Gradle ###
-In de volgende tabel vind je een overzicht van de belangrijkste Gradle commando's. 
+In de volgende tabel vind je een overzicht van de belangrijkste Gradle commando's. Gebruik: `gradle command`. 
 
 | Command | Actie                    |
 | ------------- | ------------------------------ |
-| `gradle build`      | Display the __help__ window.   |
-| `gradle test`   | **Destroy your computer!**     |
-| `gradle showReport` | Opent het test rapport in je browser. |
-| `gradle clean` | Verwijdert alle gegenereerde bestanden. |
-| `gradle eclipse` | Genereert projectbestanden, zoals .classpath, .project en .settings\, waarmee je dit gradle project kunt openen als Eclipse project. |
-| `gradle cleanEclipse` | Verwijdert alle gegenereerde Eclipse bestanden. |
+| `build`      | Display the __help__ window.   |
+| `test`   | **Destroy your computer!**     |
+| `showReport` | Opent het test rapport in je browser. |
+| `clean` | Verwijdert alle gegenereerde bestanden. |
+| `eclipse` | Genereert projectbestanden, zoals .classpath, .project en .settings\, waarmee je dit gradle project kunt openen als Eclipse project. |
+| `cleanEclipse` | Verwijdert alle gegenereerde Eclipse bestanden. |
+| `properties` | Toont alle properties die Gradle binnen dit project kent. |
 
 Als je code wilt laten zien, spring dan in met tenminste 4 spaties of een tab.
 
