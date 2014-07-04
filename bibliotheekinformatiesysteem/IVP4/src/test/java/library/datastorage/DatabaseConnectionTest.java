@@ -9,7 +9,7 @@ import org.junit.*;
 import static org.junit.Assert.*;
 
 /**
- * For this test to pass a database must be present
+ * For this test to pass a database must be present and running
  * 
  * @author ppthgast
  */
@@ -41,12 +41,13 @@ public class DatabaseConnectionTest {
         ResultSet rs = null;
         DatabaseConnection connection = new DatabaseConnection();
         boolean result = connection.openConnection();
+        assertTrue("Could not establish database connection (is the database running?)", result);
+		
         if(result) {
             rs = connection.executeSQLSelectStatement("select * from member");
-        }
+			// test verification
+			assertTrue("Result set not null", rs != null);
+		}
+	}
         
-        // test verification
-        assertTrue("database connection successfully established", result);
-        assertTrue("result set no null", rs!=null);
-    }
 }
