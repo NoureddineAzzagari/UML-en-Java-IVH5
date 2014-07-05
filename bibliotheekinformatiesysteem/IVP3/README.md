@@ -1,6 +1,6 @@
 # IVP3 Java Bibliotheek Informatie Systeem #
 
-Dit project bevat de Java code voor het bibliotheek informatie systeem dat in periodes IVP3 en IVP4 als worked example voor de studenten beschikbaar is.
+Dit project bevat de IVP3 Java code voor het bibliotheek informatie systeem dat in periodes IVP3 en IVP4 als worked example voor de studenten beschikbaar is.
 
 ## Vereisten ##
 1. Java JDK
@@ -9,7 +9,7 @@ Dit project bevat de Java code voor het bibliotheek informatie systeem dat in pe
 
 ## Running the code ###
 
-     java -jar IVP4-1.0.jar
+Dit gaat het handigst vanuit Eclipse of Netbeans.
 
 ### What is this repository for? ###
 
@@ -25,14 +25,3 @@ Dit project bevat de Java code voor het bibliotheek informatie systeem dat in pe
 * Database configuration
 * How to run tests
 * Deployment instructions
-
-### Contribution guidelines ###
-
-* Writing tests
-* Code review
-* Other guidelines
-
-### Who do I talk to? ###
-
-* Repo owner or admin
-* Other community or team contact
