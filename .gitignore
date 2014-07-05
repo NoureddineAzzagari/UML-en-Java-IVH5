@@ -1,25 +1,31 @@
 # Dit is een voorbeeld .gitignore bestand. 
-# Files in dit bestand worden niet in de GIT repository geplaatst.
+# Files in dit bestand worden niet in de GIT repository geplaatst (genegeerd).
 
 # Bestanden met de volgende extensie negeren
 *.class
 *.log
+*.jar
 
-# but do track lib.a, even though you're ignoring .a files above
+# Bestanden met een ! ervoor niet negeren
 #!lib.a
 
-# only ignore the root TODO file, not subdir/TODO
-/.metadata
+# Bestand TODO in de root (/) negeren, andere TODO-bestanden niet.
+/TODO
 
-# ignore all files in these directories
+# De volgende bestanden negeren:
+.classpath
+.project
+
+# Negeer alle bestanden in de volgende directories
 bin/
 build/
-#lib/
+repos/
 .settings/
 .gradle/
+.metadata/
 
-# ignore doc/notes.txt, but not doc/server/arch.txt
+# Negeer doc/notes.txt, maar niet doc/server/arch.txt
 doc/*.txt
 
-# ignore all .txt files in the doc/ directory
+# Negeer alle .txt files in de doc/ directory
 doc/**/*.txt
