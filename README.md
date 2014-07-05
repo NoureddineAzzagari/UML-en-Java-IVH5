@@ -11,6 +11,7 @@ Dit project bevat de Java code voor het bibliotheek informatie systeem dat in pe
 3. Eventueel [Eclipse Luna](http://www.eclipse.org/), NetBeans, [Notepad++](http://www.notepad-plus-plus.org/)
 
 Voor de IVP4 versie:
+
 4. [Gradle](http://www.gradle.org/) build automation tool 
 5. [GIT](http://www.git-scm.com/) versie beheer software
 
