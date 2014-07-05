@@ -32,6 +32,7 @@ In de volgende tabel vind je een overzicht van de belangrijkste Gradle commando'
 | `cleanEclipse` | Verwijdert alle gegenereerde Eclipse bestanden. |
 | `showJunit` | Opent het jUnit test rapport in je browser. |
 | `showJacoco` | Opent het Jacoco test coverage rapport in je browser. |
+| `sonarRunner` | Voert een analyse uit van de codekwaliteit en maakt een Sonar rapport. Zie het gradle.build script voor de properties, en pas deze zo nodig aan. |
 | `properties` | Toont alle properties die Gradle binnen dit project kent. |
 
 Om het project te compileren voer je dus in een command venster uit:
