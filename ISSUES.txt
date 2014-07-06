@@ -1,0 +1,27 @@
+Opmerkingen bij Worked Example IVP4 Bibliotheek Informatie Systeem:
+
+Algemeen:
+- Waarom wordt er geen gebruik gemaakt van JavaDoc mogelijkheden? Commentaar is nu platte tekst.
+- Waarom niet meer commentaar toevoegen? Bij iedere method een Javadoc beschrijving?
+- Waarom creeert de main.Main class bij opstart wel de presentatie- en logic classes, maar niet de data laag?
+- Codelayout voldoet niet aan Sonar code conventies (bv. { staat op dezelfde regel als statement).
+- Worked Example is nu vooral een uitwerking van de architectuur. Moeten we niet ook
+	- meer/alle functionaliteit implementeren? zoeken, updaten, overzichten geven, uitlenen, reserveren?
+	- het systeemontwerp definitief en kloppend maken? Er zijn momenteel veel documenten, maar er is weinig structuur.
+	- de GUI realistischer maken? Zodat studenten meer mogelijkheden van GUI ontwerp zien, en er meer functionaliteit zichtbaar is?
+	- meer/alle testcases implementeren?
+	- een grotere dataset maken, zodat deze realistischer is?
+	- de database naar hoger niveau tillen (subqueries, view)?
+- In veel methods wordt met if() getest of bv. connectie beschikbaar is, en direct daarna via try/catch een method uitgevoerd. Volgens mij is de if() overbodig en onhandig. De try/catch zou de code moeten uitvoeren en een exceptie moeten geven in geval van fouten. Nu geeft de if() soms een NULL terug; dat is geen helder resultaat.
+- Afhandelen van Exceptions gaat nu via System.out.println en stacktraces. Daar wil je soms toch adequatere afhandeling? Foutbericht naar gebruiker?
+- Advies: logging toevoegen via Log4J. Sonar code analyse vindt logging via system.out.println verkeerd.
+
+Datastorage laag:
+- Hoe voeg je een alternatieve database/opslagconnectie toe? Is de datalaag uitbreidbaar, bijvoorbeeld om XML file opslag mogelijk te maken?
+- Waarom zijn er aparte methods voor select, insert, update en delete? Die functionaliteit zit toch in de SQL query? De code van deze methods is compleet identiek.
+- executeSQLDelete() returnt boolean. Een query kan echter een fout retourneren met een foutNr en een foutMessage, die wil je kunnen afhandelen. Boolean is dan niet genoeg.
+- username en password van database connectie zitten hardcoded in DataConnection class. Lijkt me niet handig.
+- Waarom geen gebruik gemaakt van SQL prepared statements? 
+
+Business Logic:
+- Het lijkt erop dat de logica sterk gebonden is aan de bibliotheek-casus. De enige interface in die laag is de MemberAdminManager. Waarom geen generieke BusinessLogicManager, die daaronder specifiekere classes biedt?
