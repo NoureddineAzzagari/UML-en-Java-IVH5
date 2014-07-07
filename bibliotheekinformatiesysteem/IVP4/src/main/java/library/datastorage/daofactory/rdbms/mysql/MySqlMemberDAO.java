@@ -2,25 +2,26 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package library.datastorage;
+package library.datastorage.daofactory.rdbms.mysql;
 
 import library.domain.Member;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import library.domain.Loan;
-import library.domain.Reservation;
+
+import library.datastorage.daofactory.interfaces.MemberDAOInf;
 
 /**
  *
  * @author ppthgast
  */
-public class MemberDAO {
+public class MySqlMemberDAO implements MemberDAOInf {
     
-    public MemberDAO()
+	private MySqlConnection connection;
+
+    public MySqlMemberDAO()
     {
-        // Nothing to be initialized. This is a stateless class. Constructor
-        // has been added to explicitely make this clear.
+    	connection = new MySqlConnection();
     }
     
     /**
@@ -39,12 +40,11 @@ public class MemberDAO {
     {
         Member member = null;
         
-        // First open a database connnection
-        DatabaseConnection connection = new DatabaseConnection();
+        // First open a database connection
         if(connection.openConnection())
         {
             // If a connection was successfully setup, execute the SELECT statement.
-            ResultSet resultset = connection.executeSQLSelectStatement(
+            ResultSet resultset = connection.executeSQLStatement(
                 "SELECT * FROM member WHERE MembershipNumber = " + membershipNumber + ";");
 
             if(resultset != null)
@@ -95,19 +95,20 @@ public class MemberDAO {
      * @return true if execution of the SQL-statement was successful, false
      * otherwise.
      */
-    public boolean removeMember(Member memberToBeRemoved)
+    @SuppressWarnings("unused")
+	public boolean removeMember(Member memberToBeRemoved)
     {
         boolean result = false;
+        ResultSet resultset = null;
         
         if(memberToBeRemoved != null)
         {
             // First open the database connection.
-            DatabaseConnection connection = new DatabaseConnection();
             if(connection.openConnection())
             {
                 // Execute the delete statement using the membership number to
                 // identify the member row.
-                result = connection.executeSQLDeleteStatement(
+                resultset = connection.executeSQLStatement(
                     "DELETE FROM member WHERE MembershipNumber = " + memberToBeRemoved.getMembershipNumber() + ";");
                 
                 // Finished with the connection, so close it.
@@ -116,6 +117,7 @@ public class MemberDAO {
             // else an error occurred leave 'member' to null.
         }
         
+        // TODO: vertalen van ResultSet naar Boolean.
         return result;
     }
 }

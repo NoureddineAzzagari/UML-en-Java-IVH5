@@ -6,9 +6,11 @@ package library.businesslogic;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import library.datastorage.LoanDAO;
-import library.datastorage.MemberDAO;
-import library.datastorage.ReservationDAO;
+
+import library.datastorage.daofactory.DAOFactory;
+import library.datastorage.daofactory.interfaces.ReservationDAOInf;
+import library.datastorage.daofactory.interfaces.LoanDAOInf;
+import library.datastorage.daofactory.interfaces.MemberDAOInf;
 import library.domain.ImmutableMember;
 import library.domain.Loan;
 import library.domain.Member;
@@ -21,23 +23,29 @@ import library.domain.Reservation;
 public class MemberAdminManagerImpl implements MemberAdminManager{
     
     private HashMap<Integer, Member> members;
+    private DAOFactory daoFactory;
+    
+    // TODO: the reference to the factory class should be replaced by the use of e.g. a property.
+	private String theFactoryClass = "library.datastorage.daofactory.rdbms.mysql.MySqlDAOFactory";
+
     
     public MemberAdminManagerImpl()
     {
-        members = new HashMap();
+        members = new HashMap<Integer, Member>();
+    	daoFactory = DAOFactory.getDAOFactory(theFactoryClass);
         
         //fillTestData();
     }
 
-    private void fillTestData()
-    {
-        members.put(1000, new Member(1000, "Pascal", "van Gastel"));
-        members.put(1001, new Member(1001, "Erco", "Argante"));
-        members.put(1002, new Member(1002, "Marice", "Bastiaense"));
-        members.put(1004, new Member(1004, "Floor", "van Gastel"));
-        members.put(1005, new Member(1005, "Jet", "van Gastel"));
-        members.put(1006, new Member(1006, "Marin", "van Gastel"));
-    }
+//    private void fillTestData()
+//    {
+//        members.put(1000, new Member(1000, "Pascal", "van Gastel"));
+//        members.put(1001, new Member(1001, "Erco", "Argante"));
+//        members.put(1002, new Member(1002, "Marice", "Bastiaense"));
+//        members.put(1004, new Member(1004, "Floor", "van Gastel"));
+//        members.put(1005, new Member(1005, "Jet", "van Gastel"));
+//        members.put(1006, new Member(1006, "Marin", "van Gastel"));
+//    }
     
     public ImmutableMember findMember(int membershipNumber)
     {
@@ -47,13 +55,13 @@ public class MemberAdminManagerImpl implements MemberAdminManager{
         {
             // Member may not have been loaded from the database yet. Try to
             // do so.
-            MemberDAO memberDAO = new MemberDAO();
+            MemberDAOInf memberDAO = daoFactory.getMemberDAO();
             member = memberDAO.findMember(membershipNumber);
             
             if(member != null)
             {
                 // Member successfully read. Now read its loans.
-                LoanDAO loanDAO = new LoanDAO();
+                LoanDAOInf loanDAO = daoFactory.getLoanDAO();
                 ArrayList<Loan> loans = loanDAO.findLoans(member);
 
                 for(Loan loan: loans)
@@ -62,7 +70,7 @@ public class MemberAdminManagerImpl implements MemberAdminManager{
                 }
                 
                 // And read the reserverations from the database.
-                ReservationDAO reservationDAO = new ReservationDAO();
+                ReservationDAOInf reservationDAO = daoFactory.getReservationDAO();
                 ArrayList<Reservation> reservations = reservationDAO.findReservations(member);
 
                 for(Reservation reservation: reservations)
@@ -101,7 +109,7 @@ public class MemberAdminManagerImpl implements MemberAdminManager{
             if(result)
             {
                 // Let the member remove itself from the database.
-                MemberDAO memberDAO = new MemberDAO();
+                MemberDAOInf memberDAO = daoFactory.getMemberDAO();
                 result = memberDAO.removeMember(member);
                 
                 // In case something goes wrong here, we need to roll back.

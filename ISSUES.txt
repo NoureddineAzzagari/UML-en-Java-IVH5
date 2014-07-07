@@ -15,6 +15,10 @@ Algemeen:
 - In veel methods wordt met if() getest of bv. connectie beschikbaar is, en direct daarna via try/catch een method uitgevoerd. Volgens mij is de if() overbodig en onhandig. De try/catch zou de code moeten uitvoeren en een exceptie moeten geven in geval van fouten. Nu geeft de if() soms een NULL terug; dat is geen helder resultaat.
 - Afhandelen van Exceptions gaat nu via System.out.println en stacktraces. Daar wil je soms toch adequatere afhandeling? Foutbericht naar gebruiker?
 - Advies: logging toevoegen via Log4J. Sonar code analyse vindt logging via system.out.println verkeerd.
+- Is het niet handig om interface bestanden postfix 'If' te geven? Bv. MemberAdminMgrIf, t.o.v. MemberAdminMgrImp.
+- Misschien een idee om interfaces in een interface package te zetten?
+- Package benaming: grote projecten hebben vaak de package structuur domein.organisatie.module.groep.project.package.subpackage. Vb. org.apache.http.HttpListener. Misschien een idee om deze structuur structureel over te nemen?
+
 
 Datastorage laag:
 - Hoe voeg je een alternatieve database/opslagconnectie toe? Is de datalaag uitbreidbaar, bijvoorbeeld om XML file opslag mogelijk te maken?
@@ -22,6 +26,10 @@ Datastorage laag:
 - executeSQLDelete() returnt boolean. Een query kan echter een fout retourneren met een foutNr en een foutMessage, die wil je kunnen afhandelen. Boolean is dan niet genoeg.
 - username en password van database connectie zitten hardcoded in DataConnection class. Lijkt me niet handig.
 - Waarom geen gebruik gemaakt van SQL prepared statements? 
+- Is het een optie om Rowset te retourneren i.p.v. ArrayList? 
 
 Business Logic:
 - Het lijkt erop dat de logica sterk gebonden is aan de bibliotheek-casus. De enige interface in die laag is de MemberAdminManager. Waarom geen generieke BusinessLogicManager, die daaronder specifiekere classes biedt?
+
+Testen:
+- er staat testdata in MemberAdminManagerImpl. Volgens mij is dat streng verboden :-). Dat betekent dat je de code under test moet aanpassen wanneer je wel of niet wilt testen. Volgens mij wil je van de code afblijven zodra die klaar is.

@@ -2,9 +2,8 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package library.datastorage;
+package library.datastorage.daofactory.rdbms.mysql;
 
-// import java.sql.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -15,7 +14,7 @@ import java.sql.ResultSet;
  *
  * @author ppthgast
  */
-public class DatabaseConnection {
+public class MySqlConnection {
     
     private Connection connection;
     
@@ -25,7 +24,7 @@ public class DatabaseConnection {
     // execution method.
     private Statement statement;
     
-    public DatabaseConnection()
+    public MySqlConnection()
     {
         connection = null;
         statement = null;
@@ -110,7 +109,7 @@ public class DatabaseConnection {
         }
     }
     
-    public ResultSet executeSQLSelectStatement(String query)
+    public ResultSet executeSQLStatement(String query)
     {
         ResultSet resultset = null;
         
@@ -133,27 +132,4 @@ public class DatabaseConnection {
         return resultset;
     }
     
-    public boolean executeSQLDeleteStatement(String query)
-    {
-        boolean result = false;
-        
-        // First, check whether a some query was passed and the connection with
-        // the database.
-        if(query != null && connectionIsOpen())
-        {
-            // Then, if succeeded, execute the query.
-            try
-            {
-                statement.executeUpdate(query);
-                result = true;
-            }
-            catch(SQLException e)
-            {
-                System.out.println(e);
-                result = false;
-            }
-        }
-        
-        return result;
-    }
 }

@@ -17,7 +17,8 @@ public class Book {
     private String author;
     private int edition;
     
-    private ArrayList<Copy> copies;
+    @SuppressWarnings("unused")
+	private ArrayList<Copy> copies;
     private ArrayList<Reservation> reservations;
     
     public Book(int ISBN, String title, String author, int edition)
@@ -27,8 +28,8 @@ public class Book {
         this.author = author;
         this.edition = edition;
         
-        copies = new ArrayList();
-        reservations = new ArrayList();
+        this.copies = new ArrayList<Copy>();
+        this.reservations = new ArrayList<Reservation>();
     }
 
     public int getISBN()

@@ -39,8 +39,8 @@ public class Member implements ImmutableMember{
         emailaddress = "";
         fine = 0.00;
         
-        loans = new ArrayList();
-        reservations = new ArrayList();
+        loans = new ArrayList<Loan>();
+        reservations = new ArrayList<Reservation>();
     }
     
     @Override

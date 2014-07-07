@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package library.datastorage;
+package library.datastorage.daofactory.rdbms.mysql;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,17 +10,19 @@ import java.util.ArrayList;
 import java.util.Date;
 import library.domain.Loan;
 import library.domain.Member;
+import library.datastorage.daofactory.interfaces.LoanDAOInf;
 
 /**
  *
  * @author ppthgast
  */
-public class LoanDAO
+public class MySqlLoanDAO implements LoanDAOInf
 {
-    public LoanDAO()
+	private MySqlConnection connection;
+
+    public MySqlLoanDAO()
     {
-        // Nothing to be initialized. This is a stateless class. Constructor
-        // has been added to explicitely make this clear.
+    	connection = new MySqlConnection();
     }
     
     /**
@@ -42,12 +44,11 @@ public class LoanDAO
         if(member != null)
         {
             // First open a database connnection
-            DatabaseConnection connection = new DatabaseConnection();
             if(connection.openConnection())
             {
                 // If a connection was successfully setup, execute the SELECT statement.
                 int membershipNumber = member.getMembershipNumber();
-                ResultSet resultset = connection.executeSQLSelectStatement(
+                ResultSet resultset = connection.executeSQLStatement(
                     "SELECT * FROM loan WHERE MembershipNr = " + membershipNumber + ";");
 
                 if(resultset != null)
