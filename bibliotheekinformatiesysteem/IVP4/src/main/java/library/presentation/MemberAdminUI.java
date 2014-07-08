@@ -108,6 +108,8 @@ public class MemberAdminUI extends javax.swing.JFrame {
             }
         });
         
+        contentPane.getRootPane().setDefaultButton(searchButton);
+        
         // Now let the layout managers do their job.
         pack();
         

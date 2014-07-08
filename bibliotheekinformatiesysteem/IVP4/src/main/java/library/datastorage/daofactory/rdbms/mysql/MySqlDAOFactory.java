@@ -9,7 +9,6 @@ import library.datastorage.daofactory.interfaces.LoanDAOInf;
 import library.datastorage.daofactory.interfaces.MemberDAOInf;
 import library.datastorage.daofactory.interfaces.ReservationDAOInf;
 
-
 /**
  *
  * @author Robin Schellius

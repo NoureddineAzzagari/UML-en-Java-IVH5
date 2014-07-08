@@ -18,6 +18,7 @@ Algemeen:
 - Is het niet handig om interface bestanden postfix 'If' te geven? Bv. MemberAdminMgrIf, t.o.v. MemberAdminMgrImp.
 - Misschien een idee om interfaces in een interface package te zetten?
 - Package benaming: grote projecten hebben vaak de package structuur domein.organisatie.module.groep.project.package.subpackage. Vb. org.apache.http.HttpListener. Misschien een idee om deze structuur structureel over te nemen?
+- Foutafhandeling is minimaal. Invoer van MemberID wordt niet gecheckt, dus spaties/characters zorgen voor crash. Wil je daarin niet wat meer het goede voorbeeld geven? Gestructureerde foutafhandling, foutberichten, bv in statusbar?
 
 
 Datastorage laag:
@@ -32,4 +33,5 @@ Business Logic:
 - Het lijkt erop dat de logica sterk gebonden is aan de bibliotheek-casus. De enige interface in die laag is de MemberAdminManager. Waarom geen generieke BusinessLogicManager, die daaronder specifiekere classes biedt?
 
 Testen:
-- er staat testdata in MemberAdminManagerImpl. Volgens mij is dat streng verboden :-). Dat betekent dat je de code under test moet aanpassen wanneer je wel of niet wilt testen. Volgens mij wil je van de code afblijven zodra die klaar is.
+- er staat testdata in MemberAdminManagerImpl. Dat betekent dat je de code under test moet aanpassen wanneer je wel of niet wilt testen. Volgens mij wil je van de code afblijven zodra die klaar is.
+

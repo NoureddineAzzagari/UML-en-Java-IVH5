@@ -2,9 +2,12 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package library.datastorage.daofactory.xml;
+package library.datastorage.daofactory.xml.dom;
 
 import java.util.ArrayList;
+
+import org.apache.log4j.Logger;
+
 import library.domain.Member;
 import library.domain.Reservation;
 import library.datastorage.daofactory.interfaces.ReservationDAOInf;
@@ -13,10 +16,14 @@ import library.datastorage.daofactory.interfaces.ReservationDAOInf;
  *
  * @author Robin Schellius
  */
-public class XmlReservationDAO implements ReservationDAOInf {
+public class XmlDOMReservationDAO implements ReservationDAOInf {
 	
-    public XmlReservationDAO()
+	// Get a logger instance for the current class
+	static Logger logger = Logger.getLogger(XmlDOMReservationDAO.class);
+
+    public XmlDOMReservationDAO()
     {
+    	logger.debug("Constructor");
         // Nothing to be initialized. This is a stateless class. Constructor
         // has been added to explicitely make this clear.
     }
@@ -35,8 +42,8 @@ public class XmlReservationDAO implements ReservationDAOInf {
      */
     public ArrayList<Reservation> findReservations(Member member)
     {
-        ArrayList<Reservation> reservations = new ArrayList<>();
+		logger.debug("findReservations - not implemented yet.");
                 
-        return reservations;
+        return null;
     }
 }

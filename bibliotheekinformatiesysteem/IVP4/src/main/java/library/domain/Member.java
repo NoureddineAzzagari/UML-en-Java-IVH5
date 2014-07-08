@@ -152,6 +152,13 @@ public class Member implements ImmutableMember{
         }
     }
     
+    // 
+    // Added by rschelli - was this missing, or is it missing on purpose?
+    //
+    public ArrayList<Loan> getLoans() {
+    	return loans;
+    }
+    
     public void addLoan(Loan newLoan)
     {
         loans.add(newLoan);
@@ -167,6 +174,13 @@ public class Member implements ImmutableMember{
         reservations.add(newReservation);
     }
     
+    // 
+    // Added by rschelli - was this missing, or is it missing on purpose?
+    //
+    public ArrayList<Reservation> getReservations() {
+    	return reservations;
+    }
+
     public boolean remove()
     {
         // Result is always true. If we later on use a database from which
@@ -259,7 +273,7 @@ public class Member implements ImmutableMember{
         
         if(o == this)
         {
-            // Dezelfde instantie van de klasse, dus per definitie hetzelfde.
+            // Dezelfde instantie van dezelfde klasse, dus per definitie gelijk.
             equal = true;
         }
         else
@@ -268,8 +282,8 @@ public class Member implements ImmutableMember{
             {
                 Member l = (Member)o;
                 
-                // Boek wordt geidentificeerd door ISBN, dus alleen hierop
-                // controlleren is voldoend.
+                // Member wordt geidentificeerd door membershipNumber, 
+                // dus alleen hierop controlleren is voldoende.
                 equal = this.membershipNumber == l.membershipNumber;
             }
         }

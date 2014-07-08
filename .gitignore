@@ -4,6 +4,7 @@
 # Bestanden met de volgende extensie negeren
 *.class
 *.log
+*.log.*
 *.jar
 
 # Bestanden met een ! ervoor niet negeren

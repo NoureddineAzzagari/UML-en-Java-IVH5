@@ -179,11 +179,11 @@ public class Member implements ImmutableMember{
         
         removeAllReservations();
         
-        // ***** begin of difference between stub and production oode *****
+        // ***** begin of difference between stub and production code *****
         if(membershipNumber == 1002) {
             return false;
         }     
-        // ***** end of difference between stub and production oode *****
+        // ***** end of difference between stub and production code *****
         
         return result;
     }

@@ -9,6 +9,8 @@ import library.domain.Member;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.apache.log4j.Logger;
+
 import library.datastorage.daofactory.interfaces.MemberDAOInf;
 
 /**
@@ -16,7 +18,10 @@ import library.datastorage.daofactory.interfaces.MemberDAOInf;
  * @author ppthgast
  */
 public class MySqlMemberDAO implements MemberDAOInf {
-    
+ 
+	// Get a logger instance for the current class
+	static Logger logger = Logger.getLogger(MySqlMemberDAO.class);
+
 	private MySqlConnection connection;
 
     public MySqlMemberDAO()
@@ -38,6 +43,8 @@ public class MySqlMemberDAO implements MemberDAOInf {
      */
     public Member findMember(int membershipNumber)
     {
+		logger.debug("findMember " + membershipNumber);
+
         Member member = null;
         
         // First open a database connection
@@ -49,6 +56,7 @@ public class MySqlMemberDAO implements MemberDAOInf {
 
             if(resultset != null)
             {
+        		logger.debug("resultset was found");
                 try
                 {
                     // The membershipnumber for a member is unique, so in case the
@@ -75,9 +83,10 @@ public class MySqlMemberDAO implements MemberDAOInf {
                     System.out.println(e);
                     member = null;
                 }
+            } else {
+        		logger.debug("resultset was returned, no results found");
             }
-            // else an error occurred leave 'member' to null.
-            
+
             // We had a database connection opened. Since we're finished,
             // we need to close it.
             connection.closeConnection();
@@ -98,6 +107,8 @@ public class MySqlMemberDAO implements MemberDAOInf {
     @SuppressWarnings("unused")
 	public boolean removeMember(Member memberToBeRemoved)
     {
+		logger.debug("removeMember " + memberToBeRemoved);
+
         boolean result = false;
         ResultSet resultset = null;
         
@@ -119,5 +130,22 @@ public class MySqlMemberDAO implements MemberDAOInf {
         
         // TODO: vertalen van ResultSet naar Boolean.
         return result;
+    }
+
+
+    /**
+     * Inserts the given member into the database.
+     * 
+     * @param memberToInsert an object of the Member class representing the
+     * member to be inserted.
+     * 
+     * @return true if execution was successful, false otherwise.
+     */
+	public int insertMember(Member memberToInsert)
+    {
+		logger.debug("TODO: insertMember " + memberToInsert.getFirstname());
+        
+        // TODO Implement insertMember through MySql
+        return 0;
     }
 }

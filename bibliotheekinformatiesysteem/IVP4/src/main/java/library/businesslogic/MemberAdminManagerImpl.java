@@ -7,10 +7,13 @@ package library.businesslogic;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.apache.log4j.Logger;
+
 import library.datastorage.daofactory.DAOFactory;
 import library.datastorage.daofactory.interfaces.ReservationDAOInf;
 import library.datastorage.daofactory.interfaces.LoanDAOInf;
 import library.datastorage.daofactory.interfaces.MemberDAOInf;
+import library.datastorage.daofactory.xml.dom.XmlDOMMemberDAO;
 import library.domain.ImmutableMember;
 import library.domain.Loan;
 import library.domain.Member;
@@ -18,68 +21,82 @@ import library.domain.Reservation;
 
 /**
  *
- * @author ppthgast
+ * @author ppthgast, rschelli
  */
 public class MemberAdminManagerImpl implements MemberAdminManager{
     
-    private HashMap<Integer, Member> members;
+	// Get a logger instance for the current class
+	static Logger logger = Logger.getLogger(MemberAdminManagerImpl.class);
+
+	private HashMap<Integer, Member> members;
     private DAOFactory daoFactory;
     
-    // TODO: the reference to the factory class should be replaced by the use of e.g. a property.
-	private String theFactoryClass = "library.datastorage.daofactory.rdbms.mysql.MySqlDAOFactory";
-
-    
+    // TODO: the reference to the factory class should be replaced 
+    // by the use of e.g. a property.
+	private String theDAOFactoryClass = 
+			// "library.datastorage.daofactory.rdbms.mysql.MySqlDAOFactory";
+			"library.datastorage.daofactory.xml.dom.XmlDOMDAOFactory";
+  
+	/**
+	 * 
+	 */
     public MemberAdminManagerImpl()
     {
-        members = new HashMap<Integer, Member>();
-    	daoFactory = DAOFactory.getDAOFactory(theFactoryClass);
-        
-        //fillTestData();
+		logger.debug("Constructor");
+
+		members = new HashMap<Integer, Member>();
+    	daoFactory = DAOFactory.getDAOFactory(theDAOFactoryClass);
     }
 
-//    private void fillTestData()
-//    {
-//        members.put(1000, new Member(1000, "Pascal", "van Gastel"));
-//        members.put(1001, new Member(1001, "Erco", "Argante"));
-//        members.put(1002, new Member(1002, "Marice", "Bastiaense"));
-//        members.put(1004, new Member(1004, "Floor", "van Gastel"));
-//        members.put(1005, new Member(1005, "Jet", "van Gastel"));
-//        members.put(1006, new Member(1006, "Marin", "van Gastel"));
-//    }
-    
+    /**
+     * 
+     */
     public ImmutableMember findMember(int membershipNumber)
     {
-        Member member = members.get(membershipNumber);
+		logger.debug("findMember " + membershipNumber);
+
+		Member member = members.get(membershipNumber);
         
         if(member == null)
         {
-            // Member may not have been loaded from the database yet. Try to
+    		logger.debug("Member was not found in cache, so lookup in datasource");
+
+            // Member may not have been loaded from the datasource yet. Try to
             // do so.
             MemberDAOInf memberDAO = daoFactory.getMemberDAO();
             member = memberDAO.findMember(membershipNumber);
             
             if(member != null)
             {
-                // Member successfully read. Now read its loans.
+        		logger.debug("Member was found in datasource; reconstructing it.");
+
                 LoanDAOInf loanDAO = daoFactory.getLoanDAO();
                 ArrayList<Loan> loans = loanDAO.findLoans(member);
 
-                for(Loan loan: loans)
-                {
-                    member.addLoan(loan);
+                if(loans != null) {
+	                for(Loan loan: loans) {
+	                	if(loan != null) {
+	                		member.addLoan(loan);
+	                	}
+	                }
                 }
                 
                 // And read the reserverations from the database.
                 ReservationDAOInf reservationDAO = daoFactory.getReservationDAO();
                 ArrayList<Reservation> reservations = reservationDAO.findReservations(member);
 
-                for(Reservation reservation: reservations)
-                {
-                    member.addReservation(reservation);
+                if(reservations != null) {
+	                for(Reservation reservation: reservations)
+	                {
+	                	if(reservation != null) {
+	                    	member.addReservation(reservation);
+	                	}
+	                }
                 }
                 
                 // Cache the member that has been read from the database, to
                 // avoid querying the database each time a member is needed.
+        		logger.debug("Done. Putting member in cache.");
                 members.put(membershipNumber, member);
             }
         }
@@ -89,6 +106,8 @@ public class MemberAdminManagerImpl implements MemberAdminManager{
     
     public boolean removeMember(ImmutableMember memberToRemove)
     {
+		logger.debug("removeMember " + memberToRemove);
+		
         boolean result = false;
         
         if(memberToRemove.isRemovable())

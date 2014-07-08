@@ -37,8 +37,8 @@ public interface MemberDAOInf {
      */
     public boolean removeMember(Member memberToBeRemoved);
 
-    
-//    public int insertMember(...);
+    public int insertMember(Member memberToInsert);
+
 //    public boolean deleteMember(...);
 //    public Customer findCustomer(...);
 //    public boolean updateMember(...);

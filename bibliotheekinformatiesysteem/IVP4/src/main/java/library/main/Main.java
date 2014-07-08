@@ -6,6 +6,8 @@ package library.main;
 
 import library.businesslogic.MemberAdminManagerImpl;
 import library.presentation.MemberAdminUI;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 
 /**
  *
@@ -13,12 +15,20 @@ import library.presentation.MemberAdminUI;
  */
 public class Main {
 
+	// Get a logger instance for the current class
+	static Logger logger = Logger.getLogger(Main.class);
+
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         
-        MemberAdminUI ui = new MemberAdminUI(new MemberAdminManagerImpl());
+		// Configure logging. 
+		PropertyConfigurator.configure("./logsettings.cnf");
+
+		logger.debug("Starting application ---------------------------------");
+
+		MemberAdminUI ui = new MemberAdminUI(new MemberAdminManagerImpl());
         ui.setVisible(true);
     }
 }

@@ -3,6 +3,8 @@
  */
 package library.datastorage.daofactory;
 
+import org.apache.log4j.Logger;
+
 import library.datastorage.daofactory.interfaces.LoanDAOInf;
 import library.datastorage.daofactory.interfaces.MemberDAOInf;
 import library.datastorage.daofactory.interfaces.ReservationDAOInf;
@@ -14,6 +16,9 @@ import library.datastorage.daofactory.interfaces.ReservationDAOInf;
  * 
  */
 public abstract class DAOFactory {
+
+	// Get a logger instance for the current class
+	static Logger logger = Logger.getLogger(DAOFactory.class);
 
 	/**
 	 * 
@@ -28,11 +33,11 @@ public abstract class DAOFactory {
 			Class<?> theClass = Class.forName(factoryClassName);
 			theFactory = (DAOFactory)theClass.newInstance();
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+            logger.error(e.getMessage());
 		} catch (InstantiationException e) {
-			e.printStackTrace();
+            logger.error(e.getMessage());
 		} catch (IllegalAccessException e) {
-			e.printStackTrace();
+            logger.error(e.getMessage());
 		}
 		
 		return theFactory;

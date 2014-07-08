@@ -7,9 +7,8 @@ package library.datastorage;
 import java.sql.ResultSet;
 
 import org.junit.*;
-
 import static org.junit.Assert.*;
-import library.datastorage.daofactory.rdbms.mysql.MySqlDAOFactory;
+import library.datastorage.daofactory.rdbms.mysql.MySqlConnection;
 
 /**
  * For this test to pass a database must be present and running
@@ -42,12 +41,12 @@ public class DatabaseConnectionTest {
     {
         // test preparation and execution
         ResultSet rs = null;
-        DAOInterface connection = new MySqlDAOFactory();
+        MySqlConnection connection = new MySqlConnection();
         boolean result = connection.openConnection();
         assertTrue("Could not establish database connection (is the database running?)", result);
 		
         if(result) {
-            rs = connection.executeSQLSelectStatement("select * from member");
+            rs = connection.executeSQLStatement("select * from member");
 			// test verification
 			assertTrue("Result set not null", rs != null);
 		}

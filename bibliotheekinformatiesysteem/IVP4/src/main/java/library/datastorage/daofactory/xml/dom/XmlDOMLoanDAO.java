@@ -2,9 +2,12 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package library.datastorage.daofactory.xml;
+package library.datastorage.daofactory.xml.dom;
 
 import java.util.ArrayList;
+
+import org.apache.log4j.Logger;
+
 import library.domain.Loan;
 import library.domain.Member;
 import library.datastorage.daofactory.interfaces.LoanDAOInf;
@@ -13,10 +16,14 @@ import library.datastorage.daofactory.interfaces.LoanDAOInf;
  *
  * @author Robin Schellius
  */
-public class XmlLoanDAO implements LoanDAOInf
+public class XmlDOMLoanDAO implements LoanDAOInf
 {
-    public XmlLoanDAO()
+	// Get a logger instance for the current class
+	static Logger logger = Logger.getLogger(XmlDOMLoanDAO.class);
+
+    public XmlDOMLoanDAO()
     {
+		logger.debug("Constructor");
         // Nothing to be initialized. This is a stateless class. Constructor
         // has been added to explicitely make this clear.
     }
@@ -35,6 +42,7 @@ public class XmlLoanDAO implements LoanDAOInf
      */
     public ArrayList<Loan> findLoans(Member member)
     {
+		logger.debug("findLoans - not implemented yet.");
         
         return null;
     }

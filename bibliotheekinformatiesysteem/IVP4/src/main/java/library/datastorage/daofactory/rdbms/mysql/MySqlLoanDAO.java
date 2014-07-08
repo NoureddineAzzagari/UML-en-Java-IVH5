@@ -8,6 +8,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+
+import org.apache.log4j.Logger;
+
 import library.domain.Loan;
 import library.domain.Member;
 import library.datastorage.daofactory.interfaces.LoanDAOInf;
@@ -18,10 +21,14 @@ import library.datastorage.daofactory.interfaces.LoanDAOInf;
  */
 public class MySqlLoanDAO implements LoanDAOInf
 {
+	// Get a logger instance for the current class
+	static Logger logger = Logger.getLogger(MySqlLoanDAO.class);
+
 	private MySqlConnection connection;
 
     public MySqlLoanDAO()
     {
+		logger.debug("MySqlLoanDAO constructor");
     	connection = new MySqlConnection();
     }
     
@@ -39,7 +46,9 @@ public class MySqlLoanDAO implements LoanDAOInf
      */
     public ArrayList<Loan> findLoans(Member member)
     {
-        ArrayList<Loan> loans = new ArrayList<>();
+		logger.debug("findLoans");
+
+		ArrayList<Loan> loans = new ArrayList<>();
         
         if(member != null)
         {

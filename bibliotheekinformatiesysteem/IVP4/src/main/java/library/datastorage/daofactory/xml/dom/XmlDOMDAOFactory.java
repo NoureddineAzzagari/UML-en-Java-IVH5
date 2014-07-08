@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package library.datastorage.daofactory.xml;
+package library.datastorage.daofactory.xml.dom;
 
+import org.apache.log4j.Logger;
 import library.datastorage.daofactory.DAOFactory;
 import library.datastorage.daofactory.interfaces.LoanDAOInf;
 import library.datastorage.daofactory.interfaces.MemberDAOInf;
@@ -13,21 +14,24 @@ import library.datastorage.daofactory.interfaces.ReservationDAOInf;
  *
  * @author Robin Schellius
  */
-public class XmlDAOFactory extends DAOFactory {
+public class XmlDOMDAOFactory extends DAOFactory {
     
-    public XmlDAOFactory() {
-    	
+	// Get a logger instance for the current class
+	static Logger logger = Logger.getLogger(XmlDOMDAOFactory.class);
+
+	public XmlDOMDAOFactory() {
+		logger.debug("Constructor");    	
     }
     
 	public MemberDAOInf getMemberDAO() {
-		return new XmlMemberDAO();
+		return new XmlDOMMemberDAO();
 	}
 	
 	public LoanDAOInf getLoanDAO() {
-		return new XmlLoanDAO();
+		return new XmlDOMLoanDAO();
 	}
 	
 	public ReservationDAOInf getReservationDAO() {
-		return new XmlReservationDAO();
+		return new XmlDOMReservationDAO();
 	}
 }

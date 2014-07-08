@@ -8,6 +8,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+
+import org.apache.log4j.Logger;
+
 import library.domain.Member;
 import library.domain.Reservation;
 import library.datastorage.daofactory.interfaces.ReservationDAOInf;
@@ -18,6 +21,9 @@ import library.datastorage.daofactory.interfaces.ReservationDAOInf;
  */
 public class MySqlReservationDAO implements ReservationDAOInf {
 	
+	// Get a logger instance for the current class
+	static Logger logger = Logger.getLogger(MySqlReservationDAO.class);
+
 	private MySqlConnection connection;
 
     public MySqlReservationDAO()
@@ -39,6 +45,8 @@ public class MySqlReservationDAO implements ReservationDAOInf {
      */
     public ArrayList<Reservation> findReservations(Member member)
     {
+		logger.debug("findReservations");
+
         ArrayList<Reservation> reservations = new ArrayList<>();
         
         if(member != null)
