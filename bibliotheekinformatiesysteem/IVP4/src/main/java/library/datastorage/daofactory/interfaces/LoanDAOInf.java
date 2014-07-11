@@ -9,8 +9,10 @@ import library.domain.Loan;
 import library.domain.Member;
 
 /**
+ * This interface describes the methods that must be available in the LoanDAO 
+ * implementation for a specific data source. 
  *
- * @author Robin Schellius
+ * @author ppthgast
  */
 public interface LoanDAOInf
 {
@@ -27,4 +29,11 @@ public interface LoanDAOInf
      * It does not contain any objects.
      */
     public ArrayList<Loan> findLoans(Member member);
+    
+    /*
+     * This interface is not completed yet. Methods that probably should
+     * be available here could handle the creating, updating and deleting o
+     * of Loan information from the data source that is used.
+     * 
+     */
 }

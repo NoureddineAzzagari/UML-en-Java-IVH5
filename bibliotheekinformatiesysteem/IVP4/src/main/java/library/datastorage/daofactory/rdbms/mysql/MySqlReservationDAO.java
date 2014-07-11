@@ -16,7 +16,9 @@ import library.domain.Reservation;
 import library.datastorage.daofactory.interfaces.ReservationDAOInf;
 
 /**
- *
+ * The MySQL implementation of the ReservationDAO. This class provides methods to
+ * store Reservation information in a MySQL database. 
+ * 
  * @author ppthgast
  */
 public class MySqlReservationDAO implements ReservationDAOInf {

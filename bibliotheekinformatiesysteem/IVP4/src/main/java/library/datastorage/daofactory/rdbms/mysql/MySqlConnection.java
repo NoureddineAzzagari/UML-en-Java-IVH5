@@ -36,8 +36,6 @@ public class MySqlConnection {
     
     public MySqlConnection()
     {
-		logger.debug("Constructor");
-
 		connection = null;
         statement = null;
 		

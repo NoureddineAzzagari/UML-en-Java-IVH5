@@ -11,6 +11,9 @@ import library.datastorage.daofactory.interfaces.MemberDAOInf;
 import library.datastorage.daofactory.interfaces.ReservationDAOInf;
 
 /**
+ * The XML Document Object Model (DOM) implementation of the DAOFactory.
+ * This factory provides XML DOM implementations for the domain classes
+ * in this system.
  *
  * @author Robin Schellius
  */
@@ -20,7 +23,6 @@ public class XmlDOMDAOFactory extends DAOFactory {
 	static Logger logger = Logger.getLogger(XmlDOMDAOFactory.class);
 
 	public XmlDOMDAOFactory() {
-		logger.debug("Constructor");    	
     }
     
 	public MemberDAOInf getMemberDAO() {

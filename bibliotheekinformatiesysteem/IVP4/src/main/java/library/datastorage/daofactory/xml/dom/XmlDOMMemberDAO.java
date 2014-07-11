@@ -18,7 +18,10 @@ import library.domain.Member;
 import library.datastorage.daofactory.interfaces.MemberDAOInf;
 
 /**
- * 
+ * The XML DOM implementation for the MemberDAO class. This class provides CRUD 
+ * methods to store Member information in an XML file using the Document Object Model
+ * approach.
+
  * @author Robin Schellius
  */
 public class XmlDOMMemberDAO implements MemberDAOInf {
@@ -33,8 +36,6 @@ public class XmlDOMMemberDAO implements MemberDAOInf {
 	 * Constructor
 	 */
 	public XmlDOMMemberDAO() {
-		logger.debug("Constructor");
-
 		this.domdocument = new XmlDOMDocument();
 		this.document = domdocument.getDocument();
 	}
@@ -57,9 +58,8 @@ public class XmlDOMMemberDAO implements MemberDAOInf {
 
 		Member member = null;
 
-		// Get the members element, of which there is only one.
+		// Get all <member> elements from the document
 		NodeList list = document.getElementsByTagName("member");
-		logger.debug("Number of member nodes found: " + list.getLength());
 		
 		for (int i = 0; i < list.getLength(); i++) {
 
@@ -72,6 +72,7 @@ public class XmlDOMMemberDAO implements MemberDAOInf {
 					
 					logger.debug("found member " + attribute);
 				
+					// Construct the Member to be returned with the information we found.
 					String firstName = child.getElementsByTagName("firstname").item(0).getTextContent();
 					String lastName = child.getElementsByTagName("lastname").item(0).getTextContent();
 				
@@ -80,10 +81,12 @@ public class XmlDOMMemberDAO implements MemberDAOInf {
 					member.setHouseNumber(child.getElementsByTagName("housenumber").item(0).getTextContent());
 					member.setCity(child.getElementsByTagName("city").item(0).getTextContent());
 					member.setFine(Double.parseDouble(child.getElementsByTagName("fine").item(0).getTextContent()));
-					
 				}
 			}
 		}
+
+		if(member == null) 
+			logger.debug("member not found");
 
 		return member;
 	}

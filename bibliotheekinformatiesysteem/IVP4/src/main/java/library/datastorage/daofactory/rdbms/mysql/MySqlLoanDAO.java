@@ -16,6 +16,8 @@ import library.domain.Member;
 import library.datastorage.daofactory.interfaces.LoanDAOInf;
 
 /**
+ * The MySQL implementation of the LoanDAO. This class provides methods to
+ * store Loan information in a MySQL database. 
  *
  * @author ppthgast
  */
@@ -28,7 +30,6 @@ public class MySqlLoanDAO implements LoanDAOInf
 
     public MySqlLoanDAO()
     {
-		logger.debug("MySqlLoanDAO constructor");
     	connection = new MySqlConnection();
     }
     

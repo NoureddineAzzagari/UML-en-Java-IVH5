@@ -14,7 +14,9 @@ import org.apache.log4j.Logger;
 import library.datastorage.daofactory.interfaces.MemberDAOInf;
 
 /**
- *
+ * The MySQL implementation of the MemberDAO. This class provides methods to
+ * store Member information in a MySQL database. 
+ * 
  * @author ppthgast
  */
 public class MySqlMemberDAO implements MemberDAOInf {

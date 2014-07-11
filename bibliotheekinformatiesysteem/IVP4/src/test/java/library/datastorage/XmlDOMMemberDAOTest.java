@@ -10,7 +10,6 @@ import library.domain.Book;
 import library.domain.Copy;
 import library.domain.Loan;
 import library.domain.Member;
-import library.main.Main;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
@@ -45,7 +44,22 @@ public class XmlDOMMemberDAOTest {
 	@Before
 	public void setUp() throws Exception {
 		
-		logger.debug("setUp ---");
+		logger.debug("setUp");
+		
+		String theDAOFactoryClass = 
+				"library.datastorage.daofactory.xml.dom.XmlDOMDAOFactory";
+    	DAOFactory daoFactory = DAOFactory.getDAOFactory(theDAOFactoryClass);
+    	memberDAO = daoFactory.getMemberDAO();
+	}
+
+	@After
+	public void tearDown() throws Exception {
+	}
+
+	@Test
+	public void testInsertNewMember() {
+		
+		logger.debug("testInsertMember");
 		
 		Book newBook1 = new Book(857865544, "The life of Pi", "Yann Martel", 12);
 		Copy newCopy1 = new Copy(4, 3, newBook1);
@@ -61,30 +75,12 @@ public class XmlDOMMemberDAOTest {
 		newMember.setPhoneNumber("076-19682014");
 		newMember.setFine(2.75);
 		
-		//
-		// Date is very deprecated - should be replaced by more up-to-date datatype
-		//
 		newMember.addLoan(new Loan(new Date(2014, 05, 16), newMember, newCopy1));
 		newMember.addLoan(new Loan(new Date(2014, 06, 02), newMember, newCopy2));
 
-		String theDAOFactoryClass = 
-				// "library.datastorage.daofactory.rdbms.mysql.MySqlDAOFactory";
-				"library.datastorage.daofactory.xml.dom.XmlDOMDAOFactory";
-    	DAOFactory daoFactory = DAOFactory.getDAOFactory(theDAOFactoryClass);
-    	memberDAO = daoFactory.getMemberDAO();
-	}
-
-	@After
-	public void tearDown() throws Exception {
-	}
-
-	@Test
-	public void testInsertNewMember() {
-		
-		logger.debug("testInsertMember ---");
 		memberDAO.insertMember(newMember);
-		// This should be done correctly, which it is not at the moment.
-		
+
+		// TODO Retrieve the newly inserted member
 	}
 
 }

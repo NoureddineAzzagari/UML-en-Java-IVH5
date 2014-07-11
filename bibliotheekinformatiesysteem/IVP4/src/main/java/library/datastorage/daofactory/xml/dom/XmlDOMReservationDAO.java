@@ -13,7 +13,10 @@ import library.domain.Reservation;
 import library.datastorage.daofactory.interfaces.ReservationDAOInf;
 
 /**
- *
+ * The XML DOM implementation for the ReservationDAO class. This class provides CRUD 
+ * methods to store Reservation information in an XML file using the Document Object Model
+ * approach.
+
  * @author Robin Schellius
  */
 public class XmlDOMReservationDAO implements ReservationDAOInf {
@@ -23,9 +26,8 @@ public class XmlDOMReservationDAO implements ReservationDAOInf {
 
     public XmlDOMReservationDAO()
     {
-    	logger.debug("Constructor");
         // Nothing to be initialized. This is a stateless class. Constructor
-        // has been added to explicitely make this clear.
+        // has been added to explicitly make this clear.
     }
     
     /**

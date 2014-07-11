@@ -13,17 +13,24 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 
+import org.apache.log4j.Logger;
+
+import library.datastorage.daofactory.xml.dom.XmlDOMMemberDAO;
 import library.domain.ImmutableMember;
 
 /**
  *
  * @author ppthgast
  */
-@SuppressWarnings("serial")
 public class MemberAdminUI extends javax.swing.JFrame {
 
-    // These GUI components have been defined as fields, because they are
+	private static final long serialVersionUID = 1L;	// Simple default version ID.
+	// Get a logger instance for the current class
+	static Logger logger = Logger.getLogger(MemberAdminUI.class);
+	
+	// These GUI components have been defined as fields, because they are
     // used in several methods.
     private JTextField textFieldMembershipNr;
     private JTextArea textAreaMemberInfo;
@@ -42,6 +49,7 @@ public class MemberAdminUI extends javax.swing.JFrame {
      * Creates new form MemberAdminUI
      */
     public MemberAdminUI(MemberAdminManager memberAdminmanager) {
+    			
         initComponents();
         setupFrame();
         
@@ -95,8 +103,13 @@ public class MemberAdminUI extends javax.swing.JFrame {
         {
             public void actionPerformed(ActionEvent e)
             {
-                int membershipNr = Integer.parseInt(textFieldMembershipNr.getText());
-                doFindMember(membershipNr);
+                try {
+					int membershipNr = Integer.parseInt(textFieldMembershipNr.getText().trim());
+					doFindMember(membershipNr);
+				} catch (NumberFormatException ex) {
+					logger.error("Wrong input, only numbers allowed");
+			        textAreaMemberInfo.setText("Het lidnummer bestaat uit 4 cijfers.");	
+			    }
             }
         });      
  
@@ -108,13 +121,15 @@ public class MemberAdminUI extends javax.swing.JFrame {
             }
         });
         
+        // Enable Enter-key as input for search button.
         contentPane.getRootPane().setDefaultButton(searchButton);
         
         // Now let the layout managers do their job.
         pack();
         
-        // At last, set the size of the window.
+        // At last, set the size and location of the window.
         setSize(300, 350);
+        setLocation(250, 150);
     }
     
     private JPanel createSearchPanel()
@@ -123,8 +138,9 @@ public class MemberAdminUI extends javax.swing.JFrame {
         // its membership number.
         JPanel searchPanel = new JPanel();
         searchPanel.setLayout(new BoxLayout(searchPanel, BoxLayout.X_AXIS));
-        
-        searchPanel.add(new JLabel("Voer lidnummer in:"));
+        JLabel lblMembershipNr = new JLabel("Voer lidnummer in:");
+        lblMembershipNr.setBorder(new EmptyBorder(10,10,10,10));
+        searchPanel.add(lblMembershipNr);
         
         textFieldMembershipNr = new JTextField(10);
         textFieldMembershipNr.setSize(new Dimension(6, 20));

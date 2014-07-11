@@ -42,8 +42,6 @@ public class MemberAdminManagerImpl implements MemberAdminManager{
 	 */
     public MemberAdminManagerImpl()
     {
-		logger.debug("Constructor");
-
 		members = new HashMap<Integer, Member>();
     	daoFactory = DAOFactory.getDAOFactory(theDAOFactoryClass);
     }

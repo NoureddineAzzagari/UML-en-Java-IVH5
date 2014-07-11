@@ -7,8 +7,10 @@ package library.datastorage.daofactory.interfaces;
 import library.domain.Member;
 
 /**
+ * This interface describes the methods that must be available in the MemberDAO 
+ * implementation for a specific data source. 
  *
- * @author Robin Schellius
+ * @author ppthgast
  */
 public interface MemberDAOInf {
     
@@ -37,12 +39,22 @@ public interface MemberDAOInf {
      */
     public boolean removeMember(Member memberToBeRemoved);
 
+    /**
+     * Inserts the given member into the data source.
+     * 
+     * @param memberToInsert an object of the Member class representing the
+     * member to be inserted.
+     * 
+     * @return int The ID of the inserted Member if execution was successful, -1
+     * otherwise.
+     */
     public int insertMember(Member memberToInsert);
 
-//    public boolean deleteMember(...);
-//    public Customer findCustomer(...);
-//    public boolean updateMember(...);
-//    public RowSet selectMemberRS(...);
-//    public Collection selectMemberssTO(...);
+    /*
+     * This interface is not completed yet. Methods that probably should
+     * be available here could handle the creating, updating and deleting o
+     * of Member information from the data source that is used.
+     * 
+     */
 
 }

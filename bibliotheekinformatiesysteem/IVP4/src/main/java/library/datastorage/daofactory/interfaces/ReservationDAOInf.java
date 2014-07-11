@@ -9,6 +9,8 @@ import library.domain.Member;
 import library.domain.Reservation;
 
 /**
+ * This interface describes the methods that must be available in the ReservationDAO 
+ * implementation for a specific data source. 
  *
  * @author ppthgast
  */
@@ -28,4 +30,11 @@ public interface ReservationDAOInf
      */
     public ArrayList<Reservation> findReservations(Member member);
     
+    /*
+     * This interface is not completed yet. Methods that probably should
+     * be available here could handle the creating, updating and deleting o
+     * of information from the data source that is used.
+     * 
+     */
+
 }
