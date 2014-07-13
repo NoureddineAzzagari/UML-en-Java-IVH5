@@ -1,0 +1,40 @@
+// HelloWorld Policy file.
+//
+// Om deze settings te wijzigen kun je eventueel gebruik maken van de Java policytool.
+// Gebruik: start policytool vanaf de commandline, en open het juiste policy bestand.
+//
+
+/*
+// grant codeBase "file:/C:/dev/workspace/workspace/HelloServer/bin/-" {
+grant codeBase "file:/C:/dev/workspace/HelloServer/bin/-" {
+	// AllPermission is de 'open' instelling: alle toegang is vrij.
+	// Alles werkt dan, maar eigenlijk is dat niet wat je zou moeten willen.
+	permission java.security.AllPermission;
+
+	// Een betere aanpak is om selectief permissions in te stellen.
+	// permission java.net.SocketPermission "localhost", "accept, connect, resolve";
+};
+
+grant 
+// codeBase "http://localhost/classes/" 
+{
+	permission java.net.SocketPermission "145.48.6.147", "accept, connect, resolve";
+};
+*/
+
+grant 
+{
+	permission java.net.SocketPermission "145.48.6.147", "accept, connect, resolve";
+	permission java.net.SocketPermission "localhost", "accept, connect, resolve";
+	permission java.net.SocketPermission "AIBOBIEE", "resolve";		// in dit geval is dit de servermachine
+	permission java.net.SocketPermission "WIN-8-DEV", "resolve";	// de clientmachine, voor vinden van rmiregistry
+	permission java.net.SocketPermission "145.48.230.72", "accept, connect, resolve";	// de clientmachine, voor heen en weer sturen van geserialiseerde request en response (string)
+	permission java.net.SocketPermission "192.168.27.128", "accept, connect, resolve";	// de clientmachine, voor heen en weer sturen van geserialiseerde request en response (string)
+
+	// FilePermission zodat de server toegang tot het XML databestand heeft. Alleen nodig wanneer XML DAO gebruikt wordt.
+	permission java.io.FilePermission "C:\\dev\\workspace\\workspace-team\\bibliotheekinformatiesysteem\\java\\server\\src\\resources\\library.xml", "read";
+
+	// FilePermission zodat de server toegang tot het XSD schema voor validatie van XML.
+	permission java.io.FilePermission "C:\\dev\\workspace\\workspace-team\\bibliotheekinformatiesysteem\\java\\server\\src\\resources\\library.xsd", "read";
+};
+

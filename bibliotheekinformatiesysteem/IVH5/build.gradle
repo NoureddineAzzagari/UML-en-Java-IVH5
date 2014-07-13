@@ -1,0 +1,41 @@
+apply plugin: "jacoco"
+apply plugin: "sonar-runner"
+
+subprojects {
+	apply plugin: "java"
+	apply plugin: "eclipse"
+    group = 'org.gradle.sample'
+
+    version = '1.0'
+	
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+    }
+}
+
+project(':api') {
+    dependencies {
+        compile project(':shared')
+    }
+}
+
+project(':server') {
+    dependencies {
+        compile project(':shared'), project(':api'),
+				'mysql:mysql-connector-java:5.1+',
+				'log4j:log4j:1+'
+        testCompile "junit:junit:4.11"
+    }
+}
+
+project(':client') {
+    dependencies {
+        compile project(':shared'), project(':api'),
+				'mysql:mysql-connector-java:5.1+',
+				'log4j:log4j:1+'
+        testCompile "junit:junit:4.11"
+    }
+}
+
