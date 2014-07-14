@@ -5,13 +5,14 @@ Dit project bevat de Java code voor het bibliotheek informatie systeem dat in pe
 ## Quick links ##
 1. [IVP3 versie](https://bitbucket.org/avansivh5docenten/bibliotheek-informatie-systeem/src/64523064b74cc6f328e32be1950a5abb8d4d31c1/bibliotheekinformatiesysteem/IVP3/?at=master)
 2. [IVP4 versie](https://bitbucket.org/avansivh5docenten/bibliotheek-informatie-systeem/src/a22f25d12415fad88aff4db1890730192595cf4d/bibliotheekinformatiesysteem/IVP4/?at=master)
+3. [IVH5 versie](https://bitbucket.org/avansivh5docenten/bibliotheek-informatie-systeem/src/6abb147af7132c68d6ae2a5be8f50c933dfd89c1/bibliotheekinformatiesysteem/IVH5/?at=master)
 
 ## Vereisten ##
 1. Java JDK
 2. Werkende en draaiende database
 3. Eventueel [Eclipse Luna](http://www.eclipse.org/), NetBeans, [Notepad++](http://www.notepad-plus-plus.org/)
 
-Voor de IVP4 versie eventueel:
+Voor de IVP4 en IVH5 versie eventueel:
 
 4. [Gradle](http://www.gradle.org/) build automation tool 
 5. [GIT](http://www.git-scm.com/) version management 
