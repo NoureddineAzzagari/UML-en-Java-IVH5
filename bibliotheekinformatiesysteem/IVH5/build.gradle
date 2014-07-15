@@ -6,7 +6,7 @@ subprojects {
 	apply plugin: "eclipse"
     apply plugin: 'ivy-publish'
 
-    // version = '1.0'			// version will be postfixed to jar-name
+    version = '1.0'			// version will be postfixed to jar-name
     group = 'nl.avans.aei'	// used in gradle publish
 	
 	repositories {
@@ -74,18 +74,19 @@ project(':server') {
 	// ge-upload worden. deploylocal wordt (automatisch) aangeroepen na build.
 	//
 	task deploylocal(type: Copy) {
-		from 'src/resources/server.policy'
-		from 'src/resources/serverlog.cnf'
+		from 'resources/server.policy'
+		from('resources') {
+			include '**/*.xml'
+			include '**/*.xsd'
+			into 'resources'
+		}
+		from 'serverlog.cnf'
 		from configurations.runtime		
 		from 'build/classes/main'
 		from '../api/build/classes/main'
 		from '../shared/build/classes/main'
-		// into 'build/deploy'
 		into { webdir }
 
-		// Maak deze task afhankelijk van de build-task
-		// Gevolg is dat wanneer je gradle :server:deploylocal uitvoert, er 
-		// eerst een build wordt uitgevoerd.
 		dependsOn build
 	}
 	// Voeg deploylocal toe achteraan de build-task.

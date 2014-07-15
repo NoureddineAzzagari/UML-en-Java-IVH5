@@ -42,8 +42,8 @@ public class XmlDOMDocument {
 
 	// These filenames could be stored in an external configuration file instead of
 	// hard-coding it here.
-	private final String xmlFilename = ".\\src\\resources\\library.xml";
-	private final String xmlSchema = ".\\src\\resources\\library.xsd";
+	private final String xmlFilename = ".\\resources\\library.xml";
+	private final String xmlSchema = ".\\resources\\library.xsd";
 
 	// The document that will contain the DOM.
 	private Document document = null;
