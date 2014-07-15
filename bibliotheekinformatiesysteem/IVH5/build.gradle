@@ -6,43 +6,60 @@ subprojects {
 	apply plugin: "eclipse"
     apply plugin: 'ivy-publish'
 
-    version = '1.0'
-    group = 'nl.avans.aei'
+    version = '1.0'			// version will be postfixed to jar-name
+    group = 'nl.avans.aei'	// used in gradle publish
 	
-    repositories {
+	repositories {
         mavenCentral()
-    }
-
-	uploadArchives {
-		repositories {
-		   flatDir {
-				name "webserver"
-				dirs 'c:/dev/xampp/htdocs/classes'
-		   }
-			flatDir {
-				name "fileRepo"
-				dirs "RobinsRepo"
-			}
+		flatDir {
+			name "webserver"
+			// Change this path to your local webserver setting.
+			dirs 'c:/dev/xampp/htdocs/classes'
 		}
 	}
 
 	// Dependencies and artifacts are grouped by configurations.
 	configurations { 
-		runtime 
+		runtime
 	}
 
+	uploadArchives {
+		repositories {
+			add project.repositories.webserver
+			/*
+			ivy {
+				credentials {
+					username "username"
+					password "pw"
+				}
+				url "http://repo.mycompany.com"
+			}
+			*/
+		}
+	}
 }
 
 project(':api') {
 	description = "The interface descriptions."
 	
+	// Default name for .jar is projectname-version.jar; change it here.
+	archivesBaseName = "library-api"
+
     dependencies {
         compile project(':shared')
     }
+	
+	artifacts {
+		// Set the artifacts to be used in uploadArchives.
+		// Default the .jar is used.
+	}
 }
 
 project(':server') {
     description = "The server implementation."
+	
+	// Default name for .jar is projectname-version.jar; change it here.
+	archivesBaseName = "library-server"
 	
     dependencies {
         compile project(':shared'), project(':api'),
@@ -52,9 +69,9 @@ project(':server') {
     }
 	
 	//
-	// deploylocal copieert alle benodigde bestanden naar /build/deploy, en 
-	// kopieert deze vervolgens naar htdocs/classes, zodat ze via de
-	// webserver door client en server gevonden kunnen worden.
+	// deploylocal plaatst alle gerefereerde libraries in /server/build/deploy.
+	// Deze kunnen vervolgens met gradle uploadArchives naar de webserver 
+	// ge-upload worden. deploylocal wordt (automatisch) aangeroepen na build.
 	//
 	task deploylocal(type: Copy) {
 		from 'build/libs'
@@ -71,11 +88,20 @@ project(':server') {
 	// Voeg deploylocal toe achteraan de build-task.
 	// Na iedere gradle build wordt nu een deploy van de server uitgevoerd.
 	build.finalizedBy deploylocal
+	
+	//associating the task that produces the artifact with the configuration
+	artifacts {
+		archives file('build/deploy/mysql-connector-java-5.1.31.jar')
+		archives file('build/deploy/log4j-1.2.17-1.0.jar')
+	}
 }
 
 project(':client') {
     description = "The server implementation."
 	
+	// Default name for .jar is projectname-version.jar; change it here.
+	archivesBaseName = "library-client"
+
     dependencies {
         compile project(':shared'), project(':api'),
 				'mysql:mysql-connector-java:5.1+',
@@ -87,12 +113,21 @@ project(':client') {
 project(':shared') {
     description = "The shared domain between client and server."
 	
+	// Default name for .jar is projectname-version.jar; change it here.
+	archivesBaseName = "library-shared"
+
     dependencies {
         testCompile "junit:junit:4.11"
     }
+
+	artifacts {
+		// Set the artifacts to be used in uploadArchives.
+		// Default the .jar is used.
+	}
 }
 
 subprojects {
+	// Via gradle publish publiceer je de artifacts met ivy.
     publishing {
         repositories {
 			// add project.repositories.fileRepo
