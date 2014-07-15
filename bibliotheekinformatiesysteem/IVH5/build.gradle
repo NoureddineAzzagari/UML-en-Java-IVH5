@@ -6,7 +6,7 @@ subprojects {
 	apply plugin: "eclipse"
     apply plugin: 'ivy-publish'
 
-    version = '1.0'			// version will be postfixed to jar-name
+    // version = '1.0'			// version will be postfixed to jar-name
     group = 'nl.avans.aei'	// used in gradle publish
 	
 	repositories {
@@ -62,23 +62,26 @@ project(':server') {
 	archivesBaseName = "library-server"
 	
     dependencies {
-        compile project(':shared'), project(':api'),
-				'mysql:mysql-connector-java:5.1+',
-				'log4j:log4j:1+'
+        compile project(':shared'), project(':api'), 'mysql:mysql-connector-java:5.1+', 'log4j:log4j:1+'
         testCompile "junit:junit:4.11"
     }
 	
+	def webdir = project.file(new File('c:/dev/xampp/htdocs/classes'), PathValidation.DIRECTORY)
+
 	//
 	// deploylocal plaatst alle gerefereerde libraries in /server/build/deploy.
 	// Deze kunnen vervolgens met gradle uploadArchives naar de webserver 
 	// ge-upload worden. deploylocal wordt (automatisch) aangeroepen na build.
 	//
 	task deploylocal(type: Copy) {
-		from 'build/libs'
 		from 'src/resources/server.policy'
 		from 'src/resources/serverlog.cnf'
-		from configurations.runtime
-		into 'build/deploy'
+		from configurations.runtime		
+		from 'build/classes/main'
+		from '../api/build/classes/main'
+		from '../shared/build/classes/main'
+		// into 'build/deploy'
+		into { webdir }
 
 		// Maak deze task afhankelijk van de build-task
 		// Gevolg is dat wanneer je gradle :server:deploylocal uitvoert, er 
@@ -92,22 +95,37 @@ project(':server') {
 	//associating the task that produces the artifact with the configuration
 	artifacts {
 		archives file('build/deploy/mysql-connector-java-5.1.31.jar')
-		archives file('build/deploy/log4j-1.2.17-1.0.jar')
+		archives file('build/deploy/log4j-1.2.17.jar')
+		archives file('build/deploy/serverlog.cnf')
+		archives file('build/deploy/server.policy')
 	}
+	
 }
 
 project(':client') {
-    description = "The server implementation."
+    description = "The client implementation."
 	
 	// Default name for .jar is projectname-version.jar; change it here.
 	archivesBaseName = "library-client"
 
     dependencies {
-        compile project(':shared'), project(':api'),
-				'mysql:mysql-connector-java:5.1+',
-				'log4j:log4j:1+'
+        compile project(':shared'), project(':api'), 'log4j:log4j:1+'
         testCompile "junit:junit:4.11"
     }
+
+	// Kopieer de classbestanden en runtime referenties naar build/deploy.
+	// We kunnen dan de client vanaf de commandline vanuit die directory starten.
+	task deploylocal(type: Copy) {
+		from configurations.runtime
+		from 'build/classes/main'
+		from '../api/build/classes/main'
+		from '../shared/build/classes/main'
+		into 'build/deploy'
+		dependsOn build
+	}
+	// Voeg deploylocal toe achteraan de build-task.
+	// Na iedere gradle build wordt nu een deploy uitgevoerd.
+	build.finalizedBy deploylocal
 }
 
 project(':shared') {
