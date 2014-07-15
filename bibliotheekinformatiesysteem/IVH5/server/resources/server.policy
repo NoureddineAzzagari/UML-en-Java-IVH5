@@ -1,0 +1,43 @@
+//
+// IVH5 Library worked example server.policy file.
+//
+// Om deze settings te wijzigen kun je eventueel gebruik maken van de Java policytool.
+// Gebruik: start policytool vanaf de commandline, en open het juiste policy bestand.
+//
+// Robin Schellius, juli 2014.
+//
+
+grant 
+{
+	// Het kan zijn dat je zelf een regel hieronder moet wijzigen om je het juiste IP-adres toe te voegen.
+	permission java.net.SocketPermission "145.48.6.147", "accept, connect, resolve";
+	permission java.net.SocketPermission "localhost", "accept, connect, resolve";
+	permission java.net.SocketPermission "AIBOBIEE", "resolve";
+	permission java.net.SocketPermission "WIN-8-DEV", "resolve";
+	permission java.net.SocketPermission "145.48.230.72", "accept, connect, resolve";
+	permission java.net.SocketPermission "192.168.27.128", "accept, connect, resolve";
+
+	// FilePermission zodat de server toegang tot het XML databestand heeft. 
+	// Alleen nodig wanneer de XML DAO datasource gebruikt wordt.
+	permission java.io.FilePermission "C:\\dev\\xampp\\htdocs\\classes\\resources\\library.xml", "read";
+	permission java.io.FilePermission "C:\\dev\\xampp\\htdocs\\classes\\resources\\library.xsd", "read";
+	permission java.util.PropertyPermission "user.dir", "read";
+
+};
+
+//
+// Onderstaande varianten tonen de mogelijkheden om toegang te regelen tot bestanden
+// in een gedeeld bestandssysteem. Omdat dat alleen op een lokale computer werkt, maar 
+// bij een remote client/server systeem niet meer gaat, gebruiken we een webserver en http.
+//
+// grant codeBase "file:/C:/dev/workspace/workspace/HelloServer/bin/-" {
+// grant codeBase "file:/C:/dev/workspace/HelloServer/bin/-" {
+// grant codeBase "http://localhost/classes/" {
+	// AllPermission is de 'open' instelling: alle toegang is vrij.
+	// Alles werkt dan, maar eigenlijk is dat niet wat je zou moeten willen.
+//	permission java.security.AllPermission;
+
+	// Een betere aanpak is om selectief permissions in te stellen.
+	// permission java.net.SocketPermission "localhost", "accept, connect, resolve";
+// };
+
