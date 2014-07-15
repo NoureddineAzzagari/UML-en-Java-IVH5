@@ -45,7 +45,7 @@ public class XmlDOMDocument {
 	private final String xmlFilename = ".\\src\\resources\\library.xml";
 	private final String xmlSchema = ".\\src\\resources\\library.xsd";
 
-	// The document that wil contain the DOM.
+	// The document that will contain the DOM.
 	private Document document = null;
 
 	public XmlDOMDocument() {
@@ -153,7 +153,10 @@ public class XmlDOMDocument {
 			String language = XMLConstants.W3C_XML_SCHEMA_NS_URI;
 			SchemaFactory factory = SchemaFactory.newInstance(language);
 			logger.debug("getValidationSchema " + xmlSchema);
-			schema = factory.newSchema(new File(xmlSchema));
+			File xmlSchemaFile = new File(xmlSchema);
+			if(xmlSchemaFile.exists()) {
+				schema = factory.newSchema(xmlSchemaFile);
+			}
 		} catch (Exception e) {
 			logger.error("Error reading schema file: " + e.getMessage());
 		}

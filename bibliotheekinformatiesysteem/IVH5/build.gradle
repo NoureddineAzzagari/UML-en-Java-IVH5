@@ -4,33 +4,78 @@ apply plugin: "sonar-runner"
 subprojects {
 	apply plugin: "java"
 	apply plugin: "eclipse"
-    group = 'org.gradle.sample'
+    apply plugin: 'ivy-publish'
 
     version = '1.0'
+    group = 'nl.avans.aei'
 	
     repositories {
         mavenCentral()
     }
-    dependencies {
-    }
+
+	uploadArchives {
+		repositories {
+		   flatDir {
+				name "webserver"
+				dirs 'c:/dev/xampp/htdocs/classes'
+		   }
+			flatDir {
+				name "fileRepo"
+				dirs "RobinsRepo"
+			}
+		}
+	}
+
+	// Dependencies and artifacts are grouped by configurations.
+	configurations { 
+		runtime 
+	}
+
 }
 
 project(':api') {
+	description = "The interface descriptions."
+	
     dependencies {
         compile project(':shared')
     }
 }
 
 project(':server') {
+    description = "The server implementation."
+	
     dependencies {
         compile project(':shared'), project(':api'),
 				'mysql:mysql-connector-java:5.1+',
 				'log4j:log4j:1+'
         testCompile "junit:junit:4.11"
     }
+	
+	//
+	// deploylocal copieert alle benodigde bestanden naar /build/deploy, en 
+	// kopieert deze vervolgens naar htdocs/classes, zodat ze via de
+	// webserver door client en server gevonden kunnen worden.
+	//
+	task deploylocal(type: Copy) {
+		from 'build/libs'
+		from 'src/resources/server.policy'
+		from 'src/resources/serverlog.cnf'
+		from configurations.runtime
+		into 'build/deploy'
+
+		// Maak deze task afhankelijk van de build-task
+		// Gevolg is dat wanneer je gradle :server:deploylocal uitvoert, er 
+		// eerst een build wordt uitgevoerd.
+		dependsOn build
+	}
+	// Voeg deploylocal toe achteraan de build-task.
+	// Na iedere gradle build wordt nu een deploy van de server uitgevoerd.
+	build.finalizedBy deploylocal
 }
 
 project(':client') {
+    description = "The server implementation."
+	
     dependencies {
         compile project(':shared'), project(':api'),
 				'mysql:mysql-connector-java:5.1+',
@@ -39,3 +84,33 @@ project(':client') {
     }
 }
 
+project(':shared') {
+    description = "The shared domain between client and server."
+	
+    dependencies {
+        testCompile "junit:junit:4.11"
+    }
+}
+
+subprojects {
+    publishing {
+        repositories {
+			// add project.repositories.fileRepo
+            ivy {
+                url "${rootProject.buildDir}/repo" // change to point to your repo, e.g. http://my.org/repo
+            }
+        }
+        publications {
+            ivy(IvyPublication) {
+                from components.java
+                // artifact(sourceJar) {
+                //    type "source"
+                //    conf "runtime"
+                // }
+                // descriptor.withXml {
+                //    asNode().info[0].appendNode('description', description)
+                // }
+            }
+        }
+    }
+}
