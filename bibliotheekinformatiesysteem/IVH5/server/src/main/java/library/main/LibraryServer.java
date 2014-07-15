@@ -23,7 +23,7 @@ import org.apache.log4j.PropertyConfigurator;
 public class LibraryServer {
 
 	final static private String hostname = "localhost"; // "145.48.6.147";
-	final static private String logconfigfile = "./src/resources/serverlog.cnf";
+	final static private String logconfigfile = "serverlog.cnf";
 	static private String servicename = "BibliotheekBreda";
 
 	// Get a logger instance for the current class

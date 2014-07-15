@@ -38,7 +38,7 @@ public class LibraryClient {
     public static void main(String[] args) {
 
 		// Configure logging. 
-		PropertyConfigurator.configure("./src/resources/clientlog.cnf");	     
+		PropertyConfigurator.configure("clientlog.cnf");
 		logger.debug("Starting application");
 
         if(args.length == 0) {

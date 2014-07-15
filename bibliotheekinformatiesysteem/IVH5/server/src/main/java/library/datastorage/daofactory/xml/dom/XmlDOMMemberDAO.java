@@ -18,10 +18,10 @@ import library.domain.Member;
 import library.datastorage.daofactory.interfaces.MemberDAOInf;
 
 /**
- * The XML DOM implementation for the MemberDAO class. This class provides CRUD 
- * methods to store Member information in an XML file using the Document Object Model
- * approach.
-
+ * The XML DOM implementation for the MemberDAO class. This class provides CRUD
+ * methods to store Member information in an XML file using the Document Object
+ * Model approach.
+ * 
  * @author Robin Schellius
  */
 public class XmlDOMMemberDAO implements MemberDAOInf {
@@ -53,39 +53,55 @@ public class XmlDOMMemberDAO implements MemberDAOInf {
 	 *         null is returned.
 	 */
 	public Member findMember(int membershipNumber) {
-		
+
 		logger.debug("findMember " + membershipNumber);
 
 		Member member = null;
 
-		// Get all <member> elements from the document
-		NodeList list = document.getElementsByTagName("member");
-		
-		for (int i = 0; i < list.getLength(); i++) {
+		if (document != null) {
+			// Get all <member> elements from the document
+			NodeList list = document.getElementsByTagName("member");
 
-			Node node = list.item(i);
-			if (node instanceof Element) {
+			for (int i = 0; i < list.getLength(); i++) {
 
-				Element child = (Element) node;
-				String attribute = child.getAttribute("membershipNumber");
-				if(Integer.parseInt(attribute) == membershipNumber) {
-					
-					logger.debug("found member " + attribute);
-				
-					// Construct the Member to be returned with the information we found.
-					String firstName = child.getElementsByTagName("firstname").item(0).getTextContent();
-					String lastName = child.getElementsByTagName("lastname").item(0).getTextContent();
-				
-					member = new Member(Integer.parseInt(attribute), firstName, lastName);
-					member.setStreet(child.getElementsByTagName("street").item(0).getTextContent());
-					member.setHouseNumber(child.getElementsByTagName("housenumber").item(0).getTextContent());
-					member.setCity(child.getElementsByTagName("city").item(0).getTextContent());
-					member.setFine(Double.parseDouble(child.getElementsByTagName("fine").item(0).getTextContent()));
+				Node node = list.item(i);
+				if (node instanceof Element) {
+
+					Element child = (Element) node;
+					String attribute = child.getAttribute("membershipNumber");
+					if (Integer.parseInt(attribute) == membershipNumber) {
+
+						logger.debug("found member " + attribute);
+
+						// Construct the Member to be returned with the
+						// information we found.
+						String firstName = child
+								.getElementsByTagName("firstname").item(0)
+								.getTextContent();
+						String lastName = child
+								.getElementsByTagName("lastname").item(0)
+								.getTextContent();
+
+						member = new Member(Integer.parseInt(attribute),
+								firstName, lastName);
+						member.setStreet(child.getElementsByTagName("street")
+								.item(0).getTextContent());
+						member.setHouseNumber(child
+								.getElementsByTagName("housenumber").item(0)
+								.getTextContent());
+						member.setCity(child.getElementsByTagName("city")
+								.item(0).getTextContent());
+						member.setFine(Double.parseDouble(child
+								.getElementsByTagName("fine").item(0)
+								.getTextContent()));
+					}
 				}
 			}
+		} else {
+			logger.error("XML document is null!");
 		}
-
-		if(member == null) 
+		
+		if (member == null)
 			logger.debug("member not found");
 
 		return member;
