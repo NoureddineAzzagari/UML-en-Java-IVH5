@@ -46,7 +46,6 @@ public class LibraryClient {
         } else {
         	parseCommandLine(args);
         }
-		logger.debug("Connecting to " + servicename + " on " + hostname);
 
         // System.setProperty("java.rmi.server.codebase", "file:/C:/dev/workspace/workspace/HelloServer/bin/-");
     	System.setProperty("java.rmi.server.codebase", "http://" + hostname + "/classes/");
@@ -63,22 +62,26 @@ public class LibraryClient {
     		logger.debug("Locating registry on " + hostname);
             Registry registry = LocateRegistry.getRegistry(hostname);
             
-            logger.info("Contents of registry: " + Arrays.toString(registry.list()));
+            String[] serviceNames = registry.list();
+            logger.info("Contents of registry: " + Arrays.toString(serviceNames));
             
+            logger.info("Looking up \"" + servicename + "\" in registry.");
             RemoteMemberAdminManagerIF stub = (RemoteMemberAdminManagerIF) registry.lookup(servicename);
-    		logger.debug("Found '" + servicename + "' in registry");
+    		logger.debug("Connected to remote server stub.");
             
-            LibraryUI ui = new LibraryUI(stub);
+            LibraryUI ui = new LibraryUI(stub, serviceNames);
     		ui.frmLibraryInformationSystem.setVisible(true);
-
         } 
 		catch (java.security.AccessControlException e) {
 			logger.error("Could not connect to registry: " + e.getMessage());			
 		}
+        catch (java.rmi.NotBoundException e) {
+            logger.error("Servicename \"" + servicename + "\" not found.");
+        }
         catch (Exception e) {
             logger.error("Error: " + e.getMessage());
-            logger.error("Make sure the registry is running by starting rmiregistry.");
-        }        
+            logger.error("(Are the webserver, the registry and the server running?)");
+        }
     }
     
     /**
@@ -91,7 +94,7 @@ public class LibraryClient {
     private static void parseCommandLine(String[] args) {
     	boolean errorFound = false;
 		if(args.length != 4) {
-			logger.debug("Skipping command line options; expected 4 but found " + args.length);			
+			logger.debug("Skipping command line options; expected 4 but found " + args.length + " arguments.");			
 			errorFound = true;
 		} else {
 			if(args[0].equalsIgnoreCase("-hostname")) 
