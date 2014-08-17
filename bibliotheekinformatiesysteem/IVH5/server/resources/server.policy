@@ -11,7 +11,7 @@ grant
 {
 	// Het kan zijn dat je zelf een regel hieronder moet wijzigen om je het juiste IP-adres toe te voegen.
 	permission java.net.SocketPermission "145.48.6.147", "accept, connect, resolve";
-	permission java.net.SocketPermission "localhost", "accept, connect, resolve";
+	permission java.net.SocketPermission "localhost", "listen, accept, connect, resolve";
 	permission java.net.SocketPermission "AIBOBIEE", "resolve";
 	permission java.net.SocketPermission "WIN-8-DEV", "resolve";
 	permission java.net.SocketPermission "145.48.230.72", "accept, connect, resolve";
@@ -22,7 +22,11 @@ grant
 	permission java.io.FilePermission "C:\\dev\\xampp\\htdocs\\classes\\resources\\library.xml", "read";
 	permission java.io.FilePermission "C:\\dev\\xampp\\htdocs\\classes\\resources\\library.xsd", "read";
 	permission java.util.PropertyPermission "user.dir", "read";
-
+	permission java.lang.RuntimePermission "shutdownHooks";
+	
+	permission java.lang.RuntimePermission "setSecurityManager";
+	permission java.lang.RuntimePermission "createSecurityManager";
+	permission java.lang.RuntimePermission "usePolicy";
 };
 
 //
