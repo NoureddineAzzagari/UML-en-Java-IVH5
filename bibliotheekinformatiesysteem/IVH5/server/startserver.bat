@@ -7,7 +7,10 @@
 cd \dev\xampp\htdocs\classes
 
 :: Start java met het juiste classpath
-java -cp .;log4j-1.2.17.jar;mysql-connector-java-5.1.31.jar library.main.LibraryServer -servicename "BibliotheekBreda"
+start java -cp .;log4j-1.2.17.jar;mysql-connector-java-5.1.31.jar library.main.LibraryServer -servicename "BibliotheekBreda"
+
+:: Start tweede server voor inter-server communicatie.
+start java -cp .;log4j-1.2.17.jar;mysql-connector-java-5.1.31.jar library.main.LibraryServer -servicename "BiebOosterhout"
  
 :: Wanneer je securityproblemen wilt oplossen, voeg dan onderstaade optie aan het command toe.
 :: Hiermee krijg je inzicht in alle security instellingen.
