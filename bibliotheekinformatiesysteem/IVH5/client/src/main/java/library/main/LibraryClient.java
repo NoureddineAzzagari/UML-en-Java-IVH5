@@ -29,7 +29,7 @@ public class LibraryClient {
 	// The host where the client will look for the registry. Can be set via command line option.
     static String hostname = "localhost";
     // The service to be retrieved from the registry. Can be set via command line option.
-    static String servicename = "BibliotheekBreda";
+    public static String servicename = "BibliotheekBreda";
 
     /**
      * 
@@ -69,7 +69,7 @@ public class LibraryClient {
             RemoteMemberAdminManagerIF stub = (RemoteMemberAdminManagerIF) registry.lookup(servicename);
     		logger.debug("Connected to remote server stub.");
             
-            LibraryUI ui = new LibraryUI(stub, serviceNames);
+            LibraryUI ui = new LibraryUI(stub, hostname, serviceNames);
     		ui.frmLibraryInformationSystem.setVisible(true);
         } 
 		catch (java.security.AccessControlException e) {

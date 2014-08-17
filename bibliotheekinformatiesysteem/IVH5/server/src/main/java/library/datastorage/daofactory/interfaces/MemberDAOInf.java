@@ -4,6 +4,8 @@
  */
 package library.datastorage.daofactory.interfaces;
 
+import java.util.ArrayList;
+
 import library.domain.Member;
 
 /**
@@ -27,6 +29,8 @@ public interface MemberDAOInf {
      * null is returned.
      */
     public Member findMember(int membershipNumber);
+
+    public ArrayList<String> findAllMembers();
 
     /**
      * Removes the given member from the database.

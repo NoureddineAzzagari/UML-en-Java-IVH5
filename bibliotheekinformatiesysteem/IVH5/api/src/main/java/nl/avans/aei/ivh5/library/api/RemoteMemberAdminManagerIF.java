@@ -3,11 +3,10 @@ package nl.avans.aei.ivh5.library.api;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-
 import library.domain.ImmutableMember;
 
 /**
- * Interface that describes the available methods on the remote Library server.
+ * Interface that describes the available methods on a remote Library server.
  * 
  * @author Robin Schellius
  *
@@ -24,12 +23,19 @@ public interface RemoteMemberAdminManagerIF extends Remote {
 	public ImmutableMember findMember(int membershipNumber) throws RemoteException;
 	
 	/**
-	 * Find all members.
+	 * Find all members on a server. Since a request to this method can be invoked
+	 * by the corresponding client (GUI client to server) or by a remote server 
+	 * (local server to remote server) we need the hostname and service name to make
+	 * the difference. If the servicename equals our own name, we make a local lookup
+	 * for members. If the servicename is different, it is remote and we perform 
+	 * a remote lookup.
 	 * 
+	 * @param hostName Name or IP-address of the local or remote host.
+	 * @param serviceName Name of the, possibly remote, service as registered in the registry.
 	 * @return A list of retrieved members, or null is none were found.
 	 * @throws RemoteException
 	 */
-	public ArrayList<ImmutableMember> findMembers() throws RemoteException;
+	public ArrayList<String> findAllMembers(String hostName, String serviceName) throws RemoteException;
 
     /**
      * Removes the given member from the system, including removal from the

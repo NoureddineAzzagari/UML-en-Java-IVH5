@@ -10,6 +10,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -39,7 +40,7 @@ import javax.swing.DefaultComboBoxModel;
  * 
  * @author Robin Schellius
  */
-public class LibraryUI implements ActionListener, ListSelectionListener  {
+public class LibraryUI implements ActionListener, ListSelectionListener {
 
 	public JFrame frmLibraryInformationSystem;
 	private JTextField txtSearchBox;
@@ -47,6 +48,7 @@ public class LibraryUI implements ActionListener, ListSelectionListener  {
 	private JTextField txtLastname;
 	private JLabel lblSearch;
 	private JButton btnSearch;
+	private JButton btnListMembers;
 	private JList<String> listMembers;
 	private DefaultListModel<String> listModel;
 
@@ -58,13 +60,14 @@ public class LibraryUI implements ActionListener, ListSelectionListener  {
 	// field has the value null.
 	private ImmutableMember currentMember;
 	private JTextField txtStatusText;
-
-	// Get a logger instance for the current class
-	static Logger logger = Logger.getLogger(LibraryUI.class);
 	private JTextField txtStreetname;
 	private JLabel lblCity;
 	private JTextField txtCityname;
 	private JComboBox<String> cmbSelectServer;
+	private String hostname;
+
+	// Get a logger instance for the current class
+	static Logger logger = Logger.getLogger(LibraryUI.class);
 
 	/**
 	 * Constructor
@@ -72,8 +75,10 @@ public class LibraryUI implements ActionListener, ListSelectionListener  {
 	 * @param memberAdminmanager
 	 *            The manager referencing all business logic.
 	 */
-	public LibraryUI(RemoteMemberAdminManagerIF remoteMemberAdminmanager, String[] serverNames) {
+	public LibraryUI(RemoteMemberAdminManagerIF remoteMemberAdminmanager,
+			String hostname, String[] serverNames) {
 		logger.debug("Constructor (MemberAdminManager)");
+		this.hostname = hostname;
 		initialize(serverNames);
 
 		manager = remoteMemberAdminmanager;
@@ -83,11 +88,13 @@ public class LibraryUI implements ActionListener, ListSelectionListener  {
 	/**
 	 * Initialize the contents of the frame.
 	 * 
-	 * @param serverNames Names of RMI servers found in the registry. Selecting a name creates a connection to that server. Any following findMember actions
-	 * will be sent to that server.
+	 * @param serverNames
+	 *            Names of RMI servers found in the registry. Selecting a name
+	 *            creates a connection to that server. Any following findMember
+	 *            actions will be sent to that server.
 	 */
 	private void initialize(String[] serverNames) {
-		
+
 		frmLibraryInformationSystem = new JFrame();
 		frmLibraryInformationSystem.setResizable(true);
 		frmLibraryInformationSystem.setTitle("Bibliotheek Informatie Systeem");
@@ -98,7 +105,7 @@ public class LibraryUI implements ActionListener, ListSelectionListener  {
 				new BorderLayout(0, 0));
 
 		Dimension preferredSize = new Dimension(480, 100);
-		
+
 		// --------------------------------------------------------------------------------
 		// Zoekpanel.
 		//
@@ -106,7 +113,7 @@ public class LibraryUI implements ActionListener, ListSelectionListener  {
 		pnlSearch.setBorder(new TitledBorder(
 				new LineBorder(new Color(0, 0, 0)), "Zoek lid",
 				TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		pnlSearch.setPreferredSize(new Dimension(480,55));
+		pnlSearch.setPreferredSize(new Dimension(480, 55));
 		FlowLayout flowLayout = (FlowLayout) pnlSearch.getLayout();
 		flowLayout.setAlignment(FlowLayout.LEFT);
 		frmLibraryInformationSystem.getContentPane().add(pnlSearch,
@@ -133,36 +140,43 @@ public class LibraryUI implements ActionListener, ListSelectionListener  {
 		cmbSelectServer.setModel(new DefaultComboBoxModel<String>(serverNames));
 		pnlSearch.add(cmbSelectServer);
 
+		btnListMembers = new JButton("List");
+		// The actionPerformed method handles the action for this button.
+		btnListMembers.addActionListener(this);
+		pnlSearch.add(btnListMembers);
+
 		// --------------------------------------------------------------------------------
-		// Scrollable lijst met members. 
+		// Scrollable lijst met members.
 		//
 		listModel = new DefaultListModel<String>();
-		for(int i = 1000; i < 1010; i++ ) {
-			listModel.addElement(Integer.toString(i));
-		}
-		
+		// TODO: hier de lijst met members op de server ophalen.
+		// Dummy-waarden vervangen!
+		listModel.addElement("0999");
+		listModel.addElement("1000");
+
 		listMembers = new JList<String>(listModel);
-		listMembers.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+		listMembers
+				.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		listMembers.setLayoutOrientation(JList.VERTICAL);
 		listMembers.setVisibleRowCount(-1);
 		JScrollPane pnlMemberList = new JScrollPane(listMembers);
-		pnlMemberList.setPreferredSize(preferredSize);		
-		pnlMemberList.setBorder(new TitledBorder(new LineBorder(new Color(0,
-				0, 0)), "Leden overzicht", TitledBorder.LEADING, TitledBorder.TOP, null,
-				null));
+		pnlMemberList.setPreferredSize(preferredSize);
+		pnlMemberList.setBorder(new TitledBorder(new LineBorder(new Color(0, 0,
+				0)), "Leden overzicht", TitledBorder.LEADING, TitledBorder.TOP,
+				null, null));
 		listMembers.addListSelectionListener(this);
-		
+
 		// --------------------------------------------------------------------------------
 		// Details van een geselecteerde member.
 		//
 		JPanel pnlMemberDetails = new JPanel();
 		pnlMemberDetails.setBorder(new TitledBorder(new LineBorder(new Color(0,
-				0, 0)), "Lid details", TitledBorder.LEADING, TitledBorder.TOP, null,
-				null));
+				0, 0)), "Lid details", TitledBorder.LEADING, TitledBorder.TOP,
+				null, null));
 		pnlMemberDetails.setPreferredSize(preferredSize);
-		
+
 		GridBagLayout gbl_pnlMemberDetails = new GridBagLayout();
-		gbl_pnlMemberDetails.columnWidths = new int[] {0, 40, 40, 40, 40};
+		gbl_pnlMemberDetails.columnWidths = new int[] { 0, 40, 40, 40, 40 };
 		gbl_pnlMemberDetails.rowHeights = new int[] { 20, 0, 0, 0, 0 };
 		gbl_pnlMemberDetails.columnWeights = new double[] { 0.0, 1.0, 0.0, 2.0,
 				0.0 };
@@ -257,23 +271,11 @@ public class LibraryUI implements ActionListener, ListSelectionListener  {
 		JPanel pnlMemberInfo = new JPanel();
 		pnlMemberInfo.add(pnlMemberList, BorderLayout.NORTH);
 		pnlMemberInfo.add(pnlMemberDetails, BorderLayout.CENTER);
-		
-		
-//		JPanel temp = new JPanel();
-//		temp.setBorder(new TitledBorder(
-//				new LineBorder(new Color(0, 0, 0)), "temp temp",
-//				TitledBorder.LEADING, TitledBorder.TOP, null, null));
-//		temp.setPreferredSize(preferredSize);
-//		FlowLayout fl = (FlowLayout) pnlSearch.getLayout();
-//		fl.setAlignment(FlowLayout.LEFT);
-//		pnlMemberInfo.add(temp, BorderLayout.SOUTH);
-		
-		
 		frmLibraryInformationSystem.getContentPane().add(pnlMemberInfo,
 				BorderLayout.CENTER);
 
 		// --------------------------------------------------------------------------------
-		// Statusinfo 
+		// Statusinfo
 		//
 		JPanel pnlStatus = new JPanel();
 		frmLibraryInformationSystem.getContentPane().add(pnlStatus,
@@ -281,9 +283,9 @@ public class LibraryUI implements ActionListener, ListSelectionListener  {
 		pnlStatus.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));
 		pnlStatus.add(txtStatusText);
 
-        // Enable Enter-key as input for search button.
+		// Enable Enter-key as input for search button.
 		frmLibraryInformationSystem.getRootPane().setDefaultButton(btnSearch);
-		
+
 	}
 
 	/**
@@ -307,7 +309,8 @@ public class LibraryUI implements ActionListener, ListSelectionListener  {
 			if (currentMember != null) {
 				txtFirstname.setText(currentMember.getFirstname());
 				txtLastname.setText(currentMember.getLastname());
-				txtStreetname.setText(currentMember.getStreet() + " " + currentMember.getHouseNumber());
+				txtStreetname.setText(currentMember.getStreet() + " "
+						+ currentMember.getHouseNumber());
 				txtCityname.setText(currentMember.getCity());
 
 				if (currentMember.hasLoans()) {
@@ -319,23 +322,55 @@ public class LibraryUI implements ActionListener, ListSelectionListener  {
 				}
 				memberFound = true;
 			} else {
-				txtStatusText.setText("Lidnummer " + membershipNr + " niet gevonden");
+				txtStatusText.setText("Lidnummer " + membershipNr
+						+ " niet gevonden");
 			}
 		}
 		return memberFound;
 	}
 
 	/**
-	 * Performs the corresponding action for a button. This method can handle actions 
-	 * for each button in the window. The method itself selects the appropriate handling
-	 * based on the button clicked. Provide the appropriate handling when adding a button.
+	 * 
+	 * @param membershipNr
+	 */
+	private void doFindAllMembers(String hostname, String servicename) {
+		logger.debug("doFindAllMembers on " + servicename + " at " + hostname);
+
+		ArrayList<String> memberIDs = null;
+
+		if (manager != null) {
+			try {
+				memberIDs = manager.findAllMembers(hostname, servicename);
+			} catch (RemoteException e) {
+				logger.error("Error finding members: " + e.getMessage());
+			}
+
+			if (memberIDs != null) {
+				logger.debug("Found members " + memberIDs.toString());
+				// Display the results in JList in GUI. This is simpy done by
+				// changing the values in the ListModel, which automatically 
+				// synchronizes its results to the corresponding JList. 
+		        listModel.removeAllElements();
+				for(String memberID : memberIDs) {
+					listModel.addElement(memberID);
+				}
+			} else {
+				logger.debug("No members found on the given service.");
+				txtStatusText.setText("Geen informatie gevonden.");
+			}
+		}
+	}
+
+	/**
+	 * Performs the corresponding action for a button. This method can handle
+	 * actions for each button in the window. The method itself selects the
+	 * appropriate handling based on the button clicked. Provide the appropriate
+	 * handling when adding a button.
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 
 		if (e.getSource() == btnSearch) {
-			// Search-button was clicked
-			
 			// erase the detail panel in order to display new information.
 			eraseMemberDetailPanel();
 
@@ -350,14 +385,20 @@ public class LibraryUI implements ActionListener, ListSelectionListener  {
 				txtSearchBox.setText("");
 				txtSearchBox.requestFocus();
 			}
-		} else {
-			// Add handling for other buttons.
+		} else if (e.getSource() == btnListMembers) {
+			try {
+				String selectedService = (String) cmbSelectServer.getSelectedItem();
+				doFindAllMembers(this.hostname, selectedService);
+			} catch (Exception ex) {
+				logger.error("Error: " + ex.getMessage());
+				// ex.printStackTrace();
+			}
 		}
-
 	}
 
 	/**
-	 * Erase the contents of the Member detail panel, in order for new information to be displayed.
+	 * Erase the contents of the Member detail panel, in order for new
+	 * information to be displayed.
 	 */
 	private void eraseMemberDetailPanel() {
 		txtStatusText.setText("");
@@ -368,22 +409,22 @@ public class LibraryUI implements ActionListener, ListSelectionListener  {
 	}
 
 	/**
-	 * Handle selectionchanges in the memberlist. When the selection changes we try to find
-	 * the corresponding Member on the chosen server.
+	 * Handle selectionchanges in the memberlist. When the selection changes we
+	 * try to find the corresponding Member on the chosen server.
 	 */
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
 		if (e.getValueIsAdjusting() == false) {
-        	eraseMemberDetailPanel();
-	        if (listMembers.getSelectedIndex() == -1) {
-	        	// No selection
-	        } else {
-	        	// Selection made, find the selected member and display details.
-	        	String name = listModel.getElementAt(
-                        listMembers.getSelectedIndex()).toString();
-	        	logger.debug("Selected member is " + name);
-	        	doFindMember(Integer.parseInt(name));
-	        }
-	    }
+			eraseMemberDetailPanel();
+			if (listMembers.getSelectedIndex() == -1) {
+				// No selection
+			} else {
+				// Selection made, find the selected member and display details.
+				String name = listModel.getElementAt(
+						listMembers.getSelectedIndex()).toString();
+				logger.debug("Selected member is " + name);
+				doFindMember(Integer.parseInt(name));
+			}
+		}
 	}
 }

@@ -4,6 +4,8 @@
  */
 package library.datastorage.daofactory.xml.dom;
 
+import java.util.ArrayList;
+
 import org.apache.log4j.Logger;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -106,6 +108,41 @@ public class XmlDOMMemberDAO implements MemberDAOInf {
 
 		return member;
 	}
+
+	/**
+	 * Returns a list of MembershipNumbers of Members that exist in the given DAO,
+	 * or null if none were found.
+	 * 
+	 * @return Array of integers indicating the MembershipNumbers, or null if 
+	 * none were found.
+	 * 
+	 * @author Robin Schellius
+	 */
+	public ArrayList<String> findAllMembers() {
+		logger.debug("findAllMembers");
+
+		ArrayList<String> result = new ArrayList<String>();
+
+		if (document != null) {
+			// Get all <member> elements from the document
+			NodeList list = document.getElementsByTagName("member");
+
+			for (int i = 0; i < list.getLength(); i++) {
+				Node node = list.item(i);
+				if (node instanceof Element) {
+					Element child = (Element) node;
+					String membershipNr = child.getAttribute("membershipNumber");
+					if(membershipNr != null) 
+						result.add(membershipNr);
+				}
+			}
+		} else {
+			logger.error("XML document is null!");
+		}
+		
+		logger.debug("returning " + result.toString());
+		return result;
+    }
 
 	/**
 	 * Removes the given member.
