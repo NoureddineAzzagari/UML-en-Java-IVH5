@@ -21,6 +21,7 @@ import library.domain.ImmutableMember;
 import library.domain.Loan;
 import library.domain.Member;
 import library.domain.Reservation;
+import library.main.LibraryServer;
 
 /**
  * The server side implementation of the remote interface. This class implements
@@ -48,13 +49,6 @@ public class MemberAdminManagerImpl implements RemoteMemberAdminManagerIF {
 	private DAOFactory localDaoFactory; // Handles data requests on the local server.
 	private DAOFactory remoteDaoFactory; // Handles remote data requests via RMI.
 
-	// The class that implements the specific DAO functionality (MySQL, XML, RMI).
-	private String daoFactoryClassName =
-			// "library.datastorage.daofactory.rdbms.mysql.MySqlDAOFactory";
-			"library.datastorage.daofactory.xml.dom.XmlDOMDAOFactory";
-	private String rmiFactoryClassName = 
-			"library.datastorage.daofactory.rmi.RmiDAOFactory";
-
 	// The servicename that identifies this service in the RMI registry.
 	// When finding all available services in the registry we want to exclude
 	// ourselves.
@@ -78,10 +72,10 @@ public class MemberAdminManagerImpl implements RemoteMemberAdminManagerIF {
 		this.servicename = servicename;
 
 		// Getting DAOFactory for local data access
-		localDaoFactory = DAOFactory.getDAOFactory(daoFactoryClassName);
+		localDaoFactory = DAOFactory.getDAOFactory(LibraryServer.daofactoryclassname);
 
 		// Getting DAOFactory for remote data access
-		remoteDaoFactory = DAOFactory.getDAOFactory(rmiFactoryClassName);
+		remoteDaoFactory = DAOFactory.getDAOFactory(LibraryServer.rmifactoryclassname);
 	}
 
 	/**

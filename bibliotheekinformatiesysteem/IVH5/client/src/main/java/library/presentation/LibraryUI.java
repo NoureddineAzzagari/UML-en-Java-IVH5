@@ -129,7 +129,7 @@ public class LibraryUI implements ActionListener, ListSelectionListener {
 
 		txtSearchBox = new JTextField();
 		pnlSearch.add(txtSearchBox);
-		txtSearchBox.setColumns(15);
+		txtSearchBox.setColumns(8);
 
 		btnSearch = new JButton("Zoek lid");
 		// The actionPerformed method handles the action for this button.

@@ -65,7 +65,7 @@ project(':server') {
         compile project(':shared'), project(':api'), 'mysql:mysql-connector-java:5.1+', 'log4j:log4j:1+'
         testCompile "junit:junit:4.11"
     }
-	
+
 	def webdir = project.file(new File('c:/dev/xampp/htdocs/classes'), PathValidation.DIRECTORY)
 
 	//
@@ -74,17 +74,19 @@ project(':server') {
 	// ge-upload worden. deploylocal wordt (automatisch) aangeroepen na build.
 	//
 	task deploylocal(type: Copy) {
-		from 'resources/server.policy'
 		from('resources') {
-			include '**/*.xml'
-			include '**/*.xsd'
+			include '**/*.xml', '**/*.xsd'
 			into 'resources'
 		}
-		from 'serverlog.cnf'
-		from configurations.runtime		
+		from configurations.runtime
 		from 'build/classes/main'
 		from '../api/build/classes/main'
 		from '../shared/build/classes/main'
+		from '../client/client.policy'
+		from ('.') {
+			include '**/*.logconfig', '**/*.properties', '**/*.policy'
+			exclude 'build', 'bin', 'src', '.*'
+		}
 		into { webdir }
 
 		dependsOn build

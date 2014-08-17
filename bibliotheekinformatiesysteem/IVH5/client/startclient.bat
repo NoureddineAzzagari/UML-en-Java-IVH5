@@ -6,4 +6,6 @@
 :: Zorg ervoor dat de registry en de LibraryServer gestart zijn.
 ::
 
-java -cp build\deploy;build\deploy\log4j-1.2.17.jar library.main.LibraryClient -hostname localhost -servicename BibliotheekBreda
+java -cp .\build\deploy;build\deploy\log4j-1.2.17.jar library.main.LibraryClient -properties client.properties
+
+@pause

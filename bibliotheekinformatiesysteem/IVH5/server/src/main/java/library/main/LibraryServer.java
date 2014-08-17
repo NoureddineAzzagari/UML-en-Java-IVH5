@@ -2,11 +2,15 @@
  */
 package library.main;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Properties;
 
 import library.businesslogic.MemberAdminManagerImpl;
 import nl.avans.aei.ivh5.library.api.RemoteMemberAdminManagerIF;
@@ -15,24 +19,28 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 /**
- * Creates the stub, which will be remote accessible by the client, and registers
- * it at the rmiregistry by a servicename. Clients can retrieve the remote stub by this 
- * servicename.
+ * Creates the stub, which will be remote accessible by the client, and
+ * registers it at the rmiregistry by a servicename. Clients can retrieve the
+ * remote stub by this servicename.
  * 
  * @author Robin Schellius
  */
 public class LibraryServer {
 
-	final static private String hostname = "localhost"; // "145.48.6.147";
-	final static private String logconfigfile = "serverlog.cnf";
-	static private String servicename = "BibliotheekBreda";
-	static private RemoteMemberAdminManagerIF stub;
+	// The following variables are initialized by reading properties from the property file.
+	
+	static private String hostname;				// Host/IP-address of the RMI registry
+	static private String servicename;			// Name identifying this server in the RMI registry
+	static private String logconfigfile;		// Logging configuration
+	static public String daofactoryclassname;	// Implements the specific DAO functionality (MySQL, XML).
+	static public String rmifactoryclassname;	// Implements the remote access DAO functionality.
+	static private RemoteMemberAdminManagerIF stub;	// 
 
 	// Get a logger instance for the current class
 	static Logger logger = Logger.getLogger(LibraryServer.class);
 
 	/**
-	 * Empty constructor 
+	 * Empty constructor
 	 * 
 	 * @throws RemoteException
 	 */
@@ -41,45 +49,47 @@ public class LibraryServer {
 	}
 
 	/**
-	 * Initialize the server, register it in the RMI registry, and (automatically) 
-	 * start listening for incoming client calls. 
+	 * Initialize the server, register it in the RMI registry, and
+	 * (automatically) start listening for incoming client calls.
 	 * 
-	 * @param args Command line arguments indicating the servicename for this server. 
+	 * @param args
+	 *            Command line arguments indicating the servicename for this
+	 *            server.
 	 */
 	public static void main(String args[]) {
 
-		// Configure logging. 
+		if (args.length == 2) {
+			String propertiesfile = parseCommandLine(args);
+			loadProperties(propertiesfile);
+		} else {
+			System.out.println("No properties file was found. Provide a properties file name on the command line.");
+			System.out.println("Program is exiting.");
+			return;
+		}
+
+		// Configure logging using the given log config file.
 		PropertyConfigurator.configure(logconfigfile);
-	     
-		logger.debug("Starting application");
+		logger.info("Starting application");
 
-        if(args.length == 0) {
-    		logger.debug("No command line options found; using defaults.");
-        } else {
-        	parseCommandLine(args);
-        }
-
-		// System.setProperty("java.rmi.server.codebase", "file:/C:/dev/workspace/workspace/HelloServer/bin/-");
-		// System.setProperty("java.rmi.server.codebase", "file:/C:/xampp/htdocs/classes/-");
-		System.setProperty("java.rmi.server.codebase", "http://" + hostname + "/classes/");
-
-		// System.setProperty("java.security.policy", "file:/C:/dev/workspace/workspace/HelloServer/bin/server.policy");
-		// System.setProperty("java.security.policy", "file:/C:/xampp/htdocs/classes/server.policy");
-		System.setProperty("java.security.policy", "http://" + hostname + "/classes/server.policy");
+		// These properties must have been set correctly at this point. Just checking. 
+		logger.debug("java.rmi.server.codebase = " + System.getProperty("java.rmi.server.codebase", "invalid!"));
+		logger.debug("java.security.policy = " + System.getProperty("java.security.policy", "invalid!"));
 
 		if (System.getSecurityManager() == null) {
 			System.setSecurityManager(new SecurityManager());
-            logger.debug("SecurityManager installed");
+			logger.debug("SecurityManager installed");
 		}
 
-		// ShutdownHook handles cleaning up the registry when this application exits.
-		ShutdownHook shutdownHook = new ShutdownHook();
-        Runtime.getRuntime().addShutdownHook(shutdownHook);
-        
 		try {
+			// ShutdownHook handles cleaning up the registry when this
+			// application exits.
+			ShutdownHook shutdownHook = new ShutdownHook();
+			Runtime.getRuntime().addShutdownHook(shutdownHook);
+
 			logger.debug("Creating stub");
 			MemberAdminManagerImpl obj = new MemberAdminManagerImpl(servicename);
-			stub = (RemoteMemberAdminManagerIF) UnicastRemoteObject.exportObject(obj, 0);
+			stub = (RemoteMemberAdminManagerIF) UnicastRemoteObject
+					.exportObject(obj, 0);
 
 			logger.debug("Locating registry on host '" + hostname + "'");
 			Registry registry = LocateRegistry.getRegistry(hostname);
@@ -87,91 +97,139 @@ public class LibraryServer {
 			registry.rebind(servicename, stub);
 
 			logger.info("Server ready");
-		}
-		catch (java.rmi.ConnectException e) {
-			logger.error("Could not connect: " + e.getMessage());			
-		}
-		catch (java.security.AccessControlException e) {
-			logger.error("Could not access registry: " + e.getMessage());			
+		} catch (java.rmi.ConnectException e) {
+			logger.error("Could not connect: " + e.getMessage());
+		} catch (java.security.AccessControlException e) {
+			logger.error("No access: " + e.getMessage());
 			logger.error("(are the webserver and rmiregistry running?)");
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			logger.error("Server exception: " + e.toString());
 		}
 	}
-	
+
 	/**
-	 * When the server is shutdown, mostly by closing the window that it is running in, we
-	 * want to unregister ourselves from the registry and decouple the stub, so that clients 
-	 * cannot find the remote stub without a running server.
+	 * When the server is stopped, by Ctrl-C or closing the window that it is
+	 * running in, we want to unregister ourselves from the registry and
+	 * decouple the stub, so that clients cannot find the remote stub without a
+	 * running server.
 	 * 
 	 * @throws RemoteException
 	 */
-	public static void exit() throws RemoteException
-	{
-		logger.debug("Server is exiting, cleaning up registry ...");
-	    try{
+	public static void exit() throws RemoteException {
+		logger.info("Server is exiting, cleaning up registry.");
+		try {
 			logger.debug("Unbind servicename " + servicename);
-	        Naming.unbind(servicename);
-
-			logger.debug("Unexport the server and decouple from the RMI runtime");
-	        UnicastRemoteObject.unexportObject(stub, true);
-
-			logger.info("Server is exiting.");
-	    }
-	    catch(java.net.MalformedURLException e) {
-			logger.error("Servicename not found in registry.");	    	
-	    }
-	    catch( java.rmi.NoSuchObjectException e) {
+			Naming.unbind(servicename);
+		} catch (java.net.MalformedURLException e) {
+			logger.error("Servicename not found in registry.");
+		} catch (java.rmi.NoSuchObjectException e) {
 			logger.error("Server not found in registry.");
-	    }
-	    catch(Exception e) {
+		} catch (Exception e) {
 			logger.error(e.toString());
-	    }
+		} finally {
+			logger.info("Bye.");
+		}
 	}
-	
+
 	/**
-     * Read the command line options and, if they match the requirements, set the 
-     * corresponding variables to their correct values. 
-     * <p>Options: -servicename [servicename]</p>
-     * 
-     * @param args The string of options given to this application via the command line.
-     */
-    private static void parseCommandLine(String[] args) {
-    	boolean errorFound = false;
-		if(args.length != 2) {
-			logger.debug("Skipping command line options; expected 2 options but found " + args.length + ".");			
+	 * Read the command line and parse the name of the properties file. The properties file
+	 * contains all required properties for running this application.
+	 * <p>
+	 * Options: -properties [filename]
+	 * </p>
+	 * 
+	 * @param args
+	 *            The string of options given to this application via the
+	 *            command line.
+	 */
+	private static String parseCommandLine(String[] args) {
+		boolean errorFound = false;
+		String propertiesfilename = null;
+
+		if (args.length != 2) {
+			System.out.println("Error reading options; expected 2 but found "
+					+ args.length + ".");
 			errorFound = true;
 		} else {
-			if(args[0].equalsIgnoreCase("-servicename")) {
-				servicename = args[1];
-				servicename = servicename.replaceAll(" ", "%20");
+			if (args[0].equalsIgnoreCase("-properties")) {
+				propertiesfilename = args[1];
+			} else
+				errorFound = true;
+		}
+		if (errorFound) {
+			System.out.println("Use: -properties [filename or URL]");
+			System.out.println("     -properties \"http://localhost/path/to/file.props\"");
+			System.out.println("     -properties \"file:/C:/path/to/server.cnf\"");
+		}
+		return propertiesfilename;
+	}
+
+	/**
+	 * Read the required system properties from the given properties file.
+	 * 
+	 * @param propertiesFileName The name of the file containing the system properties.
+	 */
+	private static void loadProperties(String propertiesFileName) {
+
+		Properties props = new Properties(System.getProperties());
+		InputStream inputFile = null;
+
+		if (propertiesFileName != null) {
+			try {
+				inputFile = new FileInputStream(propertiesFileName);
+				if(inputFile != null ) {
+					props.load(inputFile);
+					
+					hostname = props.getProperty("hostname", "localhost");
+					servicename = props.getProperty("servicename", "BibliotheekBreda");
+					// policyfile = props.getProperty("policyfile", "server.policy");
+					daofactoryclassname = props.getProperty("daoclassname", "library.datastorage.daofactory.xml.dom.XmlDOMDAOFactory");
+					rmifactoryclassname = props.getProperty("rmiclassname", "library.datastorage.daofactory.xml.dom.XmlDOMDAOFactory");
+					logconfigfile = props.getProperty("logconfigfile", "server.cnf");
+					
+					System.setProperty("java.rmi.server.codebase", props.getProperty("java.rmi.server.codebase"));
+					System.setProperty("java.security.policy", props.getProperty("java.security.policy"));
+					
+					props.getProperty("db_username", "root");
+					props.getProperty("db_password", "");
+					props.getProperty("db_hostname", "localhost");
+					props.getProperty("db_dbname", "library");
+					
+					System.setProperties(props);
+				}
+			} catch (IOException e) {
+				System.out.println("Error reading file: " + e.getMessage());
+			} finally {
+				if (inputFile != null) {
+					try {
+						inputFile.close();
+					} catch (IOException e) {
+						System.out.println("Error closing file: " + e.getMessage());
+					}
+				}
 			}
-			else errorFound = true;
 		}
-		if(errorFound) {
-			logger.debug("Use: -servicename [servicename]");			
-			logger.debug("     -servicename \"Bibliotheek Breda\"");			
-		}
-    }
+	}
 }
 
 /**
- * ShutdownHook is a way to handle application cleanup in case the process is stopped
- * by an external event, such as the user stopping the program.
+ * ShutdownHook is a way to handle application cleanup in case the process is
+ * stopped by an external event, such as the user stopping the program.
  * 
- * @see http://docs.oracle.com/javase/7/docs/api/java/lang/Runtime.html#addShutdownHook(java.lang.Thread)
+ * @see http
+ *      ://docs.oracle.com/javase/7/docs/api/java/lang/Runtime.html#addShutdownHook
+ *      (java.lang.Thread)
  * @see http://www.onjava.com/pub/a/onjava/2003/03/26/shutdownhook.html
  * 
  * @author Robin Schellius
  */
 class ShutdownHook extends Thread {
-	
-    public void run() {
-        try {
+
+	public void run() {
+		try {
 			LibraryServer.exit();
 		} catch (RemoteException e) {
-	        System.out.println("Error exiting: " + e.getMessage());
+			System.out.println("Error exiting: " + e.getMessage());
 		}
-    }
+	}
 }
