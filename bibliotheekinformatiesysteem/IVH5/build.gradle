@@ -76,16 +76,23 @@ project(':server') {
 	task deploylocal(type: Copy) {
 		from('resources') {
 			include '**/*.xml', '**/*.xsd'
+			include '**/*.logconfig', '**/*.properties', '**/*.policy'
 			into 'resources'
 		}
-		from configurations.runtime
-		from 'build/classes/main'
-		from '../api/build/classes/main'
-		from '../shared/build/classes/main'
-		from '../client/client.policy'
-		from ('.') {
-			include '**/*.logconfig', '**/*.properties', '**/*.policy'
-			exclude 'build', 'bin', 'src', '.*'
+		from ('../client/resources/client.policy'){
+			into 'resources'
+		}
+		from (configurations.runtime) {
+			into 'libs'
+		}
+		from ('build/classes/main') {
+			into 'bin'
+		}
+		from ('../api/build/classes/main') {
+			into 'bin'
+		}
+		from ('../shared/build/classes/main') {
+			into 'bin'
 		}
 		into { webdir }
 
