@@ -41,20 +41,18 @@ public abstract class DAOFactory {
 	 */
 	public static DAOFactory getDAOFactory(String factoryClassName) {
 
-		DAOFactory theFactory = null;
+		DAOFactory factoryInstance = null;
 		
 		try {
-			Class<?> theClass = Class.forName(factoryClassName);
-			theFactory = (DAOFactory)theClass.newInstance();
+			Class<?> factoryClass = Class.forName(factoryClassName);
+			factoryInstance = (DAOFactory)factoryClass.newInstance();
 		} catch (ClassNotFoundException e) {
             logger.error(e.getMessage());
-		} catch (InstantiationException e) {
-            logger.error(e.getMessage());
-		} catch (IllegalAccessException e) {
+		} catch (Exception e) {
             logger.error(e.getMessage());
 		}
 		
-		return theFactory;
+		return factoryInstance;
 	}
 
 	/**

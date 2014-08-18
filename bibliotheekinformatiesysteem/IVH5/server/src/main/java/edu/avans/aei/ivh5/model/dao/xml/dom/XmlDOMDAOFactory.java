@@ -24,6 +24,7 @@ public class XmlDOMDAOFactory extends DAOFactory {
 	static Logger logger = Logger.getLogger(XmlDOMDAOFactory.class);
 
 	public XmlDOMDAOFactory() {
+		logger.debug("Factory constructed.");
     }
     
 	public MemberDAOInf getMemberDAO() {

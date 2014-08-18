@@ -23,6 +23,7 @@ public class RmiDAOFactory extends DAOFactory {
 	static Logger logger = Logger.getLogger(RmiDAOFactory.class);
 
 	public RmiDAOFactory() {
+		logger.debug("Factory constructed.");
     }
     
 	public MemberDAOInf getMemberDAO() {
