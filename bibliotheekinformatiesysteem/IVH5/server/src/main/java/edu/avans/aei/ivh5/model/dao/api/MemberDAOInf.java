@@ -5,7 +5,6 @@
 package edu.avans.aei.ivh5.model.dao.api;
 
 import java.util.ArrayList;
-
 import edu.avans.aei.ivh5.model.domain.Member;
 
 /**
@@ -30,6 +29,11 @@ public interface MemberDAOInf {
      */
     public Member findMember(int membershipNumber);
 
+    /**
+     * Find all members using the current DAO.
+     * 
+     * @return a list of members, or null if none were found.
+     */
     public ArrayList<String> findAllMembers();
 
     /**

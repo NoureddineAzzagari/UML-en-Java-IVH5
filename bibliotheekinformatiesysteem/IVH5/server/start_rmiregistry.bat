@@ -7,4 +7,4 @@
 :: wanneer je een andere directory gebruikt.
 ::
 
-rmiregistry -J-Djava.rmi.server.codebase="http://localhost/classes/"
+rmiregistry -J-Djava.rmi.server.codebase="http://localhost/classes/bin/"

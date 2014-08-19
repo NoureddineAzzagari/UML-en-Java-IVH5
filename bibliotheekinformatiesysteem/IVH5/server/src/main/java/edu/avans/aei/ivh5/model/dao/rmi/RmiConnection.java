@@ -6,10 +6,7 @@ package edu.avans.aei.ivh5.model.dao.rmi;
 
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.Arrays;
-
 import org.apache.log4j.Logger;
-
 import edu.avans.aei.ivh5.api.RemoteMemberAdminManagerIF;
 
 /**

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import org.apache.log4j.Logger;
 
 import edu.avans.aei.ivh5.model.dao.api.MemberDAOInf;
+import edu.avans.aei.ivh5.model.domain.ImmutableMember;
 import edu.avans.aei.ivh5.model.domain.Member;
 
 /**
@@ -26,6 +27,9 @@ public class MySqlMemberDAO implements MemberDAOInf {
 
 	private MySqlConnection connection;
 
+	/**
+	 * Constructor
+	 */
     public MySqlMemberDAO()
     {
     	connection = new MySqlConnection();
@@ -98,6 +102,51 @@ public class MySqlMemberDAO implements MemberDAOInf {
     }
 
     /**
+	 * Returns a list of MembershipNumbers of Members that exist in the given DAO,
+	 * or null if none were found.
+	 * 
+	 * @return Array of integers indicating the MembershipNumbers, or null if 
+	 * none were found.
+	 * 
+	 * @author Robin Schellius
+	 */
+	public ArrayList<String> findAllMembers() {
+		logger.debug("findAllMembers");
+		ArrayList<String> result = new ArrayList<String>();
+	
+	    // First open a database connection
+	    if(connection.openConnection())
+	    {
+	        // If a connection was successfully setup, execute the SELECT statement.
+	        ResultSet resultset = connection.executeSQLStatement(
+	            "SELECT MembershipNumber FROM member;");
+	
+	        if(resultset != null)
+	        {
+	            try
+	            {
+	                while(resultset.next())
+	                {
+	                    String membershipNr = resultset.getString("MembershipNumber");
+	                    result.add(membershipNr);
+	                }
+	        		logger.debug("Found " + result.toString());
+	            }
+	            catch(SQLException e)
+	            {
+	        		logger.error("SQLException: " + e.getMessage());
+	            }
+	        }
+	
+	        // We had a database connection opened. Since we're finished,
+	        // we need to close it.
+	        connection.closeConnection();
+	    }
+	
+		return result;
+	}
+
+	/**
      * Removes the given member from the database.
      * 
      * @param memberToBeRemoved an object of the Member class representing the
@@ -134,7 +183,6 @@ public class MySqlMemberDAO implements MemberDAOInf {
         return result;
     }
 
-
     /**
      * Inserts the given member into the database.
      * 
@@ -149,50 +197,5 @@ public class MySqlMemberDAO implements MemberDAOInf {
         
         // TODO Implement insertMember through MySql
         return 0;
-    }
-	
-	/**
-	 * Returns a list of MembershipNumbers of Members that exist in the given DAO,
-	 * or null if none were found.
-	 * 
-	 * @return Array of integers indicating the MembershipNumbers, or null if 
-	 * none were found.
-	 * 
-	 * @author Robin Schellius
-	 */
-	public ArrayList<String> findAllMembers() {
-		logger.debug("findAllMembers");
-		ArrayList<String> result = new ArrayList<String>();
-
-        // First open a database connection
-        if(connection.openConnection())
-        {
-            // If a connection was successfully setup, execute the SELECT statement.
-            ResultSet resultset = connection.executeSQLStatement(
-                "SELECT MembershipNumber FROM member;");
-
-            if(resultset != null)
-            {
-                try
-                {
-                    while(resultset.next())
-                    {
-                        String membershipNr = resultset.getString("MembershipNumber");
-                        result.add(membershipNr);
-                    }
-            		logger.debug("Found " + result.toString());
-                }
-                catch(SQLException e)
-                {
-            		logger.error("SQLException: " + e.getMessage());
-                }
-            }
-
-            // We had a database connection opened. Since we're finished,
-            // we need to close it.
-            connection.closeConnection();
-        }
-
-		return result;
     }
 }

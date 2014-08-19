@@ -6,10 +6,10 @@
 cd \dev\xampp\htdocs\classes
 
 :: Start java met het juiste classpath
-start java -cp .\bin;.\libs\log4j-1.2.17.jar;.\libs\mysql-connector-java-5.1.32.jar library.main.LibraryServer -properties .\resources\breda.properties
+start java -cp .\bin;.\libs\log4j-1.2.17.jar;.\libs\mysql-connector-java-5.1.32.jar edu.avans.aei.ivh5.model.main.LibraryServer -properties .\resources\breda.properties
 
 :: Start tweede server voor inter-server communicatie.
-start java -cp .\bin;.\libs\log4j-1.2.17.jar;.\libs\mysql-connector-java-5.1.32.jar library.main.LibraryServer -properties .\resources\oosterhout.properties
+start java -cp .\bin;.\libs\log4j-1.2.17.jar;.\libs\mysql-connector-java-5.1.32.jar edu.avans.aei.ivh5.model.main.LibraryServer -properties .\resources\oosterhout.properties
  
 :: Wanneer je securityproblemen wilt oplossen, voeg dan onderstaande optie aan het command toe.
 :: Hiermee krijg je inzicht in alle security instellingen.

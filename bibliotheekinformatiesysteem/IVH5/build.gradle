@@ -66,7 +66,7 @@ project(':server') {
         testCompile "junit:junit:4.11"
     }
 
-	def webdir = project.file(new File('c:/dev/xampp/htdocs/classes'), PathValidation.DIRECTORY)
+	def webdir = project.file(new File("c:/dev/xampp/htdocs/classes"), PathValidation.DIRECTORY)
 
 	//
 	// deploylocal plaatst alle gerefereerde libraries in /server/build/deploy.
@@ -102,6 +102,14 @@ project(':server') {
 	// Na iedere gradle build wordt nu een deploy van de server uitgevoerd.
 	build.finalizedBy deploylocal
 	
+	// Remove all from deployment directory after task 'clean' 
+	task removeDeploymentDirs(type: Delete) {
+		new File("c:/dev/xampp/htdocs/classes/bin/").deleteDir()
+		new File("c:/dev/xampp/htdocs/classes/resources/").deleteDir()
+		new File("c:/dev/xampp/htdocs/classes/libs/").deleteDir()
+	}
+	clean.finalizedBy removeDeploymentDirs
+
 	//associating the task that produces the artifact with the configuration
 	artifacts {
 		archives file('build/deploy/mysql-connector-java-5.1.31.jar')

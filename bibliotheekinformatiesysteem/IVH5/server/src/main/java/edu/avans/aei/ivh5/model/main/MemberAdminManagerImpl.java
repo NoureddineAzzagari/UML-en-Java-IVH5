@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package edu.avans.aei.ivh5.model;
+package edu.avans.aei.ivh5.model.main;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -20,7 +20,6 @@ import edu.avans.aei.ivh5.model.domain.ImmutableMember;
 import edu.avans.aei.ivh5.model.domain.Loan;
 import edu.avans.aei.ivh5.model.domain.Member;
 import edu.avans.aei.ivh5.model.domain.Reservation;
-import edu.avans.aei.ivh5.model.main.LibraryServer;
 
 /**
  * The server side implementation of the remote interface. This class implements
@@ -70,11 +69,14 @@ public class MemberAdminManagerImpl implements RemoteMemberAdminManagerIF {
 		// Our 'own' servicename; prevents looking it up in the registry as a remote server.
 		this.servicename = servicename;
 
-		// Getting DAOFactory for local data access
-		localDaoFactory = DAOFactory.getDAOFactory(LibraryServer.daofactoryclassname);
-
-		// Getting DAOFactory for remote data access
-		remoteDaoFactory = DAOFactory.getDAOFactory(LibraryServer.rmifactoryclassname);
+		try {
+			// Getting DAOFactory for local and remote data access
+			localDaoFactory = DAOFactory.getDAOFactory(LibraryServer.daofactoryclassname);
+			remoteDaoFactory = DAOFactory.getDAOFactory(LibraryServer.rmifactoryclassname);
+		} catch (NoClassDefFoundError e) {
+			logger.fatal("Error: Class not found! (Did you type it correctly?)");
+			logger.fatal(e.getMessage());
+		}
 	}
 
 	/**
@@ -84,7 +86,7 @@ public class MemberAdminManagerImpl implements RemoteMemberAdminManagerIF {
      * 
      * @param membershipNumber The Member's membershipNumber.
      */
-	public ImmutableMember findMember(String hostname, String service, int membershipNumber) 
+	public Member findMember(String hostname, String service, int membershipNumber) 
 			throws RemoteException {
 		logger.debug("findMember " + membershipNumber + " on \"" + service + "\" at " + hostname);
 
@@ -117,9 +119,7 @@ public class MemberAdminManagerImpl implements RemoteMemberAdminManagerIF {
 				
 				if(memberDAO != null)
 				{
-					logger.debug("TODO - not implemented yet!");
-					/*	
-					member = memberDAO.findMember(hostname, service, membershipNumber);
+					member = memberDAO.findMember(membershipNumber);
 					if (member != null) {
 						logger.debug("Member found in datasource.");
 	
@@ -151,7 +151,6 @@ public class MemberAdminManagerImpl implements RemoteMemberAdminManagerIF {
 					} else {
 						logger.debug("Member not found in datasource.");
 					}
-					*/
 				}				
 			}
 		}
@@ -186,13 +185,19 @@ public class MemberAdminManagerImpl implements RemoteMemberAdminManagerIF {
 				logger.debug("Perform lookup in the local datasource.");
 				memberDAO = localDaoFactory.getMemberDAO();
 			} else {
-				logger.debug("Perform lookup on remote service.");
-				memberDAO = remoteDaoFactory.getMemberDAO();
-				// At this point we know that we are going to make a remote
-				// lookup. We know the hostname and the remote service name.
-				// We therefore setup the connection here, so that the memberDAO
-				// can use it when it performs the actual lookup.
-				RmiConnection.connectToService(hostname, service);
+				try {
+					logger.debug("Perform lookup on remote service.");
+					memberDAO = remoteDaoFactory.getMemberDAO();
+					// At this point we know that we are going to make a remote
+					// lookup. We know the hostname and the remote service name.
+					// We therefore setup the connection here, so that the memberDAO
+					// can use it when it performs the actual lookup.
+					logger.debug("Do connectToService()");
+					RmiConnection.connectToService(hostname, service);
+				} catch (Exception e) {
+					logger.fatal("remoteDaoFactory is null!");
+					e.printStackTrace();
+				}
 			}
 
 			if (memberDAO != null) {

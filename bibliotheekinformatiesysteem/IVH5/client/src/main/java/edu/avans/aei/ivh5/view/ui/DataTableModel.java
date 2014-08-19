@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
  *
  */
 @SuppressWarnings("serial")
-class DataTableModel extends AbstractTableModel {
+public class DataTableModel extends AbstractTableModel {
 
 	Vector<String[]> cache; // will hold String[] objects . . .
 	int colCount;
@@ -31,7 +31,7 @@ class DataTableModel extends AbstractTableModel {
 
 		cache = new Vector<String[]>();
 		colCount = 4;
-		headers = new String[] {"Nr", "Voornaam", "Achternaam", "Bibliotheek"};
+		headers = new String[colCount];
 	}
 
 	/**

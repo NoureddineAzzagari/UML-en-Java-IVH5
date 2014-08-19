@@ -16,7 +16,6 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 import edu.avans.aei.ivh5.api.RemoteMemberAdminManagerIF;
-import edu.avans.aei.ivh5.model.MemberAdminManagerImpl;
 
 /**
  * Creates the stub, which will be remote accessible by the client, and
@@ -88,22 +87,21 @@ public class LibraryServer {
 
 			logger.debug("Creating stub");
 			MemberAdminManagerImpl obj = new MemberAdminManagerImpl(servicename);
-			stub = (RemoteMemberAdminManagerIF) UnicastRemoteObject
-					.exportObject(obj, 0);
+			stub = (RemoteMemberAdminManagerIF) UnicastRemoteObject.exportObject(obj, 0);
 
-			logger.debug("Locating registry on host '" + hostname + "'");
+			logger.debug("Locating registry on '" + hostname + "'");
 			Registry registry = LocateRegistry.getRegistry(hostname);
 			logger.debug("Registering stub using name \"" + servicename + "\"");
 			registry.rebind(servicename, stub);
 
 			logger.info("Server ready");
 		} catch (java.rmi.ConnectException e) {
-			logger.error("Could not connect: " + e.getMessage());
+			logger.fatal("Could not connect: " + e.getMessage());
 		} catch (java.security.AccessControlException e) {
-			logger.error("No access: " + e.getMessage());
-			logger.error("(are the webserver and rmiregistry running?)");
+			logger.fatal("No access: " + e.getMessage());
+			logger.fatal("(are the webserver and rmiregistry running?)");
 		} catch (Exception e) {
-			logger.error("Server exception: " + e.toString());
+			logger.fatal(e.toString());
 		}
 	}
 

@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 
 import edu.avans.aei.ivh5.api.RemoteMemberAdminManagerIF;
 import edu.avans.aei.ivh5.model.dao.api.MemberDAOInf;
+import edu.avans.aei.ivh5.model.domain.ImmutableMember;
 import edu.avans.aei.ivh5.model.domain.Member;
 
 /**
@@ -46,7 +47,14 @@ public class RmiMemberDAO implements MemberDAOInf {
 		logger.debug("findMember " + membershipNumber);
 		Member member = null;
 
-		logger.debug("Not implemented yet!");
+		// Use the previously created RmiConnection to connect
+		// to the remote server.
+		try {
+			RemoteMemberAdminManagerIF remoteManager = RmiConnection.getRemoteService();
+			member = remoteManager.findMember(RmiConnection.hostname, RmiConnection.servicename, membershipNumber);
+		} catch (RemoteException e) {
+			logger.error("Exception: " + e.getMessage());
+		}
 
 		return member;
 	}
