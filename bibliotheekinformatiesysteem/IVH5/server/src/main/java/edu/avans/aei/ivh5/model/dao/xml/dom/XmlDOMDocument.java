@@ -40,16 +40,27 @@ public class XmlDOMDocument {
 	// Get a logger instance for the current class
 	static Logger logger = Logger.getLogger(XmlDOMDocument.class);
 
-	// These filenames could be stored in an external configuration file instead of
-	// hard-coding it here.
-	private final String xmlFilename = ".\\resources\\library.xml";
-	private final String xmlSchema = ".\\resources\\library.xsd";
+	// The file that contains the XML data.
+	private String xmlFilename;
+	
+	// The file that contains the schema to validate the data file.
+	private String xmlSchema;
 
-	// The document that will contain the DOM.
+	// The document (structure) that will contain the object model of the XML file.
 	private Document document = null;
 
+	/**
+	 * Constructor
+	 */
 	public XmlDOMDocument() {
-		// Empty constructor, no initialization done here.
+		logger.debug("Constructor");
+		
+		// Read filenames from the previously installed properties; undefined otherwise.
+		xmlFilename = System.getProperty("xml.filename", "undefined");
+		xmlSchema = System.getProperty("xml.schema", "undefined");
+
+		logger.debug("xmlFilename = " + xmlFilename);
+		logger.debug("xmlSchema = " + xmlFilename);
 	}
 
 	/**
@@ -87,7 +98,9 @@ public class XmlDOMDocument {
 	}
 
 	/**
-	 * 
+	 * Write the in-memory document object model to the given file. This is
+	 * useful when the document object model has been modified, for example by
+	 * adding or deleting members, books, reservations or loans.
 	 */
 	public void writeDocument() {
 
@@ -112,12 +125,12 @@ public class XmlDOMDocument {
 
 	/**
 	 * 
-	 * @param filename
-	 * @return
+	 * @param filename The file that provides the XML contents to create the document object model.
+	 * @return The DOM document that was created, or null otherwise.
 	 */
 	private Document buildDocument(String filename) {
 
-		logger.debug("buildDocument " + filename);
+		logger.debug("buildDocument");
 
 		DocumentBuilderFactory builderFactory = DocumentBuilderFactory
 				.newInstance();
@@ -126,10 +139,9 @@ public class XmlDOMDocument {
 			builder = builderFactory.newDocumentBuilder();
 			File file = new File(filename);
 			if (file.exists()) {
-				// file found, so parse it and build the document object model.
 				document = builder.parse(new FileInputStream(file));
 			} else {
-				logger.fatal("XML datasource " + filename + " does not exist! No data read!");
+				logger.fatal("Could not read file " + filename);
 			}
 		} catch (ParserConfigurationException e) {
 			logger.error(e.getMessage());
@@ -143,8 +155,9 @@ public class XmlDOMDocument {
 	}
 
 	/**
+	 * Create the schema object that enables validation of the XML document. 
 	 * 
-	 * @return
+	 * @return The schema which is created from the schema file, or null otherwise.
 	 */
 	private Schema getValidationSchema() {
 		Schema schema = null;
@@ -165,9 +178,10 @@ public class XmlDOMDocument {
 	}
 
 	/**
+	 * Perform the actual validation of the XML file using the provided schema.
 	 * 
-	 * @param doc
-	 * @param schema
+	 * @param xmlFile	The file containing the XML data.
+	 * @param schema	The schema containing validation rules.
 	 */
 	private boolean validateDocument(String xmlFile, Schema schema) {
 		logger.debug("validateDocument");
@@ -185,6 +199,5 @@ public class XmlDOMDocument {
 			logger.error("Parse exception: " + e.getMessage());
 		}
 		return result;
-
 	}
 }
