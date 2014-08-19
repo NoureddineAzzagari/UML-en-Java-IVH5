@@ -7,12 +7,11 @@ import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.EventListener;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -24,8 +23,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableColumn;
 
 import org.apache.log4j.Logger;
@@ -34,34 +31,27 @@ import edu.avans.aei.ivh5.api.RemoteMemberAdminManagerIF;
 import edu.avans.aei.ivh5.control.Controller;
 import edu.avans.aei.ivh5.model.domain.ImmutableMember;
 
-import javax.swing.JComboBox;
-import javax.swing.DefaultComboBoxModel;
-
-import edu.avans.aei.ivh5.view.ui.DataTableModel;
-
 /**
  * User Interface class setting up the screen.
  * 
  * @author Robin Schellius
  */
-public class LibraryUI implements ActionListener, EventListener  {
+public class UserInterface {
 
 	public JFrame applicationFrame;
 	private JTextField txtSearchBox;
 	private JTextField txtFirstname;
 	private JTextField txtLastname;
-	private JButton btnSearch;
-	private JButton btnListMembers;
-	private JTable tableMembers;
 	private JTextField txtStatusText;
 	private JTextField txtStreetname;
-	private JLabel lblCity;
 	private JTextField txtCityname;
+	private JTable tableMembers;
+	private JLabel lblCity;
 	private JComboBox<String> cmbSelectServer;
-	private Dimension preferredSize = new Dimension(480, 100);
+	private JComboBox<String> cmbSelectService;
+	private Dimension preferredSize = new Dimension(480, 140);
 
 	private String hostname;
-	// private String[] serverNames;
 	
 	// The controller handles all work that follows from events or actions.
 	private Controller controller;
@@ -73,14 +63,14 @@ public class LibraryUI implements ActionListener, EventListener  {
 	private RemoteMemberAdminManagerIF manager;
 
 	// Get a logger instance for the current class
-	static Logger logger = Logger.getLogger(LibraryUI.class);
+	static Logger logger = Logger.getLogger(UserInterface.class);
 
 	/**
 	 * Constructor
 	 * 
 	 * @param mgr The manager referencing all business logic.
 	 */
-	public LibraryUI(RemoteMemberAdminManagerIF mgr,
+	public UserInterface(RemoteMemberAdminManagerIF mgr,
 			String host, String[] servers) {
 		
 		logger.debug("Constructor (MemberAdminManager)");
@@ -109,27 +99,35 @@ public class LibraryUI implements ActionListener, EventListener  {
 		logger.debug("initializeUserInterface");
 
 		applicationFrame = new JFrame();
-		applicationFrame.setResizable(true);
+		applicationFrame.setResizable(false);
 		applicationFrame.setTitle("Library Information System");
-		applicationFrame.setBounds(100, 100, 500, 350);
+		applicationFrame.setBounds(100, 100, 496, 480);
 		applicationFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		applicationFrame.getContentPane().setLayout(new BorderLayout(0, 0));
 
-		// Container containing list- and detail information.
+		// Top side: Search and Server information panels, collected in a container.		
+		JPanel serverContainer = new JPanel();
+		serverContainer.setLayout(new BorderLayout());
+		serverContainer.add(setupServerPanel(serverNames), BorderLayout.NORTH);
+		serverContainer.add(setupSearchPanel(), BorderLayout.SOUTH);
+
+		// Center part: Member list- and detail information, collected in a container.
 		JPanel memberInfoContainer = new JPanel();
 		memberInfoContainer.add(setupMemberListPanel(), BorderLayout.NORTH);
 		memberInfoContainer.add(setupMemberDetailPanel(), BorderLayout.CENTER);
 		
-		applicationFrame.getContentPane().add(setupSearchPanel(serverNames), BorderLayout.NORTH);
+		// Display the various user interface components at their right position.
+		applicationFrame.getContentPane().add(serverContainer, BorderLayout.NORTH);
 		applicationFrame.getContentPane().add(memberInfoContainer, BorderLayout.CENTER);
 		applicationFrame.getContentPane().add(setupStatusInfoPanel(), BorderLayout.SOUTH);
 	}
 	
 	/**
+	 * Setup the part of the screen that displays search functionality.
 	 * 
-	 * @return
+	 * @return The created panel.
 	 */
-	private JPanel setupSearchPanel(String[] servers) {
+	private JPanel setupSearchPanel() {
 		
 		logger.debug("setupSearchPanel");
 
@@ -141,40 +139,80 @@ public class LibraryUI implements ActionListener, EventListener  {
 		FlowLayout flowLayout = (FlowLayout) pnlSearch.getLayout();
 		flowLayout.setAlignment(FlowLayout.LEFT);
 
-		txtStatusText = new JTextField();
-		txtStatusText.setHorizontalAlignment(SwingConstants.RIGHT);
-		txtStatusText.setEditable(false);
-		txtStatusText.setColumns(30);
-
 		pnlSearch.add(new JLabel("Member Nr:"));
 
 		txtSearchBox = new JTextField();
-		pnlSearch.add(txtSearchBox);
 		txtSearchBox.setColumns(8);
+		pnlSearch.add(txtSearchBox);
 
-		btnSearch = new JButton("Search");
-		// The actionPerformed method handles the action for this button.
-		btnSearch.addActionListener(this);
-
+		JButton btnSearch = new JButton("Search");
+		// The controller handles the action for this button.
+		btnSearch.addActionListener(controller);
+		// Set a name for the command of this button, so we can retrieve 
+		// the button in the Controller class.
+		btnSearch.setActionCommand("SEARCH");
 		// Enable Enter-key as input for search button.
 		applicationFrame.getRootPane().setDefaultButton(btnSearch);
 		pnlSearch.add(btnSearch);
 
-		cmbSelectServer = new JComboBox<String>();
-		cmbSelectServer.setModel(new DefaultComboBoxModel<String>(servers));
-		pnlSearch.add(cmbSelectServer);
-
-		btnListMembers = new JButton("List");
-		// The actionPerformed method handles the action for this button.
-		btnListMembers.addActionListener(this);
-		pnlSearch.add(btnListMembers);
-		
 		return pnlSearch;
 	}
 
 	/**
+	 * Setup the part of the screen that displays search functionality.
 	 * 
-	 * @return
+	 * @return The created panel.
+	 */
+	private JPanel setupServerPanel(String[] services) {
+		
+		logger.debug("setupServerPanel");
+
+		JPanel pnlServerInfo = new JPanel();
+		pnlServerInfo.setBorder(new TitledBorder(
+				new LineBorder(new Color(0, 0, 0)), "Select server/service",
+				TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		pnlServerInfo.setPreferredSize(new Dimension(480, 55));
+		FlowLayout flowLayout = (FlowLayout) pnlServerInfo.getLayout();
+		flowLayout.setAlignment(FlowLayout.LEFT);
+
+		pnlServerInfo.add(new JLabel("Server:"));
+
+		JComboBox<String> cmbSelectServer = new JComboBox<String>();
+		String[] hosts = {"localhost", "127.0.0.1", "192.168.1.1"};
+		cmbSelectServer.setModel(new DefaultComboBoxModel<String>(hosts));
+
+		pnlServerInfo.add(cmbSelectServer);
+
+		JButton btnConnect = new JButton("Connect");
+		// The controller handles the action for this button.
+		btnConnect.addActionListener(controller);
+		// Set a name for the command of this button, so we can retrieve 
+		// the button in the Controller class.
+		btnConnect.setActionCommand("CONNECT_TO_SEVER");
+		pnlServerInfo.add(btnConnect);
+
+		pnlServerInfo.add(new JLabel("Service:"));
+
+		cmbSelectService = new JComboBox<String>();
+		cmbSelectService.setModel(new DefaultComboBoxModel<String>(services));
+		pnlServerInfo.add(cmbSelectService);
+
+		JButton btnListMembers = new JButton("List");
+		// The controller handles the action for this button.
+		btnListMembers.addActionListener(controller);
+		// Set a name for the command of this button, so we can retrieve 
+		// the button in the Controller class.
+		btnListMembers.setActionCommand("LIST");
+		pnlServerInfo.add(btnListMembers);
+		
+
+		return pnlServerInfo;
+	}
+
+	/**
+	 * Setup the part of the screen that displays the list of members that were found.
+	 * 
+	 * @return The created panel.
 	 */
 	private JComponent setupMemberListPanel() {
 
@@ -184,6 +222,10 @@ public class LibraryUI implements ActionListener, EventListener  {
 		tableMembers = new JTable(dataTableModel);
 		String [] headers = new String[] {"Nr", "Firstname", "Lastname", "Library"};
 		dataTableModel.setTableHeader(headers);
+		// The table does not display well without contents, so 
+		// we put some empty strings in the data model.
+		String[][] initialValues = new String[][] { {"","","",""} };
+		dataTableModel.setValues(initialValues);
 		
 		TableColumn column = tableMembers.getColumnModel().getColumn(0);
 	    column.setPreferredWidth(6);
@@ -204,8 +246,10 @@ public class LibraryUI implements ActionListener, EventListener  {
 	}
 	
 	/**
+	 * Setup the part of the screen that displays detailed information 
+	 * of a single selected member.
 	 * 
-	 * @return
+	 * @return The created panel.
 	 */
 	private JPanel setupMemberDetailPanel() {
 
@@ -311,8 +355,10 @@ public class LibraryUI implements ActionListener, EventListener  {
 	}
 
 	/**
+	 * Setup the status bar at the bottom of the screen. The status bar can display short
+	 * messages about the status or result of an action.
 	 * 
-	 * @return
+	 * @return The created panel.
 	 */
 	private JPanel setupStatusInfoPanel() {
 	
@@ -321,24 +367,14 @@ public class LibraryUI implements ActionListener, EventListener  {
 		JPanel pnlStatusInfo = new JPanel();
 		applicationFrame.getContentPane().add(pnlStatusInfo, BorderLayout.SOUTH);
 		pnlStatusInfo.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));
+
+		txtStatusText = new JTextField();
+		txtStatusText.setHorizontalAlignment(SwingConstants.RIGHT);
+		txtStatusText.setEditable(false);
+		txtStatusText.setColumns(30);
 		pnlStatusInfo.add(txtStatusText);
 	
 		return pnlStatusInfo;
-	}
-
-	/**
-	 * Erase the contents of the Member detail panel, in order for new
-	 * information to be displayed.
-	 */
-	private void eraseMemberDetails() {
-		
-		logger.debug("eraseMemberDetails");
-
-		txtStatusText.setText("");
-		txtFirstname.setText("");
-		txtLastname.setText("");
-		txtCityname.setText("");
-		txtStreetname.setText("");
 	}
 
 	/**
@@ -384,48 +420,43 @@ public class LibraryUI implements ActionListener, EventListener  {
 		txtStatusText.setText(text);
 	}
 
+	/**
+	 * Set the text in the search box, and set focus to it.
+	 */
+	public void setSearchBoxText(String text) {
+		txtSearchBox.setText(text);
+		txtSearchBox.requestFocus();
+	}
+
 	public DataTableModel getDataTableModel() {
 		return dataTableModel;
 	}
 
 	public String getSelectedService() {
-		return (String) cmbSelectServer.getSelectedItem();
+		return (String) cmbSelectService.getSelectedItem();
 	}
-	
+
+	public String getHostname() {
+		return hostname;
+	}
+
+	public String getSearchValue() {
+		return txtSearchBox.getText();
+	}
+
 	/**
-	 * Performs the corresponding action for a button. This method can handle
-	 * actions for each button in the window. The method itself selects the
-	 * appropriate handling based on the button clicked. Provide the appropriate
-	 * handling when adding a button.
+	 * Erase the contents of the Member detail panel, in order for new
+	 * information to be displayed.
 	 */
-	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void eraseMemberDetails() {
+		
+		logger.debug("eraseMemberDetails");
 	
-		if (e.getSource() == btnSearch) {
-			eraseMemberDetails();
-	
-			try {
-				int membershipNr = Integer.parseInt(txtSearchBox.getText().trim());
-				String selectedService = (String) cmbSelectServer.getSelectedItem();
-	
-				// The controller is responsible for doing the actual work 
-				controller.doFindMember(hostname, selectedService, membershipNr);
-			} catch (NumberFormatException ex) {
-				logger.error("Wrong input, only numbers allowed");
-				txtStatusText.setText("Wrong input, only numbers allowed.");
-				txtSearchBox.setText("");
-				txtSearchBox.requestFocus();
-			}
-		} else if (e.getSource() == btnListMembers) {
-			try {
-				String selectedService = (String) cmbSelectServer.getSelectedItem();
-	
-				// The controller is responsible for doing the actual work 
-				controller.doFindAllMembers(hostname, selectedService);
-			} catch (Exception ex) {
-				logger.error("Error: " + ex.getMessage());
-			}
-		}
+		txtStatusText.setText("");
+		txtFirstname.setText("");
+		txtLastname.setText("");
+		txtCityname.setText("");
+		txtStreetname.setText("");
 	}
 }
 

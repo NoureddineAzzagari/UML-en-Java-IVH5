@@ -27,13 +27,22 @@ import edu.avans.aei.ivh5.api.RemoteMemberAdminManagerIF;
 public class LibraryServer {
 
 	// The following variables are initialized by reading properties from the property file.
-	
-	static private String hostname;				// Host/IP-address of the RMI registry
-	static private String servicename;			// Name identifying this server in the RMI registry
-	static private String logconfigfile;		// Logging configuration
-	static public String daofactoryclassname;	// Implements the specific DAO functionality (MySQL, XML).
-	static public String rmifactoryclassname;	// Implements the remote access DAO functionality.
-	static private RemoteMemberAdminManagerIF stub;	// 
+	// Host/IP-address of the RMI registry
+	static private String hostname;	
+	// Name identifying this server in the RMI registry
+	static private String servicename;
+	// Array of remote host machines providing services.
+	static private String[] remotehosts;
+	// Name indicating group of services in the registry.
+	static private String servicegroup;
+	// Logging configuration
+	static private String logconfigfile;
+	// Implements the specific DAO functionality (MySQL, XML).
+	static public String daofactoryclassname;
+	// Implements the remote access DAO functionality.
+	static public String rmifactoryclassname;
+	// Access to remote manager
+	static private RemoteMemberAdminManagerIF	stub; 
 
 	// Get a logger instance for the current class
 	static Logger logger = Logger.getLogger(LibraryServer.class);
@@ -178,20 +187,38 @@ public class LibraryServer {
 				if(inputFile != null ) {
 					props.load(inputFile);
 					
-					hostname = props.getProperty("hostname", "localhost");
-					servicename = props.getProperty("servicename", "BibliotheekBreda");
-					// policyfile = props.getProperty("policyfile", "server.policy");
-					daofactoryclassname = props.getProperty("daoclassname", "library.datastorage.daofactory.xml.dom.XmlDOMDAOFactory");
-					rmifactoryclassname = props.getProperty("rmiclassname", "library.datastorage.daofactory.xml.dom.XmlDOMDAOFactory");
-					logconfigfile = props.getProperty("logconfigfile", "server.cnf");
+					// The client is 'paired' with a server-part. This hostname
+					// indicates
+					// the name of the host where the serverside can be
+					// retrieved.
+					hostname = props.getProperty("hosts.hostname", "undefined");
+					// The name of our 'paired' service.
+					String remote_hosts = props.getProperty("hosts.remotehosts", "undefined");
+					remotehosts = remote_hosts.split(",");
+					// The category identifies the subsection of services that
+					// we can connect to.
+					// Services outside this category are left out.
+					servicename = props.getProperty("service.servicegroup", "undefined") + 
+							props.getProperty("service.servicename", "undefined");
+					// File containing settings for the Log4J plugin.
+					logconfigfile = props.getProperty("logconfigfile", "undefined");
+					// Classname for local data access
+					daofactoryclassname = props.getProperty("daoclassname", 
+							"library.datastorage.daofactory.xml.dom.XmlDOMDAOFactory");
+					// Classname for remote data access
+					rmifactoryclassname = props.getProperty("rmiclassname", 
+							"library.datastorage.daofactory.xml.dom.XmlDOMDAOFactory");
 					
-					System.setProperty("java.rmi.server.codebase", props.getProperty("java.rmi.server.codebase"));
-					System.setProperty("java.security.policy", props.getProperty("java.security.policy"));
+					System.setProperty("java.rmi.server.codebase", 
+							props.getProperty("java.rmi.server.codebase"));
+					System.setProperty("java.security.policy", 
+							props.getProperty("java.security.policy"));
 					
-					props.getProperty("mysql.username", "root");
-					props.getProperty("mysql.password", "");
-					props.getProperty("mysql.hostname", "localhost");
-					props.getProperty("mysql.dbname", "library");
+					// Database properties, only relevant when DAO uses the database.
+					props.getProperty("mysql.username", "undefined");
+					props.getProperty("mysql.password", "undefined");
+					props.getProperty("mysql.hostname", "undefined");
+					props.getProperty("mysql.dbname", "undefined");
 					
 					System.setProperties(props);
 				}

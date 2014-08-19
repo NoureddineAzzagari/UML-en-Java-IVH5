@@ -4,8 +4,11 @@
  */
 package edu.avans.aei.ivh5.control;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.EventListener;
 
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
@@ -16,7 +19,7 @@ import org.apache.log4j.Logger;
 import edu.avans.aei.ivh5.api.RemoteMemberAdminManagerIF;
 import edu.avans.aei.ivh5.model.domain.ImmutableMember;
 import edu.avans.aei.ivh5.model.domain.Member;
-import edu.avans.aei.ivh5.view.ui.LibraryUI;
+import edu.avans.aei.ivh5.view.ui.UserInterface;
 
 /**
  * <p>
@@ -32,13 +35,13 @@ import edu.avans.aei.ivh5.view.ui.LibraryUI;
  * 
  * @author Robin Schellius
  */
-public class Controller implements ListSelectionListener {
+public class Controller implements ActionListener, EventListener, ListSelectionListener {
 
 	// Get a logger instance for the current class
 	static Logger logger = Logger.getLogger(Controller.class);
 
 	// A reference to the user interface for access to view components (text fields, tables)
-	private LibraryUI userinterface = null;
+	private UserInterface userinterface = null;
 	
 	// Reference to the member manager.
 	private RemoteMemberAdminManagerIF manager = null;
@@ -46,7 +49,7 @@ public class Controller implements ListSelectionListener {
 	/**
 	 * Constructor, initializing generally required references to user interface components.
 	 */
-	public Controller(LibraryUI ui, RemoteMemberAdminManagerIF mgr) 
+	public Controller(UserInterface ui, RemoteMemberAdminManagerIF mgr) 
 	{
 		logger.debug("Constructor");
 		
@@ -138,8 +141,7 @@ public class Controller implements ListSelectionListener {
                 if (lsm.isSelectedIndex(i)) 
                 {
                     selectedMember = (String) userinterface.getDataTableModel().getValueAt(i, 0);
-                    if (selectedMember != null) {
-                        
+                    if (selectedMember != null && !selectedMember.equals("")) {                        
                         logger.debug("Selected member = " + selectedMember);
                         doFindMember("localhost", userinterface.getSelectedService(), Integer.parseInt(selectedMember));
                     }
@@ -147,5 +149,43 @@ public class Controller implements ListSelectionListener {
             }
         }
     }
+
+	/**
+	 * <p>
+	 * Performs the corresponding action for a button. This method can handle
+	 * actions for each button in the window. The method itself selects the
+	 * appropriate handling based on the ActionCommand that we have set on each button. 
+	 * </p>
+	 * <p>
+	 * Whenever a new button is added to the UI, provide it with an ActionCommand name and 
+	 * provide the appropriate handling here.
+	 * </p>
+	 * 
+	 * @param ActionEvent The event that is fired by the JVM whenever an action occurs.
+	 */
+	@Override
+	public void actionPerformed(ActionEvent e) {
+	
+		if (e.getActionCommand().equals("SEARCH")) {
+			try {
+				int membershipNr = Integer.parseInt(userinterface.getSearchValue().trim());
+				String selectedService = userinterface.getSelectedService();
+				userinterface.eraseMemberDetails();
+				doFindMember(userinterface.getHostname(), selectedService, membershipNr);
+			} catch (NumberFormatException ex) {
+				logger.error("Wrong input, only numbers allowed");
+				userinterface.setStatusText("Wrong input, only numbers allowed.");
+				userinterface.setSearchBoxText("");
+			}
+		} else if (e.getActionCommand().equals("LIST")) {
+			try {
+				String selectedService = userinterface.getSelectedService();
+				userinterface.eraseMemberDetails();
+				doFindAllMembers(userinterface.getHostname(), selectedService);
+			} catch (Exception ex) {
+				logger.error("Error: " + ex.getMessage());
+			}
+		}
+	}
 
 }
