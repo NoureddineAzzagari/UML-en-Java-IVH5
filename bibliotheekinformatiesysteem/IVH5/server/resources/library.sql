@@ -157,7 +157,14 @@ INSERT INTO `book` (`ISBN`, `Title`, `Author`, `Edition`) VALUES
 INSERT INTO `member` (`MembershipNumber`, `FirstName`, `LastName`, `Street`, `HouseNumber`, `City`, `PhoneNumber`, `EmailAddress`, `Fine`) VALUES
 (1000, 'Pascal', 'van Gastel', 'Lovensdijkstraat', '61', 'Breda', '0765238754', 'ppth.vangastel@avans.nl', 0),
 (1001, 'Erco', 'Argante', 'Hogeschoollaan', '1', 'Breda', '0765231234', 'e.argante@avans.nl', 0),
-(1002, 'Marice', 'Bastiaensen', 'Lovensdijkstraat', '63', 'Breda', '0765236789', 'mmcm.bastiaensen@avans.nl', 5);
+(1002, 'Marice', 'Bastiaensen', 'Lovensdijkstraat', '63', 'Breda', '0765236789', 'mmcm.bastiaensen@avans.nl', 5),
+(1003, 'Karel', 'Van Dam', 'Buitendijk', '63', 'Breda', '0765223489', 'info@server.com', 0),
+(1004, 'Peter', 'Van Dam', 'Hier', '43', 'Breda', '0765223489', 'info@server.com', 0),
+(1005, 'Sebastiaan', 'Van Dam', 'Overakkker', '63', 'Breda', '0765223489', 'info@server.com', 0),
+(1006, 'Marieke', 'Van Dam', 'Binnenlaan', '4', 'Breda', '0765223489', 'info@server.com', 0),
+(1007, 'Eveline', 'Van Dam', 'Markt', '65', 'Breda', '0765223489', 'info@server.com', 0),
+(1008, 'Sjoerd', 'Van Dam', 'Dijklaan', '112', 'Breda', '0765223489', 'info@server.com', 0),
+(1009, 'Jan', 'Montizaan', 'Straatnaam', '1', 'Breda', '0765223489', 'info@server.com', 0);
 
 --
 -- Dumping data for table `copy`
