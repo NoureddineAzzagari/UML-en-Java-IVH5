@@ -5,23 +5,24 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 import edu.avans.aei.ivh5.model.domain.ImmutableMember;
+import edu.avans.aei.ivh5.model.domain.Member;
 
 /**
- * Interface that describes the available methods on a remote Library server.
+ * Interface that describes (some of) the available methods on a remote library server.
  * 
  * @author Robin Schellius
  *
  */
 public interface RemoteMemberAdminManagerIF extends Remote {
 
-    /**
+	/**
      * Tries to find the Member object matching the given membership number.
      * 
      * @param membershipNumber the member unique number
      * @return if a matching member was found, a reference to the Member's
      * ImmutableMember interface is returned, null otherwise.
      */
-	public ImmutableMember findMember(String hostname, String service, int membershipNumber) throws RemoteException;
+	public Member findMember(String hostname, String service, int membershipNumber) throws RemoteException;
 	
 	/**
 	 * Find all members on a server. Since a request to this method can be invoked
