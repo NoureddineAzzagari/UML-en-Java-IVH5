@@ -101,7 +101,7 @@ public class UserInterface {
 		applicationFrame = new JFrame();
 		applicationFrame.setResizable(false);
 		applicationFrame.setTitle("Library Information System");
-		applicationFrame.setBounds(100, 100, 496, 480);
+		applicationFrame.setBounds(100, 100, 550, 480);
 		applicationFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		applicationFrame.getContentPane().setLayout(new BorderLayout(0, 0));
 

@@ -10,6 +10,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.text.MessageFormat;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
@@ -187,17 +188,11 @@ public class LibraryServer {
 				if(inputFile != null ) {
 					props.load(inputFile);
 					
-					// The client is 'paired' with a server-part. This hostname
-					// indicates
-					// the name of the host where the serverside can be
-					// retrieved.
-					hostname = props.getProperty("hosts.hostname", "undefined");
-					// The name of our 'paired' service.
-					String remote_hosts = props.getProperty("hosts.remotehosts", "undefined");
-					remotehosts = remote_hosts.split(",");
-					// The category identifies the subsection of services that
-					// we can connect to.
-					// Services outside this category are left out.
+					// The name of the host that this server runs on.
+					// Required to resolve it remotely via rmi registry. 
+					hostname = props.getProperty("java.rmi.server.hostname", "undefined");
+					// The servicegroup identifies the subsection of services that
+					// we can connect to. Services outside this category are left out.
 					servicename = props.getProperty("service.servicegroup", "undefined") + 
 							props.getProperty("service.servicename", "undefined");
 					// File containing settings for the Log4J plugin.
@@ -213,6 +208,8 @@ public class LibraryServer {
 							props.getProperty("java.rmi.server.codebase"));
 					System.setProperty("java.security.policy", 
 							props.getProperty("java.security.policy"));
+					System.setProperty("java.rmi.server.hostname", 
+							props.getProperty("java.rmi.server.hostname"));
 					
 					// Database properties, only relevant when DAO uses the database.
 					props.getProperty("mysql.username", "undefined");

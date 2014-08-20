@@ -67,13 +67,12 @@ public class LibraryClient {
 			ui.applicationFrame.setVisible(true);
 		} catch (java.security.AccessControlException e) {
 			logger.fatal("No access: " + e.getMessage());
-			logger.fatal("(There's something wrong with the security policy ...)");
 		} catch (java.rmi.NotBoundException e) {
 			logger.fatal("Servicename \"" + servicegroup + servicename + "\" not found.");
 			logger.fatal("(Are the webserver, the registry and the server running?)");
 		} catch (Exception e) {
 			logger.fatal("Exception: " + e.getMessage());
-			e.printStackTrace();
+			// e.printStackTrace();
 		}
 	}
 
@@ -115,7 +114,6 @@ public class LibraryClient {
 		}
 
 		LibraryClient client = new LibraryClient();
-		
 	}
 
 	/**
