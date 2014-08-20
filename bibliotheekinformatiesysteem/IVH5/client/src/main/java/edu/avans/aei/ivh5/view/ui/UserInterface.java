@@ -27,7 +27,6 @@ import javax.swing.table.TableColumn;
 
 import org.apache.log4j.Logger;
 
-import edu.avans.aei.ivh5.api.RemoteMemberAdminManagerIF;
 import edu.avans.aei.ivh5.control.Controller;
 import edu.avans.aei.ivh5.model.domain.ImmutableMember;
 
@@ -47,7 +46,6 @@ public class UserInterface {
 	private JTextField txtCityname;
 	private JTable tableMembers;
 	private JLabel lblCity;
-	private JComboBox<String> cmbSelectServer;
 	private JComboBox<String> cmbSelectService;
 	private Dimension preferredSize = new Dimension(480, 140);
 
@@ -59,9 +57,6 @@ public class UserInterface {
 	// The datamodel to be displayed in the JTable.
 	private DataTableModel dataTableModel;
 
-	// The MemberAdminManager to delegate the real work (use cases!) to.
-	private RemoteMemberAdminManagerIF manager;
-
 	// Get a logger instance for the current class
 	static Logger logger = Logger.getLogger(UserInterface.class);
 
@@ -69,23 +64,15 @@ public class UserInterface {
 	 * Constructor
 	 * 
 	 * @param mgr The manager referencing all business logic.
+	 * @param host The host where the server (and registry) is located.
 	 */
-	public UserInterface(RemoteMemberAdminManagerIF mgr,
-			String host, String[] servers) {
+	public UserInterface() {
 		
-		logger.debug("Constructor (MemberAdminManager)");
-		
-		hostname = host;
-		manager = mgr;
-		
-		// The controller handling (controlling) all actions resulting from the view (GUI).
-		controller = new Controller(this, manager);
-
+		logger.debug("Constructor");
 		// The datamodel containing the data to be displayed in the table.
 		// Changing the data in the DataTableModel automatically updates the table.
 		dataTableModel = new DataTableModel();
-
-		initializeUserInterface(servers);
+		initializeUserInterface();
 	}
 
 	/**
@@ -94,7 +81,7 @@ public class UserInterface {
 	 * @param serverNames
 	 *            Names of RMI servers found in the registry. 
 	 */
-	private void initializeUserInterface(String[] serverNames) {
+	private void initializeUserInterface() {
 		
 		logger.debug("initializeUserInterface");
 
@@ -108,7 +95,7 @@ public class UserInterface {
 		// Top side: Search and Server information panels, collected in a container.		
 		JPanel serverContainer = new JPanel();
 		serverContainer.setLayout(new BorderLayout());
-		serverContainer.add(setupServerPanel(serverNames), BorderLayout.NORTH);
+		serverContainer.add(setupServerPanel(), BorderLayout.NORTH);
 		serverContainer.add(setupSearchPanel(), BorderLayout.SOUTH);
 
 		// Center part: Member list- and detail information, collected in a container.
@@ -163,7 +150,7 @@ public class UserInterface {
 	 * 
 	 * @return The created panel.
 	 */
-	private JPanel setupServerPanel(String[] services) {
+	private JPanel setupServerPanel() {
 		
 		logger.debug("setupServerPanel");
 
@@ -194,7 +181,7 @@ public class UserInterface {
 		pnlServerInfo.add(new JLabel("Service:"));
 
 		cmbSelectService = new JComboBox<String>();
-		cmbSelectService.setModel(new DefaultComboBoxModel<String>(services));
+		cmbSelectService.setModel(new DefaultComboBoxModel<String>());
 		pnlServerInfo.add(cmbSelectService);
 
 		JButton btnListMembers = new JButton("List");
@@ -426,6 +413,15 @@ public class UserInterface {
 	public void setSearchBoxText(String text) {
 		txtSearchBox.setText(text);
 		txtSearchBox.requestFocus();
+	}
+
+	/**
+	 * Set the controller.
+	 * 
+	 * @param cntl Class handling all UI actions and events.
+	 */
+	public void setController(Controller cntl) {
+		this.controller = cntl;		
 	}
 
 	public DataTableModel getDataTableModel() {

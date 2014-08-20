@@ -6,6 +6,7 @@ package edu.avans.aei.ivh5.model.main;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import org.apache.log4j.Logger;
@@ -77,6 +78,20 @@ public class MemberAdminManagerImpl implements RemoteMemberAdminManagerIF {
 			logger.fatal("Error: Class not found! (Did you type it correctly?)");
 			logger.fatal(e.getMessage());
 		}
+	}
+	
+	/**
+	 * 
+	 * @return
+	 * @throws RemoteException
+	 */
+	public HashMap<String, String> findAvailableServices() throws RemoteException {
+		
+		HashMap<String, String> result = new HashMap<String, String>();
+		
+
+
+		return result;
 	}
 
 	/**

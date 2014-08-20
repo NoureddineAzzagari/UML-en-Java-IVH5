@@ -2,21 +2,17 @@
  */
 package edu.avans.aei.ivh5.model.main;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.rmi.registry.Registry;
-import java.rmi.registry.LocateRegistry;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.text.MessageFormat;
-import java.util.Properties;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 import edu.avans.aei.ivh5.api.RemoteMemberAdminManagerIF;
+import edu.avans.aei.ivh5.util.Settings;
 
 /**
  * Creates the stub, which will be remote accessible by the client, and
@@ -32,10 +28,6 @@ public class LibraryServer {
 	static private String hostname;	
 	// Name identifying this server in the RMI registry
 	static private String servicename;
-	// Array of remote host machines providing services.
-	static private String[] remotehosts;
-	// Name indicating group of services in the registry.
-	static private String servicegroup;
 	// Logging configuration
 	static private String logconfigfile;
 	// Implements the specific DAO functionality (MySQL, XML).
@@ -69,15 +61,17 @@ public class LibraryServer {
 
 		if (args.length == 2) {
 			String propertiesfile = parseCommandLine(args);
-			loadProperties(propertiesfile);
+			Settings.loadProperties(propertiesfile);
 		} else {
 			System.out.println("No properties file was found. Provide a properties file name on the command line.");
 			System.out.println("Program is exiting.");
 			return;
 		}
+		
+		System.getProperties().list(System.out);
 
 		// Configure logging using the given log config file.
-		PropertyConfigurator.configure(logconfigfile);
+		PropertyConfigurator.configure(System.getProperty(Settings.propLogConfigFile));
 		logger.info("Starting application");
 
 		// These properties must have been set correctly at this point. Just checking. 
@@ -170,67 +164,6 @@ public class LibraryServer {
 			System.out.println("     -properties \"file:/C:/path/to/server.cnf\"");
 		}
 		return propertiesfilename;
-	}
-
-	/**
-	 * Read the required system properties from the given properties file.
-	 * 
-	 * @param propertiesFileName The name of the file containing the system properties.
-	 */
-	private static void loadProperties(String propertiesFileName) {
-
-		Properties props = new Properties(System.getProperties());
-		InputStream inputFile = null;
-
-		if (propertiesFileName != null) {
-			try {
-				inputFile = new FileInputStream(propertiesFileName);
-				if(inputFile != null ) {
-					props.load(inputFile);
-					
-					// The name of the host that this server runs on.
-					// Required to resolve it remotely via rmi registry. 
-					hostname = props.getProperty("java.rmi.server.hostname", "undefined");
-					// The servicegroup identifies the subsection of services that
-					// we can connect to. Services outside this category are left out.
-					servicename = props.getProperty("service.servicegroup", "undefined") + 
-							props.getProperty("service.servicename", "undefined");
-					// File containing settings for the Log4J plugin.
-					logconfigfile = props.getProperty("logconfigfile", "undefined");
-					// Classname for local data access
-					daofactoryclassname = props.getProperty("daoclassname", 
-							"library.datastorage.daofactory.xml.dom.XmlDOMDAOFactory");
-					// Classname for remote data access
-					rmifactoryclassname = props.getProperty("rmiclassname", 
-							"library.datastorage.daofactory.xml.dom.XmlDOMDAOFactory");
-					
-					System.setProperty("java.rmi.server.codebase", 
-							props.getProperty("java.rmi.server.codebase"));
-					System.setProperty("java.security.policy", 
-							props.getProperty("java.security.policy"));
-					System.setProperty("java.rmi.server.hostname", 
-							props.getProperty("java.rmi.server.hostname"));
-					
-					// Database properties, only relevant when DAO uses the database.
-					props.getProperty("mysql.username", "undefined");
-					props.getProperty("mysql.password", "undefined");
-					props.getProperty("mysql.hostname", "undefined");
-					props.getProperty("mysql.dbname", "undefined");
-					
-					System.setProperties(props);
-				}
-			} catch (IOException e) {
-				System.out.println("Error reading file: " + e.getMessage());
-			} finally {
-				if (inputFile != null) {
-					try {
-						inputFile.close();
-					} catch (IOException e) {
-						System.out.println("Error closing file: " + e.getMessage());
-					}
-				}
-			}
-		}
 	}
 }
 

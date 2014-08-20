@@ -3,6 +3,7 @@ package edu.avans.aei.ivh5.api;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import edu.avans.aei.ivh5.model.domain.ImmutableMember;
 import edu.avans.aei.ivh5.model.domain.Member;
@@ -14,6 +15,15 @@ import edu.avans.aei.ivh5.model.domain.Member;
  *
  */
 public interface RemoteMemberAdminManagerIF extends Remote {
+
+	/**
+     * Find all the available services, as seen by the server. A server can have access to other services
+     * on remote machines, so the amount of services can be larger than only the services that the server
+     * shares on the same host.
+     * 
+     * @return A list of <servicename, hostname> pairs, or null if none were found.
+     * 
+	public HashMap<String, String> findAvailableServices() throws RemoteException;
 
 	/**
      * Tries to find the Member object matching the given membership number.

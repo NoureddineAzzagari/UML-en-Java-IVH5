@@ -6,7 +6,11 @@ package edu.avans.aei.ivh5.model.dao.rmi;
 
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.Arrays;
+import java.util.HashMap;
+
 import org.apache.log4j.Logger;
+
 import edu.avans.aei.ivh5.api.RemoteMemberAdminManagerIF;
 
 /**
@@ -18,10 +22,39 @@ public class RmiConnection {
 
 	// Get a logger instance for the current class
 	static Logger logger = Logger.getLogger(RmiConnection.class);
+	
 	static RemoteMemberAdminManagerIF remoteService = null;
 	static String hostname = null;
 	static String servicename = null;
-
+	
+	// A list of available registries, possibly on other remote hosts.
+	private static HashMap<String, Registry> registries = new HashMap<String, Registry>();
+	
+	/**
+	 * 
+	 * @param hostname
+	 * @return
+	 */
+	public static Registry getRegistry(String hostname) {
+		
+		logger.debug("getRegistry on " + hostname);
+		
+		try {
+			if (!registries.containsKey(hostname) || (registries.get(hostname) == null)) 
+			{
+				Registry registry = LocateRegistry.getRegistry(hostname);
+				logger.debug("Found registry, storing it in cache.");
+				registries.put(hostname, registry);
+			}
+		} catch (java.security.AccessControlException e) {
+			logger.fatal("No access: " + e.getMessage());
+		} catch (Exception e) {
+			logger.fatal("Exception: " + e.getMessage());
+			// e.printStackTrace();
+		}
+		return registries.get(hostname);
+	}
+	
     /**
      * Creates a RMI connection to the given service on the given hostname.
      * 
@@ -33,22 +66,16 @@ public class RmiConnection {
 		logger.debug("Connect to service " + service + " on host "  + host);
 
 		// We need to save hostname and servicename for later lookup.
-		if(host != null) hostname = host;
-		if(service != null) servicename = service;
+//		if(host != null) hostname = host;
+//		if(service != null) servicename = service;
 		
-    	System.setProperty("java.rmi.server.codebase", "http://" + host + "/classes/");
-    	System.setProperty("java.security.policy", "http://" + host + "/classes/server.policy");
-    	
-    	if (System.getSecurityManager() == null) {
-            System.setSecurityManager(new SecurityManager());
-            logger.debug("SecurityManager installed");
-        }
+//    	if (System.getSecurityManager() == null) {
+//            System.setSecurityManager(new SecurityManager());
+//            logger.debug("SecurityManager installed");
+//        }
         
         try {
-    		logger.debug("Locating registry on " + host);
-            Registry registry = LocateRegistry.getRegistry(host);
-            
-            logger.info("Looking up \"" + service + "\" in registry.");
+            Registry registry = registries.get(host);
             remoteService = (RemoteMemberAdminManagerIF) registry.lookup(service);
     		logger.debug("Connected to remote server stub.");
         } 
@@ -63,6 +90,16 @@ public class RmiConnection {
             logger.error("(Are the webserver, the registry and the server running?)");
         }
     }	
+    
+    /*
+    public static HashMap<String, String> getAvailableServices() {
+    	
+		String[] serviceNames = registry.list();
+		logger.debug("Contents of registry: "
+				+ Arrays.toString(serviceNames));
+
+    }
+    */
     
     /**
      * 
