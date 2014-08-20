@@ -38,49 +38,55 @@ public class LibraryClient {
 	// Get a logger instance for the current class
 	static Logger logger = Logger.getLogger(LibraryClient.class);
 
-	// The name of our server in the RMI registry.
-	private static String servicename;
-	// Category combining services that offer identical services.
-	private static String servicegroup;
-	// Name of the logging configuration file.
-	private static String logconfigfile;
+//	// The name of our server in the RMI registry.
+//	private static String servicename;
+//	// Category combining services that offer identical services.
+//	private static String servicegroup;
+//	// Name of the logging configuration file.
+//	private static String logconfigfile;
 
 	/**
+	 * Constructor.
 	 * 
+	 * @param hostname The host where the server is running.
 	 */
-	public LibraryClient(String serverhost) {
+	public LibraryClient(String hostname) {
 
-		String status = "Could not connect to " + serverhost;
+		// Initial message, will change once we're connected.
+		String status = "Could not connect to " + hostname;
+		String service = null;
 		RemoteMemberAdminManagerIF manager = null;
 
-		// Retrieve the server connection and create the GUI.
+		// Try to retrieve the server connection. 
 		try {
-			logger.debug("Locating registry on " + serverhost);
-			Registry registry = LocateRegistry.getRegistry(serverhost);
+			logger.debug("Locating registry on " + hostname);
+			Registry registry = LocateRegistry.getRegistry(hostname);
 
-			logger.debug("Looking up \"" + servicegroup + servicename
-					+ "\" in registry.");
-			manager = (RemoteMemberAdminManagerIF) registry.lookup(servicegroup
-					+ servicename);
-			status = "Connected to host " + serverhost;
+			// Service is a string like "Library/Breda". This enables us
+			// to find all Libraries, and skip all other services.
+			service = Settings.props.getProperty(Settings.propRmiServiceGroup) +
+					Settings.props.getProperty(Settings.propRmiServiceName);
+			
+			logger.debug("Looking up \"" + service + "\" in registry.");
+			manager = (RemoteMemberAdminManagerIF) registry.lookup(service);
+			status = "Connected to " + service + " on host " + hostname;
 
 		} catch (java.security.AccessControlException e) {
 			logger.fatal("No access: " + e.getMessage());
 		} catch (java.rmi.NotBoundException e) {
-			logger.fatal("Servicename \"" + servicegroup + servicename
-					+ "\" not found.");
+			logger.fatal("Servicename \"" + service + "\" not found.");
 			logger.fatal("(Are the webserver, the registry and the server running?)");
 		} catch (Exception e) {
 			logger.fatal("Exception: " + e.getMessage());
 			// e.printStackTrace();
 		}
 
+		// Build the User interface.
 		UserInterface ui = new UserInterface();
 		Controller controller = new Controller(ui, manager);
 		ui.setController(controller);
 		ui.setStatusText(status);
 		ui.applicationFrame.setVisible(true);		
-
 	}
 
 	/**
@@ -92,39 +98,24 @@ public class LibraryClient {
 	 */
 	public static void main(String[] args) {
 
-		PropertyConfigurator.configure("./resources/client.logconfig");
-		logger.debug("hijdoethet");
-		
 		// Get the properties file name from the command line, and load the
 		// properties.
 		if (args.length == 2) {
 			String propertiesfile = parseCommandLine(args);
 			Settings.loadProperties(propertiesfile);
 		} else {
-			System.out
-					.println("No properties file was found. Provide a properties file name on the command line.");
+			System.out.println("No properties file was found. Provide a properties file name.");
 			System.out.println("Program is exiting.");
 			return;
 		}
 		
 		if (System.getSecurityManager() == null) {
 			System.setSecurityManager(new SecurityManager());
-			// logger.debug("SecurityManager installed");
 		}
 
-		System.getProperties().list(System.out);
-
 		// Configure logging using the given log config file.
-		// PropertyConfigurator.configure(System.getProperty(Settings.propLogConfigFile));
+		PropertyConfigurator.configure(Settings.props.getProperty(Settings.propLogConfigFile));
 		logger.info("Starting application");
-
-		// These properties must have been set correctly at this point. Just
-		// checking.
-//		logger.debug("java.rmi.server.hostname = " + serverhost);
-//		logger.debug("java.rmi.server.codebase = "
-//				+ System.getProperty("java.rmi.server.codebase", "invalid!"));
-//		logger.debug("java.security.policy = "
-//				+ System.getProperty("java.security.policy", "invalid!"));
 
 		// Create the client. We do not need to reference it later, so a
 		// variable name is not necessary.

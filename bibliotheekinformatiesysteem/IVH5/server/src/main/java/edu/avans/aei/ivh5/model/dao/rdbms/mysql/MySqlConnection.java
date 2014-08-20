@@ -9,7 +9,10 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.ResultSet;
+
 import org.apache.log4j.Logger;
+
+import edu.avans.aei.ivh5.util.Settings;
 
 /**
  *
@@ -44,10 +47,10 @@ public class MySqlConnection {
         statement = null;
 		
         // Initialize using previously read properties; invalid otherwise.
-        username = System.getProperty("mysql.username", "invalid!");
-        password = System.getProperty("mysql.password", "invalid!");
-        drivername = System.getProperty("mysql.drivername", "invalid!");
-        connectionstring = System.getProperty("mysql.connectionstring", "invalid!");
+        username = Settings.props.getProperty(Settings.propDbUser);
+        password = Settings.props.getProperty(Settings.propDbUser);
+        drivername = Settings.props.getProperty(Settings.propDbDriver);
+        connectionstring = Settings.props.getProperty(Settings.propDbConnectionString);
 
 		try {
             Class.forName(drivername).newInstance();

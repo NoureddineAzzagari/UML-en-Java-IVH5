@@ -21,6 +21,7 @@ import edu.avans.aei.ivh5.model.domain.ImmutableMember;
 import edu.avans.aei.ivh5.model.domain.Loan;
 import edu.avans.aei.ivh5.model.domain.Member;
 import edu.avans.aei.ivh5.model.domain.Reservation;
+import edu.avans.aei.ivh5.util.Settings;
 
 /**
  * The server side implementation of the remote interface. This class implements
@@ -72,10 +73,10 @@ public class MemberAdminManagerImpl implements RemoteMemberAdminManagerIF {
 
 		try {
 			// Getting DAOFactory for local and remote data access
-			localDaoFactory = DAOFactory.getDAOFactory(LibraryServer.daofactoryclassname);
-			remoteDaoFactory = DAOFactory.getDAOFactory(LibraryServer.rmifactoryclassname);
+			localDaoFactory = DAOFactory.getDAOFactory(Settings.props.getProperty(Settings.propDataStore));
+			remoteDaoFactory = DAOFactory.getDAOFactory(Settings.props.getProperty(Settings.propDataComm));
 		} catch (NoClassDefFoundError e) {
-			logger.fatal("Error: Class not found! (Did you type it correctly?)");
+			logger.fatal("Error: Class not found! (Is it in the propertyfile?)");
 			logger.fatal(e.getMessage());
 		}
 	}

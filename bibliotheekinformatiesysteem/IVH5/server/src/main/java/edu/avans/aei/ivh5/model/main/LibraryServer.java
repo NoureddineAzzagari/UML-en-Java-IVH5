@@ -59,44 +59,43 @@ public class LibraryServer {
 	 */
 	public static void main(String args[]) {
 
+		// Get the properties file name from the command line, and load the
+		// properties.
 		if (args.length == 2) {
 			String propertiesfile = parseCommandLine(args);
 			Settings.loadProperties(propertiesfile);
 		} else {
-			System.out.println("No properties file was found. Provide a properties file name on the command line.");
+			System.out.println("No properties file was found. Provide a properties file name.");
 			System.out.println("Program is exiting.");
 			return;
 		}
 		
-		System.getProperties().list(System.out);
-
-		// Configure logging using the given log config file.
-		PropertyConfigurator.configure(System.getProperty(Settings.propLogConfigFile));
-		logger.info("Starting application");
-
-		// These properties must have been set correctly at this point. Just checking. 
-		logger.debug("java.rmi.server.codebase = " + System.getProperty("java.rmi.server.codebase", "invalid!"));
-		logger.debug("java.security.policy = " + System.getProperty("java.security.policy", "invalid!"));
-
 		if (System.getSecurityManager() == null) {
 			System.setSecurityManager(new SecurityManager());
-			logger.debug("SecurityManager installed");
 		}
 
+		// Configure logging using the given log config file.
+		PropertyConfigurator.configure(Settings.props.getProperty(Settings.propLogConfigFile));
+		logger.info("Starting application");
+
 		try {
+			String service = Settings.props.getProperty(Settings.propRmiServiceGroup) + 
+					Settings.props.getProperty(Settings.propRmiServiceName);
+			String hostname = Settings.props.getProperty(Settings.propRmiHostName);
+			
 			// ShutdownHook handles cleaning up the registry when this
 			// application exits.
-			ShutdownHook shutdownHook = new ShutdownHook();
+			ShutdownHook shutdownHook = new ShutdownHook(service);
 			Runtime.getRuntime().addShutdownHook(shutdownHook);
 
 			logger.debug("Creating stub");
-			MemberAdminManagerImpl obj = new MemberAdminManagerImpl(servicename);
+			MemberAdminManagerImpl obj = new MemberAdminManagerImpl(service);
 			stub = (RemoteMemberAdminManagerIF) UnicastRemoteObject.exportObject(obj, 0);
 
 			logger.debug("Locating registry on '" + hostname + "'");
 			Registry registry = LocateRegistry.getRegistry(hostname);
-			logger.debug("Registering stub using name \"" + servicename + "\"");
-			registry.rebind(servicename, stub);
+			logger.debug("Registering stub using name \"" + service + "\"");
+			registry.rebind(service, stub);
 
 			logger.info("Server ready");
 		} catch (java.rmi.ConnectException e) {
@@ -117,11 +116,11 @@ public class LibraryServer {
 	 * 
 	 * @throws RemoteException
 	 */
-	public static void exit() throws RemoteException {
+	public static void exit(String service) throws RemoteException {
 		logger.info("Server is exiting, cleaning up registry.");
 		try {
-			logger.debug("Unbind servicename " + servicename);
-			Naming.unbind(servicename);
+			logger.debug("Unbind servicename " + service);
+			Naming.unbind(service);
 		} catch (java.net.MalformedURLException e) {
 			logger.error("Servicename not found in registry.");
 		} catch (java.rmi.NoSuchObjectException e) {
@@ -180,9 +179,15 @@ public class LibraryServer {
  */
 class ShutdownHook extends Thread {
 
+	// The service that we will clean up.
+	private String service;
+	
+	// Constructor
+	public ShutdownHook(String svc) { service = svc;}
+	
 	public void run() {
 		try {
-			LibraryServer.exit();
+			LibraryServer.exit(service);
 		} catch (RemoteException e) {
 			System.out.println("Error exiting: " + e.getMessage());
 		}
