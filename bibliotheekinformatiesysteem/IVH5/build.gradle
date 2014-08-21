@@ -153,6 +153,7 @@ project(':shared') {
 	archivesBaseName = "library-shared"
 
     dependencies {
+        compile 'log4j:log4j:1+'
         testCompile "junit:junit:4.11"
     }
 

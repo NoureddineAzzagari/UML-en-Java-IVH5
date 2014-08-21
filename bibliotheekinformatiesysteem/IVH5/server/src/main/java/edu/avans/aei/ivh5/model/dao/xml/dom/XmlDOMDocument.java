@@ -27,6 +27,8 @@ import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
+import edu.avans.aei.ivh5.util.Settings;
+
 /**
  * XmlDOMDocument reads the XML input document that functions as a data source for the
  * XML DOM data access objects. It validates and builds the document object model (DOM). 
@@ -56,8 +58,8 @@ public class XmlDOMDocument {
 		logger.debug("Constructor");
 		
 		// Read filenames from the previously installed properties; undefined otherwise.
-		xmlFilename = System.getProperty("xml.filename", "undefined");
-		xmlSchema = System.getProperty("xml.schema", "undefined");
+		xmlFilename = Settings.props.getProperty(Settings.propXmlFileName);
+		xmlSchema = Settings.props.getProperty(Settings.propXmlFileName);
 
 		logger.debug("xmlFilename = " + xmlFilename);
 		logger.debug("xmlSchema = " + xmlFilename);

@@ -22,7 +22,7 @@ public interface RemoteMemberAdminManagerIF extends Remote {
      * shares on the same host.
      * 
      * @return A list of <servicename, hostname> pairs, or null if none were found.
-     * 
+     */
 	public HashMap<String, String> findAvailableServices() throws RemoteException;
 
 	/**

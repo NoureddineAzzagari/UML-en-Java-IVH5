@@ -19,6 +19,7 @@ import org.apache.log4j.Logger;
 import edu.avans.aei.ivh5.api.RemoteMemberAdminManagerIF;
 import edu.avans.aei.ivh5.model.domain.ImmutableMember;
 import edu.avans.aei.ivh5.model.domain.Member;
+import edu.avans.aei.ivh5.util.Settings;
 import edu.avans.aei.ivh5.view.ui.UserInterface;
 
 /**
@@ -49,15 +50,20 @@ public class Controller implements ActionListener, EventListener, ListSelectionL
 	/**
 	 * Constructor, initializing generally required references to user interface components.
 	 */
-	public Controller(UserInterface ui, RemoteMemberAdminManagerIF mgr) 
+	public Controller(RemoteMemberAdminManagerIF mgr) 
 	{
 		logger.debug("Constructor");
-		
-		// Saving references to UI and Mgr for later use.
-		userinterface = ui;
 		manager = mgr;
 	}
 	
+	/**
+	 * Setter
+	 * @param userinterface
+	 */
+	public void setUserinterface(UserInterface userinterface) {
+		this.userinterface = userinterface;
+	}
+
 	/**
 	 * Find the member identified by membershipNr and display its information.
 	 * 
@@ -166,26 +172,43 @@ public class Controller implements ActionListener, EventListener, ListSelectionL
 	@Override
 	public void actionPerformed(ActionEvent e) {
 	
-		if (e.getActionCommand().equals("SEARCH")) {
+		if (e.getActionCommand().equals("FIND_MEMBER")) {
 			try {
+				/**
+				 * Find Member is called when the user inserts a Membership nr and presses Search.
+				 * In that case, we only search on our 'own local server', not in the cloud
+				 * of services. Therefore we select hostname and service name from the properties. 
+				 */
 				int membershipNr = Integer.parseInt(userinterface.getSearchValue().trim());
-				String selectedService = userinterface.getSelectedService();
+
+				String hostname = Settings.props.getProperty(Settings.propRmiHostName);
+				String servicename = Settings.props.getProperty(Settings.propRmiServiceGroup) 
+						+ Settings.props.getProperty(Settings.propRmiServiceName);
+				
 				userinterface.eraseMemberDetails();
-				doFindMember(userinterface.getHostname(), selectedService, membershipNr);
+				doFindMember(hostname, servicename, membershipNr);
 			} catch (NumberFormatException ex) {
 				logger.error("Wrong input, only numbers allowed");
 				userinterface.setStatusText("Wrong input, only numbers allowed.");
 				userinterface.setSearchBoxText("");
 			}
-		} else if (e.getActionCommand().equals("LIST")) {
+		} else if (e.getActionCommand().equals("CONNECT_TO_SERVER")) {
 			try {
-				String selectedService = userinterface.getSelectedService();
+				
+				
+				
+
+			} catch (Exception ex) {
+				logger.error("Error: " + ex.getMessage());
+			}
+		} else if (e.getActionCommand().equals("SELECT_SERVICE")) {
+			try {
+				logger.debug("Selected service = " + userinterface.getSelectedService());
 				userinterface.eraseMemberDetails();
-				doFindAllMembers(userinterface.getHostname(), selectedService);
+				doFindAllMembers(userinterface.getHostname(), userinterface.getSelectedService());
 			} catch (Exception ex) {
 				logger.error("Error: " + ex.getMessage());
 			}
 		}
 	}
-
 }

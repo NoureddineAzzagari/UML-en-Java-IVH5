@@ -13,6 +13,7 @@ import edu.avans.aei.ivh5.api.RemoteMemberAdminManagerIF;
 import edu.avans.aei.ivh5.model.dao.api.MemberDAOInf;
 import edu.avans.aei.ivh5.model.domain.ImmutableMember;
 import edu.avans.aei.ivh5.model.domain.Member;
+import edu.avans.aei.ivh5.util.RmiConnection;
 
 /**
  * The RMI implementation for the MemberDAO class.
@@ -50,7 +51,8 @@ public class RmiMemberDAO implements MemberDAOInf {
 		// Use the previously created RmiConnection to connect
 		// to the remote server.
 		try {
-			RemoteMemberAdminManagerIF remoteManager = RmiConnection.getRemoteService();
+			RemoteMemberAdminManagerIF remoteManager = 
+					(RemoteMemberAdminManagerIF) RmiConnection.getService("DUMMY", "DUMMY");
 			member = remoteManager.findMember(RmiConnection.hostname, RmiConnection.servicename, membershipNumber);
 		} catch (RemoteException e) {
 			logger.error("Exception: " + e.getMessage());
@@ -74,26 +76,27 @@ public class RmiMemberDAO implements MemberDAOInf {
 
 		// Use the previously created RmiConnection to connect
 		// to the remote server.
-		RemoteMemberAdminManagerIF remoteManager = RmiConnection.getRemoteService();
-		if (remoteManager != null) {
-			logger.debug("Found RMI connection to remote server!");
-			try {
-				if(RmiConnection.hostname != null && RmiConnection.servicename != null) { 
-					result = remoteManager.findAllMembers(RmiConnection.hostname, RmiConnection.servicename);
-				} else {
-					logger.error("Remote hostname and/or service unknown!");
-				}
-			} catch (RemoteException e) {
-				logger.error("Exception: " + e.getMessage());
-			}
-		} else {
-			logger.error("No RMI connection to remote server!");
-		}
-		
-		if (result != null)
-			logger.debug("Returning " + result.toString());
-		else
-			logger.debug("Found no members at remote server.");
+//		RemoteMemberAdminManagerIF remoteManager = 
+//				(RemoteMemberAdminManagerIF) RmiConnection.getRemoteService();
+//		if (remoteManager != null) {
+//			logger.debug("Found RMI connection to remote server!");
+//			try {
+//				if(RmiConnection.hostname != null && RmiConnection.servicename != null) { 
+//					result = remoteManager.findAllMembers(RmiConnection.hostname, RmiConnection.servicename);
+//				} else {
+//					logger.error("Remote hostname and/or service unknown!");
+//				}
+//			} catch (RemoteException e) {
+//				logger.error("Exception: " + e.getMessage());
+//			}
+//		} else {
+//			logger.error("No RMI connection to remote server!");
+//		}
+//		
+//		if (result != null)
+//			logger.debug("Returning " + result.toString());
+//		else
+//			logger.debug("Found no members at remote server.");
 		return result;
 	}
 

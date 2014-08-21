@@ -28,6 +28,8 @@ public class Settings {
 	public static final String propDbPassword = "mysql.password";
 	public static final String propDbConnectionString = "mysql.connectionstring";
 	public static final String propDbDriver = "mysql.dbdriver";
+	public static final String propXmlFileName = "xml.filename";
+	public static final String propXmlSchema = "xml.schema";
 
 	public static Properties props = new Properties();
 
@@ -68,8 +70,9 @@ public class Settings {
 				System.setProperty(propRmiHostName, rmiHostName);
 				System.setProperty(propRmiCodebase, rmiCodeBase);
 				System.setProperty(propSecurityPolicy, rmiSecurity);
-				// System.setProperty(propLogConfigFile, props.getProperty(propLogConfigFile));
-				
+
+				// List all properties
+				// props.list(System.out);
 			}
 		} catch (IOException e) {
 			System.out.println("Error reading file: " + e.getMessage());

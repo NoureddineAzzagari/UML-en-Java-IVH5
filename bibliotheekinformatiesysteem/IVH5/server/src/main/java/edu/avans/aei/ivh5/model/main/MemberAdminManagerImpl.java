@@ -16,11 +16,11 @@ import edu.avans.aei.ivh5.model.dao.DAOFactory;
 import edu.avans.aei.ivh5.model.dao.api.LoanDAOInf;
 import edu.avans.aei.ivh5.model.dao.api.MemberDAOInf;
 import edu.avans.aei.ivh5.model.dao.api.ReservationDAOInf;
-import edu.avans.aei.ivh5.model.dao.rmi.RmiConnection;
 import edu.avans.aei.ivh5.model.domain.ImmutableMember;
 import edu.avans.aei.ivh5.model.domain.Loan;
 import edu.avans.aei.ivh5.model.domain.Member;
 import edu.avans.aei.ivh5.model.domain.Reservation;
+import edu.avans.aei.ivh5.util.RmiConnection;
 import edu.avans.aei.ivh5.util.Settings;
 
 /**
@@ -53,6 +53,17 @@ public class MemberAdminManagerImpl implements RemoteMemberAdminManagerIF {
 	// When finding all available services in the registry we want to exclude
 	// ourselves.
 	private String servicename;
+	
+	/**
+	 * Caching list of services per host, with their object references. Whenever
+	 * we lookup a service on a host, we put it in this list for fast lookup.
+	 * Structure:
+	 * [hostname]->[[servicename]->[objectref], [servicename]->[objectref]]
+	 */
+	private static HashMap<String, HashMap<String, Object>> serviceList = 
+			new HashMap<String, HashMap<String, Object>>();
+	
+
 
 	/**
 	 * Instantiate and initialize the server stub. The servicename is the name
@@ -88,11 +99,7 @@ public class MemberAdminManagerImpl implements RemoteMemberAdminManagerIF {
 	 */
 	public HashMap<String, String> findAvailableServices() throws RemoteException {
 		
-		HashMap<String, String> result = new HashMap<String, String>();
-		
-
-
-		return result;
+		return null;
 	}
 
 	/**
@@ -119,7 +126,7 @@ public class MemberAdminManagerImpl implements RemoteMemberAdminManagerIF {
 			{
 				if (service.equals(this.servicename)) 
 				{
-					logger.debug("Perform lookup in the local datasource.");					
+					logger.debug("Perform lookup in the local datasource.");			
 					memberDAO = localDaoFactory.getMemberDAO();
 				} 
 				else 
@@ -130,7 +137,7 @@ public class MemberAdminManagerImpl implements RemoteMemberAdminManagerIF {
 					// lookup. We know the hostname and the remote service name.
 					// We therefore setup the connection here, so that the memberDAO
 					// can use it when it performs the actual lookup.
-					RmiConnection.connectToService(hostname, service);
+					RmiConnection.getService(hostname, service);
 				}
 				
 				if(memberDAO != null)
@@ -209,7 +216,7 @@ public class MemberAdminManagerImpl implements RemoteMemberAdminManagerIF {
 					// We therefore setup the connection here, so that the memberDAO
 					// can use it when it performs the actual lookup.
 					logger.debug("Do connectToService()");
-					RmiConnection.connectToService(hostname, service);
+					RmiConnection.getService(hostname, service);
 				} catch (Exception e) {
 					logger.fatal("remoteDaoFactory is null!");
 					e.printStackTrace();

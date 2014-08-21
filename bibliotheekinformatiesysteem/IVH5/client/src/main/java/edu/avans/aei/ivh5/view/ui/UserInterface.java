@@ -6,7 +6,9 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 import javax.swing.DefaultComboBoxModel;
@@ -17,6 +19,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
@@ -37,7 +40,7 @@ import edu.avans.aei.ivh5.model.domain.ImmutableMember;
  */
 public class UserInterface {
 
-	public JFrame applicationFrame;
+	public JFrame frame;
 	private JTextField txtSearchBox;
 	private JTextField txtFirstname;
 	private JTextField txtLastname;
@@ -66,9 +69,11 @@ public class UserInterface {
 	 * @param mgr The manager referencing all business logic.
 	 * @param host The host where the server (and registry) is located.
 	 */
-	public UserInterface() {
+	public UserInterface(Controller ctrl) {
 		
 		logger.debug("Constructor");
+		controller = ctrl;
+		controller.setUserinterface(this);
 		// The datamodel containing the data to be displayed in the table.
 		// Changing the data in the DataTableModel automatically updates the table.
 		dataTableModel = new DataTableModel();
@@ -85,12 +90,12 @@ public class UserInterface {
 		
 		logger.debug("initializeUserInterface");
 
-		applicationFrame = new JFrame();
-		applicationFrame.setResizable(false);
-		applicationFrame.setTitle("Library Information System");
-		applicationFrame.setBounds(100, 100, 550, 480);
-		applicationFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		applicationFrame.getContentPane().setLayout(new BorderLayout(0, 0));
+		frame = new JFrame();
+		frame.setResizable(false);
+		frame.setTitle("Library Information System");
+		frame.setBounds(100, 100, 550, 480);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.getContentPane().setLayout(new BorderLayout(0, 0));
 
 		// Top side: Search and Server information panels, collected in a container.		
 		JPanel serverContainer = new JPanel();
@@ -104,10 +109,11 @@ public class UserInterface {
 		memberInfoContainer.add(setupMemberDetailPanel(), BorderLayout.CENTER);
 		
 		// Display the various user interface components at their right position.
-		applicationFrame.getContentPane().add(serverContainer, BorderLayout.NORTH);
-		applicationFrame.getContentPane().add(memberInfoContainer, BorderLayout.CENTER);
-		applicationFrame.getContentPane().add(setupStatusInfoPanel(), BorderLayout.SOUTH);
+		frame.getContentPane().add(serverContainer, BorderLayout.NORTH);
+		frame.getContentPane().add(memberInfoContainer, BorderLayout.CENTER);
+		frame.getContentPane().add(setupStatusInfoPanel(), BorderLayout.SOUTH);
 	}
+	
 	
 	/**
 	 * Setup the part of the screen that displays search functionality.
@@ -137,9 +143,9 @@ public class UserInterface {
 		btnSearch.addActionListener(controller);
 		// Set a name for the command of this button, so we can retrieve 
 		// the button in the Controller class.
-		btnSearch.setActionCommand("SEARCH");
+		btnSearch.setActionCommand("FIND_MEMBER");
 		// Enable Enter-key as input for search button.
-		applicationFrame.getRootPane().setDefaultButton(btnSearch);
+		frame.getRootPane().setDefaultButton(btnSearch);
 		pnlSearch.add(btnSearch);
 
 		return pnlSearch;
@@ -165,8 +171,8 @@ public class UserInterface {
 		pnlServerInfo.add(new JLabel("Server:"));
 
 		JComboBox<String> cmbSelectServer = new JComboBox<String>();
-		String[] hosts = {"localhost", "127.0.0.1", "192.168.1.1"};
-		cmbSelectServer.setModel(new DefaultComboBoxModel<String>(hosts));
+		String[] host = {"localhost", "127.0.0.1", "192.168.1.1"};
+		cmbSelectServer.setModel(new DefaultComboBoxModel<String>(host));
 
 		pnlServerInfo.add(cmbSelectServer);
 
@@ -181,7 +187,7 @@ public class UserInterface {
 		pnlServerInfo.add(new JLabel("Service:"));
 
 		cmbSelectService = new JComboBox<String>();
-		cmbSelectService.setModel(new DefaultComboBoxModel<String>());
+		cmbSelectService.setModel(new DefaultComboBoxModel<String>(new String[] {"Library/Breda"}));
 		pnlServerInfo.add(cmbSelectService);
 
 		JButton btnListMembers = new JButton("List");
@@ -189,7 +195,7 @@ public class UserInterface {
 		btnListMembers.addActionListener(controller);
 		// Set a name for the command of this button, so we can retrieve 
 		// the button in the Controller class.
-		btnListMembers.setActionCommand("LIST");
+		btnListMembers.setActionCommand("SELECT_SERVICE");
 		pnlServerInfo.add(btnListMembers);
 		
 
@@ -352,7 +358,7 @@ public class UserInterface {
 		logger.debug("setStatusInfoPanel");
 	
 		JPanel pnlStatusInfo = new JPanel();
-		applicationFrame.getContentPane().add(pnlStatusInfo, BorderLayout.SOUTH);
+		frame.getContentPane().add(pnlStatusInfo, BorderLayout.SOUTH);
 		pnlStatusInfo.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));
 
 		txtStatusText = new JTextField();
