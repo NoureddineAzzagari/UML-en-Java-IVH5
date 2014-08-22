@@ -25,6 +25,14 @@ public interface RemoteMemberAdminServerIF extends Remote {
 	public ArrayList<String> findAvailableServices() throws RemoteException;
 
 	/**
+	 * Find all members on all of the available services, and return all results in a single list.
+	 * 
+	 * @return A list of information about the member, and the host and service that is was found on.
+	 * @throws RemoteException
+	 */
+	public ArrayList<RemoteMemberInfo> findAllMembers(ArrayList<String> visitedServices) throws RemoteException;
+
+	/**
      * Tries to find the Member object matching the given membership number.
      * 
      * @param membershipNumber the member unique number
@@ -32,30 +40,6 @@ public interface RemoteMemberAdminServerIF extends Remote {
      * ImmutableMember interface is returned, null otherwise.
      */
 	public Member findMember(String hostname, String service, int membershipNumber) throws RemoteException;
-	
-	/**
-	 * Find all members on a server. Since a request to this method can be invoked
-	 * by the corresponding client (GUI client to server) or by a remote server 
-	 * (local server to remote server) we need the hostname and service name to make
-	 * the difference. If the servicename equals our own name, we make a local lookup
-	 * for members. If the servicename is different, it is remote and we perform 
-	 * a remote lookup.
-	 * 
-	 * @param hostName Name or IP-address of the local or remote host.
-	 * @param serviceName Name of the, possibly remote, service as registered in the registry.
-	 * @return A list of retrieved members, or null is none were found.
-	 * @throws RemoteException
-	 */
-	// public ArrayList<ImmutableMember> findAllMembers(String hostname, String service) throws RemoteException;
-
-	/**
-	 * Find all members on all of the available services, and return all results in a single list.
-	 * 
-	 * @return A list of information about the member, and the host and service that is was found on.
-	 * @throws RemoteException
-	 */
-	// public ArrayList<RemoteMemberInfo> listAllMembers(ArrayList<String> services) throws RemoteException;
-	public ArrayList<RemoteMemberInfo> findAllMembers(ArrayList<String> visitedServices) throws RemoteException;
 
 
 }

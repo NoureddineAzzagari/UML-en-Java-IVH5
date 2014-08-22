@@ -22,6 +22,7 @@ import edu.avans.aei.ivh5.api.RemoteMemberInfo;
 import edu.avans.aei.ivh5.model.domain.ImmutableMember;
 import edu.avans.aei.ivh5.model.domain.Member;
 import edu.avans.aei.ivh5.util.Settings;
+import edu.avans.aei.ivh5.view.ui.DataTableModel;
 import edu.avans.aei.ivh5.view.ui.UserInterface;
 
 /**
@@ -48,6 +49,9 @@ public class Controller implements ActionListener, EventListener, ListSelectionL
 	
 	// Reference to the member manager.
 	private RemoteMemberAdminClientIF manager = null;
+	
+	// When we find members on a host and service, we store them here for later retrieval.
+	ArrayList<RemoteMemberInfo> globalMemberList = null;
 	
 	/**
 	 * Constructor, initializing generally required references to user interface components.
@@ -111,68 +115,61 @@ public class Controller implements ActionListener, EventListener, ListSelectionL
 	}
 
 	/**
+	 * Find the member identified by membershipNr and display its information.
+	 * 
+	 * @param hostname Name/IP address of the host to find the member on.
+	 * @param servicename Name of the service to find the host on.
+	 * @param membershipNr Number of the manager to be found.
+	 */
+	public void doFindMember(String host, String service,int membershipNr) 
+	{
+		logger.debug("doFindMember " + host + " " + service + " " + membershipNr);
+		
+		Member member;
+		if (manager == null || userinterface == null) {
+			logger.error("Manager or userinterface is null!");
+		} else {
+			try {
+				member = manager.findMember(host, service, membershipNr);
+
+				if (member != null) {
+					userinterface.setMemberDetails(member);
+				} else {
+					logger.debug("Member " + membershipNr + " not found");
+					userinterface.setStatusText("Member " + membershipNr + " not found.");
+				}
+			} catch (RemoteException e) {
+				logger.error("Error: " + e.getMessage());
+			}
+		}
+	}
+
+	/**
 	 * Find all members on all hosts and services.
 	 */
 	public void doFindAllMembers() {
 		logger.debug("doFindAllMembers on all hosts/services");
 
-		ArrayList<RemoteMemberInfo> members = null;
-		ArrayList<String> visitedServices = new ArrayList<String>();
-
 		if (manager != null) {
 			try {
-				members = manager.findAllMembers(visitedServices);
+				globalMemberList = manager.findAllMembers(new ArrayList<String>());
 			} catch (RemoteException e) {
 				logger.error("Error finding members: " + e.getMessage());
-			}
-
-			if (members != null) {
-				logger.debug("Found " + members.size() + " members");
-				// userinterface.setMemberListData(members);
-			} else {
-				logger.debug("No members found on any of the available services.");
-				userinterface.setStatusText("No members found.");
 			}
 		} else {
 			logger.error("Manager is null! Could not find members!");
 		}
+
+		int count = (globalMemberList == null) ? 0 : globalMemberList.size();
+		String status = "Found " + count + " members"; 
+		logger.debug(status);
+		userinterface.setStatusText(status);
+		
+		// Setting the values in the datamodel will automatically 
+		// update the table and display the contents.
+ 		DataTableModel data = userinterface.getDataTableModel();
+		data.setValues(globalMemberList);
 	}
-
-
-	/**
-	 * This method handles list selection events. Whenever the user selects a row in the memberlist
-	 * of the user interface, valueChanged is fired and the appropriate action is taken. 
-	 */
-    public void valueChanged(ListSelectionEvent e) {
-    	
-        ListSelectionModel lsm = (ListSelectionModel)e.getSource();
-        String selectedMember = null;
-
-        // There can be multiple events going on, since the user could possibly select multiple
-        // rows and even individual columns. We first wait until the user is finished adjusting. 
-        if(e.getValueIsAdjusting() == false) {
-
-    		String hostname = Settings.props.getProperty(Settings.propRmiHostName);
-    		String servicename = Settings.props.getProperty(Settings.propRmiServiceGroup) 
-    				+ Settings.props.getProperty(Settings.propRmiServiceName);
-
-        	// There could be multiple rows (or columns) selected, even 
-        	// though ListSelectionModel = SINGLE_SELECTION. Find out which 
-        	// indexes are selected.
-            int minIndex = lsm.getMinSelectionIndex();
-            int maxIndex = lsm.getMaxSelectionIndex();
-            for (int i = minIndex; i <= maxIndex; i++) {
-                if (lsm.isSelectedIndex(i)) 
-                {
-//                    selectedMember = (String) userinterface.getDataTableModel().getValueAt(i, 0);
-//                    if (selectedMember != null && !selectedMember.equals("")) {                        
-//                        logger.debug("Selected member = " + selectedMember);
-//                        // doFindMember(hostname, servicename, Integer.parseInt(selectedMember));
-//                    }
-                }
-            }
-        }
-    }
 
 	/**
 	 * <p>
@@ -190,37 +187,75 @@ public class Controller implements ActionListener, EventListener, ListSelectionL
 	@Override
 	public void actionPerformed(ActionEvent e) {
 	
-		String hostname = Settings.props.getProperty(Settings.propRmiHostName);
-		String servicename = Settings.props.getProperty(Settings.propRmiServiceGroup) 
-				+ Settings.props.getProperty(Settings.propRmiServiceName);
-		
 		if (e.getActionCommand().equals("FIND_MEMBER")) {
-			try {
-				/**
-				 * Find Member is called when the user inserts a Membership nr and presses Search.
-				 * In that case, we only search on our 'own local server', not in the cloud
-				 * of services. Therefore we select hostname and service name from the properties. 
-				 */
+			/**
+			 * Find Member is called when the user inserts a Membership nr and presses Search.
+			 * In that case, we only search on our 'own local server', not in the cloud
+			 * of services. Therefore we select hostname and service name from the properties. 
+			 */
+			try {	
 				int membershipNr = Integer.parseInt(userinterface.getSearchValue().trim());
-				userinterface.eraseMemberDetails();
-				doFindMember(membershipNr);
+				
+				// We have to find membershipNr in the globalMemberList, since we have
+				// to find the host and service it lives on
+				for(RemoteMemberInfo member : globalMemberList) {
+					if(member.getMember().getMembershipNumber() == membershipNr) {
+						// Found it
+						String host = member.getHostname();
+						String service = member.getServicename();
+						userinterface.eraseMemberDetails();
+						doFindMember(host, service, membershipNr);
+					}
+				}				
 			} catch (NumberFormatException ex) {
 				logger.error("Wrong input, only numbers allowed");
 				userinterface.setStatusText("Wrong input, only numbers allowed.");
 				userinterface.setSearchBoxText("");
 			}
 		} else if (e.getActionCommand().equals("GET_SERVICES")) {
+			/**
+			 * Do a search for all members on all services, and display them in the table.
+			 */
 			try {
-				logger.debug("Get all services");
-
-				// doGetAvailableServices();
-				
-				doFindAllMembers();
-			
+				logger.debug("Find all members on all hosts/services");
+				doFindAllMembers();			
 			} catch (Exception ex) {
 				logger.error("Error: " + ex.getMessage());
 				ex.printStackTrace();
 			}
 		}
+	}
+
+	/**
+	 * This method handles list selection events. Whenever the user selects a row in the memberlist
+	 * of the user interface, valueChanged is fired and the appropriate action is taken. 
+	 */
+	public void valueChanged(ListSelectionEvent e) {
+		
+	    ListSelectionModel lsm = (ListSelectionModel)e.getSource();
+	
+	    // There can be multiple events going on, since the user could possibly select multiple
+	    // rows and even individual columns. We first wait until the user is finished adjusting. 
+	    if(e.getValueIsAdjusting() == false) {
+	
+	    	// There could be multiple rows (or columns) selected, even 
+	    	// though ListSelectionModel = SINGLE_SELECTION. Find out which 
+	    	// indexes are selected.
+	        int minIndex = lsm.getMinSelectionIndex();
+	        int maxIndex = lsm.getMaxSelectionIndex();
+	        for (int i = minIndex; i <= maxIndex; i++) {
+	            if (lsm.isSelectedIndex(i)) 
+	            {
+	                String selectedMember = (String) userinterface.getDataTableModel().getValueAt(i, 0);
+	                String hostname = (String) userinterface.getDataTableModel().getValueAt(i, 3);
+	                String servicename = (String) userinterface.getDataTableModel().getValueAt(i, 4);
+	                
+	                if (selectedMember != null && !selectedMember.equals("")) {                        
+	                    logger.debug("Selected member = " + selectedMember);
+	                    doFindMember(hostname, servicename, Integer.parseInt(selectedMember));
+	                }
+	            }
+	        }
+	    }
 	}
 }

@@ -86,7 +86,7 @@ public class RmiDAOFactory extends DAOFactory {
 		} catch (RemoteException e) {
 			logger.error("Exception: " + e.getMessage());
 		}
-    	
+
 		return availableServices;
 	}
 

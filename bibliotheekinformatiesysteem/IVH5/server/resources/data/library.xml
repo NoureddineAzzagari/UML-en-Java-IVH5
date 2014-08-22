@@ -5,7 +5,7 @@
 	xsi:schemaLocation="http://www.example.org/library library.xsd">
 
 	<member membershipNumber="1004">
-		<firstname>Robert</firstname>
+		<firstname>Robin</firstname>
 		<lastname>Schellius</lastname>
 		<street>Hierdestraat</street>
 		<housenumber>5</housenumber>

@@ -48,7 +48,6 @@ public class UserInterface extends JFrame {
 	private JTextField txtCityname;
 	private JTable tableMembers;
 	private JLabel lblCity;
-	private JComboBox<String> cmbSelectService;
 	private Dimension preferredSize = new Dimension(480, 140);
 
 	// The controller handles all work that follows from events or actions.
@@ -162,11 +161,11 @@ public class UserInterface extends JFrame {
 
 		// The table containing the data
 		tableMembers = new JTable(dataTableModel);
-		String [] headers = new String[] {"Nr", "Firstname", "Lastname", "Library"};
+		String [] headers = new String[] {"Nr", "Firstname", "Lastname", "Host", "Library"};
 		dataTableModel.setTableHeader(headers);
 		// The table does not display well without contents, so 
 		// we put some empty strings in the data model.
-		String[][] initialValues = new String[][] { {"","","",""} };
+		String[][] initialValues = new String[][] { {"","","","",""} };
 		dataTableModel.setValues(initialValues);
 		
 		TableColumn column = tableMembers.getColumnModel().getColumn(0);
@@ -386,15 +385,12 @@ public class UserInterface extends JFrame {
 	public String getSearchValue() {
 		return txtSearchBox.getText();
 	}
-
+	
 	/**
 	 * Erase the contents of the Member detail panel, in order for new
 	 * information to be displayed.
 	 */
 	public void eraseMemberDetails() {
-		
-		logger.debug("eraseMemberDetails");
-	
 		txtStatusText.setText("");
 		txtFirstname.setText("");
 		txtLastname.setText("");

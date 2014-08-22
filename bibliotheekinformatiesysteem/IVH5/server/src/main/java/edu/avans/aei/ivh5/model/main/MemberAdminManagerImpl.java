@@ -9,6 +9,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 
 import org.apache.log4j.Logger;
@@ -22,8 +23,6 @@ import edu.avans.aei.ivh5.model.dao.api.LoanDAOInf;
 import edu.avans.aei.ivh5.model.dao.api.MemberDAOInf;
 import edu.avans.aei.ivh5.model.dao.api.ReservationDAOInf;
 import edu.avans.aei.ivh5.model.dao.rmi.RmiConnection;
-import edu.avans.aei.ivh5.model.dao.rmi.RmiConnection.listServices;
-import edu.avans.aei.ivh5.model.dao.rmi.RmiMemberDAO;
 import edu.avans.aei.ivh5.model.domain.ImmutableMember;
 import edu.avans.aei.ivh5.model.domain.Loan;
 import edu.avans.aei.ivh5.model.domain.Member;
@@ -180,8 +179,41 @@ public class MemberAdminManagerImpl implements RemoteMemberAdminClientIF, Remote
 	@Override
 	public Member findMember(String hostname, String service,
 			int membershipNumber) throws RemoteException {
-		logger.debug("NOT IMPLEMENTED YET!");					
-		return null;
+
+		logger.debug("findMember on " + hostname + " " + service);
+		
+		Member member = null;
+		
+		if(service.equals(myServicename)) {
+			// Search in our local DAO, no need to search remote server
+			if(localDaoFactory != null) {
+				MemberDAOInf memberDAO = localDaoFactory.getMemberDAO();
+				member = memberDAO.findMember(membershipNumber);
+			} else {
+				logger.error("Could not contact local DAO factory!");
+			}
+			
+		} else {
+			// Search remote server
+			try {
+				Registry registry = null;
+				RemoteMemberAdminServerIF remoteMgr;
+				registry = RmiConnection.getRegistry(hostname);
+				remoteMgr = (RemoteMemberAdminServerIF) registry.lookup(service);
+				member = remoteMgr.findMember(hostname, service, membershipNumber);
+			} catch (RemoteException e) {
+				logger.error("RemoteException: " + e.getMessage());
+			} catch (NotBoundException e) {
+				logger.error("NotBoundException: " + e.getMessage());
+			}
+		}
+		
+		if(member != null)
+			logger.debug("Found member " + member.getMembershipNumber());
+		else
+			logger.debug("Member " + membershipNumber + " not found");
+			
+		return member;
 	}
 
 	/**
@@ -202,7 +234,7 @@ public class MemberAdminManagerImpl implements RemoteMemberAdminClientIF, Remote
 	public ArrayList<RemoteMemberInfo> findAllMembers(ArrayList<String> visitedServices) 
 			throws RemoteException {
 	
-		logger.debug("findAllMembers on all hosts and services");
+		logger.debug("findAllMembers");
 		logger.debug("Visited services = " + visitedServices.toString());
 	
 		ArrayList<RemoteMemberInfo> memberList = null;
@@ -225,9 +257,10 @@ public class MemberAdminManagerImpl implements RemoteMemberAdminClientIF, Remote
 					if(list != null && list.size() > 0) {
 						memberList = new ArrayList<RemoteMemberInfo>();
 						for(ImmutableMember mem: list) {
-							memberList.add(new RemoteMemberInfo("localhost", myServicename, mem));
+							memberList.add(new RemoteMemberInfo("localhost", myServicename, (Member)mem));
 						}
 					}
+					// myServicename has been searched, so remove it from remaining services
 					remainingServices.remove(myServicename);
 				} else {
 					logger.error("Could not contact local DAO factory!");
@@ -236,6 +269,8 @@ public class MemberAdminManagerImpl implements RemoteMemberAdminClientIF, Remote
 			
 			visitedServices.add(myServicename);
 			remainingServices.remove(myServicename);
+			logger.debug("Visited services = " + visitedServices.toString());
+			logger.debug("Remaining services = " + remainingServices.toString());
 			
 			// Process all the remaining services.
 			try {
@@ -243,6 +278,7 @@ public class MemberAdminManagerImpl implements RemoteMemberAdminClientIF, Remote
 				RemoteMemberAdminServerIF remoteMgr;
 				
 				for (String service : remainingServices) {
+					logger.debug("FindAll on " + service);
 					try {
 						registry = RmiConnection.getRegistry("localhost");
 						remoteMgr = (RemoteMemberAdminServerIF) registry.lookup(service);
@@ -260,6 +296,13 @@ public class MemberAdminManagerImpl implements RemoteMemberAdminClientIF, Remote
 			logger.error("RemoteException: " + e.getMessage());
 		}
 
+		/**
+		 * Since we defined a comparator method on RemoteMemberInfo, we can compare
+		 * objects to each other. The order that was chosen in that method defines the 
+		 * ordering in the sort method. See the RemoteMemberInfo class.
+		 */
+		Collections.sort(memberList);
+		
 		int count = (memberList == null) ? 0 : memberList.size();
 		logger.debug("Returning " + count + " items");
 		

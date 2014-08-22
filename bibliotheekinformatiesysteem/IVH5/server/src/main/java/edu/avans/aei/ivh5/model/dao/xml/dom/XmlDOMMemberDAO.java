@@ -134,10 +134,10 @@ public class XmlDOMMemberDAO implements MemberDAOInf {
 					Element child = (Element) node;
 
 					String membershipNr = child.getAttribute("membershipNumber");
-					String firstname = child.getAttribute("firstname");
-					String lastname = child.getAttribute("lastname");
+					String firstname = child.getElementsByTagName("firstname").item(0).getTextContent();
+					String lastname = child.getElementsByTagName("lastname").item(0).getTextContent();
 
-					logger.debug("Adding " + membershipNr + " to result");
+					logger.debug("Adding " + membershipNr + " " + firstname + " " + lastname + " to result");
 					result.add(new Member(Integer.parseInt(membershipNr), firstname, lastname));
 				}
 			}
