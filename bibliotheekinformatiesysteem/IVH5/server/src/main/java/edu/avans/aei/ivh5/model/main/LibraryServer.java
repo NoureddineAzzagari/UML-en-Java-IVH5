@@ -70,6 +70,10 @@ public class LibraryServer {
 			return;
 		}
 		
+		// If this property is set and java.rmi.server.hostname is not, JVM takes
+		// the address of the host by issuing a call to java.net.InetAddress.getLocalHost().
+		// System.setProperty("java.rmi.server.useLocalHostname");
+		
 		if (System.getSecurityManager() == null) {
 			System.setSecurityManager(new SecurityManager());
 		}

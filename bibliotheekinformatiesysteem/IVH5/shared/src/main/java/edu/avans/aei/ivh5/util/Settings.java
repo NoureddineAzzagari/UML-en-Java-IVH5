@@ -1,6 +1,7 @@
 package edu.avans.aei.ivh5.util;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -74,8 +75,9 @@ public class Settings {
 				// List all properties
 				// props.list(System.out);
 			}
-		} catch (IOException e) {
-			System.out.println("Error reading file: " + e.getMessage());
+		} catch (IOException  e) {
+			System.out.println("Error reading file: " + e.getMessage() + " - aborting.");
+			System.exit(0);
 		} catch (Error e) {
 			System.out.println(e.getMessage());
 		} finally {

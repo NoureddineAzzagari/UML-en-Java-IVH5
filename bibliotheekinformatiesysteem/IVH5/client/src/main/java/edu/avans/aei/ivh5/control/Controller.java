@@ -57,11 +57,21 @@ public class Controller implements ActionListener, EventListener, ListSelectionL
 	}
 	
 	/**
-	 * Setter
+	 * Set the link to the user interface, so we can display the results of actions.
+	 * 
 	 * @param userinterface
 	 */
-	public void setUserinterface(UserInterface userinterface) {
-		this.userinterface = userinterface;
+	public void setUIRef(UserInterface ui) {
+		this.userinterface = ui;
+	}
+
+	/**
+	 * Set the link to the user interface, so we can display the results of actions.
+	 * 
+	 * @param userinterface
+	 */
+	public void setManagerRef(RemoteMemberAdminManagerIF mgr) {
+		this.manager = mgr;
 	}
 
 	/**
@@ -79,7 +89,7 @@ public class Controller implements ActionListener, EventListener, ListSelectionL
 		boolean memberFound = false;
 
 		if (manager == null || userinterface == null) {
-			logger.error("Null values (manager/userinterface)!");
+			logger.error("Manager or userinterface is null!");
 		} else {
 			try {
 				member = manager.findMember(hostname, servicename, membershipNr);
@@ -88,6 +98,7 @@ public class Controller implements ActionListener, EventListener, ListSelectionL
 					userinterface.setMemberDetails(member);
 					memberFound = true;
 				} else {
+					logger.debug("Member " + membershipNr + " not found at "+ servicename);
 					userinterface.setStatusText("Lidnummer " + membershipNr + " niet gevonden");
 				}
 			} catch (RemoteException e) {
@@ -192,20 +203,12 @@ public class Controller implements ActionListener, EventListener, ListSelectionL
 				userinterface.setStatusText("Wrong input, only numbers allowed.");
 				userinterface.setSearchBoxText("");
 			}
-		} else if (e.getActionCommand().equals("CONNECT_TO_SERVER")) {
-			try {
-				
-				
-				
-
-			} catch (Exception ex) {
-				logger.error("Error: " + ex.getMessage());
-			}
 		} else if (e.getActionCommand().equals("SELECT_SERVICE")) {
 			try {
 				logger.debug("Selected service = " + userinterface.getSelectedService());
 				userinterface.eraseMemberDetails();
-				doFindAllMembers(userinterface.getHostname(), userinterface.getSelectedService());
+				doFindAllMembers(Settings.props.getProperty(Settings.propRmiHostName), 
+						userinterface.getSelectedService());
 			} catch (Exception ex) {
 				logger.error("Error: " + ex.getMessage());
 			}

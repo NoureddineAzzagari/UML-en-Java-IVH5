@@ -2,8 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package edu.avans.aei.ivh5.util;
+package edu.avans.aei.ivh5.model.dao.rmi;
 
+import java.rmi.AccessException;
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Arrays;
@@ -46,6 +48,8 @@ public class RmiConnection {
 				logger.debug("Found registry, storing it in cache.");
 				registries.put(hostname, registry);
 			}
+		} catch (RemoteException e) {
+			logger.fatal("Could not access the registry: " + e.getMessage());
 		} catch (java.security.AccessControlException e) {
 			logger.fatal("No access: " + e.getMessage());
 		} catch (Exception e) {
@@ -54,37 +58,6 @@ public class RmiConnection {
 		}
 		return registries.get(hostname);
 	}
-	
-    /**
-     * Creates a RMI connection to the given service on the given hostname.
-     * 
-     * @param host Hostname or IP-address of remote server.
-     * @param service The name of the service as it is registered in the registry.
-     */
-    public static Object getService(String host, String service) {
-
-		logger.debug("Connecting to " + service + " on host "  + host);
-		
-		Object remoteService = null;
-
-        try {
-            Registry registry = getRegistry(host);
-            remoteService = (Object) registry.lookup(service);
-        } 
-		catch (java.security.AccessControlException e) {
-			logger.error("Could not connect to registry: " + e.getMessage());			
-		}
-        catch (java.rmi.NotBoundException e) {
-            logger.error("Service " + service + " not found!");
-        }
-        catch (Exception e) {
-            logger.error("Error: " + e.getMessage());
-            logger.error("(Are the webserver, the registry and the server running?)");
-        }
-
-        return remoteService;
-    }	
-    
 
     public static HashMap<String, String> getAvailableServices(String hostname) {
     	
@@ -100,15 +73,56 @@ public class RmiConnection {
 
     }
 
-    
-    /**
-     * 
-     */
-//     public static RemoteMemberAdminManagerIF getRemoteService() {
-//    public static Object getRemoteService() {
-//    	return remoteService;
-//    }
-    
+	/**
+	 * 
+	 * @author Robin Schellius
+	 *
+	 */
+    public static class getService implements Runnable {
+	
+    	private String hostname;
+    	private String service;
+    	
+	    /**
+	     * Creates a RMI connection to the given service on the given hostname.
+	     * 
+	     * @param host Hostname or IP-address of remote server.
+	     * @param service The name of the service as it is registered in the registry.
+	     */
+	    public getService(String host, String svc) {
+	    	hostname = host;
+	    	service = svc;
+			logger.debug(Thread.currentThread().getName() + " Constructor");
+	    }
+
+	    /**
+	     * The thread's main method that runs and does the work.
+	     */
+		@Override
+		public void run() {
+	    	
+			logger.debug(Thread.currentThread().getName() + 
+					" Connecting to " + service + " on host "  + hostname);
+			
+	        try {
+	            Registry registry = getRegistry(hostname);
+	            remoteService = (Object) registry.lookup(service);
+				logger.debug(Thread.currentThread().getName() + 
+						" Connected to " + service);	            
+	        } 
+			catch (java.security.AccessControlException e) {
+				logger.error("Could not connect to registry: " + e.getMessage());			
+			}
+	        catch (java.rmi.NotBoundException e) {
+	            logger.error("Service " + service + " not found!");
+	        }
+	        catch (Exception e) {
+	            logger.error(e.getMessage());
+	            logger.error("(Are the webserver, the registry and the server running?)");
+	        }
+	    }
+    }
+
     /**
      * 
      * @author Robin Schellius
@@ -116,31 +130,30 @@ public class RmiConnection {
      */
     public static class listServices implements Runnable {
 
+    	private static String hostname;
     	
-    	public listServices(String hostname) {
-    		
+    	/**
+    	 * 
+    	 * @param host
+    	 */
+    	public listServices(String host) {
+    		hostname = host;
     	}
     	
+    	/**
+    	 * 
+    	 */
 	    public void run() {
-	        String importantInfo[] = {
-	            "Mares eat oats",
-	            "Does eat oats",
-	            "Little lambs eat ivy",
-	            "A kid will eat ivy too"
-	        };
 	        try {
-	            for (int i = 0;
-	                 i < importantInfo.length;
-	                 i++) {
-	                // Pause for 4 seconds
-	                Thread.sleep(4000);
-	                // Print a message
-	                // threadMessage(importantInfo[i]);
-	            }
-	        } catch (InterruptedException e) {
-	            // threadMessage("I wasn't done!");
-	        }
+	        	
+	        	String[] list = getRegistry(hostname).list();
+
+	        } catch (RemoteException e) {
+				logger.error(e.getMessage());
+			}
 	    }
 	}
 
+    
+    
 }

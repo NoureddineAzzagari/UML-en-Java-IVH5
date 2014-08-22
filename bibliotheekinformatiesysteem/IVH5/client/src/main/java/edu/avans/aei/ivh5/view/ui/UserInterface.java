@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -38,7 +39,8 @@ import edu.avans.aei.ivh5.model.domain.ImmutableMember;
  * 
  * @author Robin Schellius
  */
-public class UserInterface {
+@SuppressWarnings("serial")
+public class UserInterface extends JFrame {
 
 	public JFrame frame;
 	private JTextField txtSearchBox;
@@ -73,11 +75,10 @@ public class UserInterface {
 		
 		logger.debug("Constructor");
 		controller = ctrl;
-		controller.setUserinterface(this);
+		controller.setUIRef(this);
 		// The datamodel containing the data to be displayed in the table.
 		// Changing the data in the DataTableModel automatically updates the table.
 		dataTableModel = new DataTableModel();
-		initializeUserInterface();
 	}
 
 	/**
@@ -86,7 +87,7 @@ public class UserInterface {
 	 * @param serverNames
 	 *            Names of RMI servers found in the registry. 
 	 */
-	private void initializeUserInterface() {
+	public void display() {
 		
 		logger.debug("initializeUserInterface");
 
@@ -97,21 +98,17 @@ public class UserInterface {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(new BorderLayout(0, 0));
 
-		// Top side: Search and Server information panels, collected in a container.		
-		JPanel serverContainer = new JPanel();
-		serverContainer.setLayout(new BorderLayout());
-		serverContainer.add(setupServerPanel(), BorderLayout.NORTH);
-		serverContainer.add(setupSearchPanel(), BorderLayout.SOUTH);
-
 		// Center part: Member list- and detail information, collected in a container.
 		JPanel memberInfoContainer = new JPanel();
 		memberInfoContainer.add(setupMemberListPanel(), BorderLayout.NORTH);
 		memberInfoContainer.add(setupMemberDetailPanel(), BorderLayout.CENTER);
 		
 		// Display the various user interface components at their right position.
-		frame.getContentPane().add(serverContainer, BorderLayout.NORTH);
+		frame.getContentPane().add(setupSearchPanel(), BorderLayout.NORTH);
 		frame.getContentPane().add(memberInfoContainer, BorderLayout.CENTER);
 		frame.getContentPane().add(setupStatusInfoPanel(), BorderLayout.SOUTH);
+
+		frame.setVisible(true);
 	}
 	
 	
@@ -148,47 +145,9 @@ public class UserInterface {
 		frame.getRootPane().setDefaultButton(btnSearch);
 		pnlSearch.add(btnSearch);
 
-		return pnlSearch;
-	}
-
-	/**
-	 * Setup the part of the screen that displays search functionality.
-	 * 
-	 * @return The created panel.
-	 */
-	private JPanel setupServerPanel() {
-		
-		logger.debug("setupServerPanel");
-
-		JPanel pnlServerInfo = new JPanel();
-		pnlServerInfo.setBorder(new TitledBorder(
-				new LineBorder(new Color(0, 0, 0)), "Select server/service",
-				TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		pnlServerInfo.setPreferredSize(new Dimension(480, 55));
-		FlowLayout flowLayout = (FlowLayout) pnlServerInfo.getLayout();
-		flowLayout.setAlignment(FlowLayout.LEFT);
-
-		pnlServerInfo.add(new JLabel("Server:"));
-
-		JComboBox<String> cmbSelectServer = new JComboBox<String>();
-		String[] host = {"localhost", "127.0.0.1", "192.168.1.1"};
-		cmbSelectServer.setModel(new DefaultComboBoxModel<String>(host));
-
-		pnlServerInfo.add(cmbSelectServer);
-
-		JButton btnConnect = new JButton("Connect");
-		// The controller handles the action for this button.
-		btnConnect.addActionListener(controller);
-		// Set a name for the command of this button, so we can retrieve 
-		// the button in the Controller class.
-		btnConnect.setActionCommand("CONNECT_TO_SEVER");
-		pnlServerInfo.add(btnConnect);
-
-		pnlServerInfo.add(new JLabel("Service:"));
-
 		cmbSelectService = new JComboBox<String>();
 		cmbSelectService.setModel(new DefaultComboBoxModel<String>(new String[] {"Library/Breda"}));
-		pnlServerInfo.add(cmbSelectService);
+		pnlSearch.add(cmbSelectService);
 
 		JButton btnListMembers = new JButton("List");
 		// The controller handles the action for this button.
@@ -196,10 +155,9 @@ public class UserInterface {
 		// Set a name for the command of this button, so we can retrieve 
 		// the button in the Controller class.
 		btnListMembers.setActionCommand("SELECT_SERVICE");
-		pnlServerInfo.add(btnListMembers);
-		
+		pnlSearch.add(btnListMembers);
 
-		return pnlServerInfo;
+		return pnlSearch;
 	}
 
 	/**
@@ -436,10 +394,6 @@ public class UserInterface {
 
 	public String getSelectedService() {
 		return (String) cmbSelectService.getSelectedItem();
-	}
-
-	public String getHostname() {
-		return hostname;
 	}
 
 	public String getSearchValue() {

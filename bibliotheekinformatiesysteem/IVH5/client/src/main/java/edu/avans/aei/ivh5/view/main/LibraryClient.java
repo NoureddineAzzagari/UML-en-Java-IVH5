@@ -3,6 +3,7 @@
  */
 package edu.avans.aei.ivh5.view.main;
 
+import java.awt.EventQueue;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,7 +23,6 @@ import org.apache.log4j.PropertyConfigurator;
 import edu.avans.aei.ivh5.api.RemoteMemberAdminManagerIF;
 import edu.avans.aei.ivh5.control.Controller;
 import edu.avans.aei.ivh5.util.ManagerNotFoundException;
-import edu.avans.aei.ivh5.util.RmiConnection;
 import edu.avans.aei.ivh5.util.Settings;
 import edu.avans.aei.ivh5.view.ui.UserInterface;
 
@@ -54,29 +54,41 @@ public class LibraryClient {
 
 		logger.debug("Constructor using " + hostname);
 
-		String status;
-		String service = Settings.props.getProperty(
-				Settings.propRmiServiceGroup) + Settings.props.getProperty(Settings.propRmiServiceName);
+		String service = Settings.props.getProperty(Settings.propRmiServiceGroup) + 
+				Settings.props.getProperty(Settings.propRmiServiceName);
+
 		RemoteMemberAdminManagerIF manager = null;
-
-		logger.debug("Connecting to " + service + " on host " + hostname);
-		manager = (RemoteMemberAdminManagerIF) RmiConnection.getService(hostname, service);
-
-		if(manager == null) {
-			status = "Not connected";
-			logger.debug("Manager not found: " + status);
-		} else {
-			status = "Connected to " + service + " on host " + hostname;
+		try {
+			logger.debug("Locate registry on " + hostname);		
+			Registry registry = LocateRegistry.getRegistry(hostname);
+			logger.debug("Found registry");
+			
+			logger.debug("Connecting to remote service" + service);
+            manager = (RemoteMemberAdminManagerIF) registry.lookup(service);
+			logger.debug("Connected");	            
+        } 
+		catch (java.security.AccessControlException e) {
+			logger.error("Could not access registry: " + e.getMessage());			
+		} catch (RemoteException e) {
+			logger.error("RemoteException: " + e.getMessage());			
+		} catch (NotBoundException e) {
+			logger.error("Service not found: " + e.getMessage());			
 		}
-
+		
+		// Create controller.
+		final Controller controller = new Controller(manager);
+		
 		/**
-		 *  Build the User interface. Note that, since the Controller handles all UI events, it
+		 *  Build the UI. Note that, since the Controller handles all UI events, it
 		 *  must be constructed and available before the UI gets created.
 		 */
-		Controller controller = new Controller(manager);
-		UserInterface ui = new UserInterface(controller);
-		ui.setStatusText(status);
-		ui.frame.setVisible(true);
+	    EventQueue.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+            	new UserInterface(controller).display();
+            }
+        });
 		
 //		try {
 //			HashMap<String, String> listOfServices = manager.findAvailableServices();
@@ -130,8 +142,8 @@ public class LibraryClient {
 		logger.info("Starting application");
 
 		// Create the client.
-		String service = System.getProperty(Settings.propRmiHostName);
-		LibraryClient client = new LibraryClient(service);
+		String hostname = System.getProperty(Settings.propRmiHostName);
+		new LibraryClient(hostname);
 	}
 
 	/**

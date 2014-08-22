@@ -16,11 +16,11 @@ import edu.avans.aei.ivh5.model.dao.DAOFactory;
 import edu.avans.aei.ivh5.model.dao.api.LoanDAOInf;
 import edu.avans.aei.ivh5.model.dao.api.MemberDAOInf;
 import edu.avans.aei.ivh5.model.dao.api.ReservationDAOInf;
+import edu.avans.aei.ivh5.model.dao.rmi.RmiConnection;
 import edu.avans.aei.ivh5.model.domain.ImmutableMember;
 import edu.avans.aei.ivh5.model.domain.Loan;
 import edu.avans.aei.ivh5.model.domain.Member;
 import edu.avans.aei.ivh5.model.domain.Reservation;
-import edu.avans.aei.ivh5.util.RmiConnection;
 import edu.avans.aei.ivh5.util.Settings;
 
 /**
@@ -131,13 +131,14 @@ public class MemberAdminManagerImpl implements RemoteMemberAdminManagerIF {
 				} 
 				else 
 				{
-					logger.debug("Perform lookup on remote service.");
+					logger.debug("Perform lookup on remote service. DOES NOT WORK YET!");
 					memberDAO = remoteDaoFactory.getMemberDAO();
 					// At this point we know that we are going to make a remote
 					// lookup. We know the hostname and the remote service name.
 					// We therefore setup the connection here, so that the memberDAO
 					// can use it when it performs the actual lookup.
-					RmiConnection.getService(hostname, service);
+					
+					// RmiConnection.getService(hostname, service);
 				}
 				
 				if(memberDAO != null)
@@ -209,14 +210,16 @@ public class MemberAdminManagerImpl implements RemoteMemberAdminManagerIF {
 				memberDAO = localDaoFactory.getMemberDAO();
 			} else {
 				try {
-					logger.debug("Perform lookup on remote service.");
+					logger.debug("Perform lookup on remote service. DOES NOT WORK YET!");
 					memberDAO = remoteDaoFactory.getMemberDAO();
 					// At this point we know that we are going to make a remote
 					// lookup. We know the hostname and the remote service name.
 					// We therefore setup the connection here, so that the memberDAO
 					// can use it when it performs the actual lookup.
-					logger.debug("Do connectToService()");
-					RmiConnection.getService(hostname, service);
+
+
+					// RmiConnection.getService(hostname, service);
+
 				} catch (Exception e) {
 					logger.fatal("remoteDaoFactory is null!");
 					e.printStackTrace();

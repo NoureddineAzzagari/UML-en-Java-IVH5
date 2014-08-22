@@ -13,7 +13,6 @@ import edu.avans.aei.ivh5.api.RemoteMemberAdminManagerIF;
 import edu.avans.aei.ivh5.model.dao.api.MemberDAOInf;
 import edu.avans.aei.ivh5.model.domain.ImmutableMember;
 import edu.avans.aei.ivh5.model.domain.Member;
-import edu.avans.aei.ivh5.util.RmiConnection;
 
 /**
  * The RMI implementation for the MemberDAO class.
@@ -52,8 +51,11 @@ public class RmiMemberDAO implements MemberDAOInf {
 		// to the remote server.
 		try {
 			RemoteMemberAdminManagerIF remoteManager = 
-					(RemoteMemberAdminManagerIF) RmiConnection.getService("DUMMY", "DUMMY");
-			member = remoteManager.findMember(RmiConnection.hostname, RmiConnection.servicename, membershipNumber);
+					null;
+			// 		(RemoteMemberAdminManagerIF) RmiConnection.getService("DUMMY", "DUMMY");
+			member = remoteManager.findMember(
+					RmiConnection.hostname, 
+					RmiConnection.servicename, membershipNumber);
 		} catch (RemoteException e) {
 			logger.error("Exception: " + e.getMessage());
 		}
