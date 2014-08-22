@@ -4,25 +4,15 @@
 package edu.avans.aei.ivh5.view.main;
 
 import java.awt.EventQueue;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.rmi.AccessException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map.Entry;
-import java.util.Properties;
-
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
-import edu.avans.aei.ivh5.api.RemoteMemberAdminManagerIF;
+import edu.avans.aei.ivh5.api.RemoteMemberAdminClientIF;
 import edu.avans.aei.ivh5.control.Controller;
-import edu.avans.aei.ivh5.util.ManagerNotFoundException;
 import edu.avans.aei.ivh5.util.Settings;
 import edu.avans.aei.ivh5.view.ui.UserInterface;
 
@@ -57,14 +47,14 @@ public class LibraryClient {
 		String service = Settings.props.getProperty(Settings.propRmiServiceGroup) + 
 				Settings.props.getProperty(Settings.propRmiServiceName);
 
-		RemoteMemberAdminManagerIF manager = null;
+		RemoteMemberAdminClientIF manager = null;
 		try {
 			logger.debug("Locate registry on " + hostname);		
 			Registry registry = LocateRegistry.getRegistry(hostname);
 			logger.debug("Found registry");
 			
 			logger.debug("Connecting to remote service" + service);
-            manager = (RemoteMemberAdminManagerIF) registry.lookup(service);
+            manager = (RemoteMemberAdminClientIF) registry.lookup(service);
 			logger.debug("Connected");	            
         } 
 		catch (java.security.AccessControlException e) {
@@ -89,28 +79,6 @@ public class LibraryClient {
             	new UserInterface(controller).display();
             }
         });
-		
-//		try {
-//			HashMap<String, String> listOfServices = manager.findAvailableServices();
-//			
-//			if(listOfServices != null) {
-//				logger.debug("Available services: " + listOfServices.toString());
-//				for(Entry<String, String> entry : listOfServices.entrySet()) {
-//				    String key = entry.getKey();
-//				    String value = entry.getValue();
-//	
-//				    // do what you have to do here
-//				}
-//			}
-//		} catch (RemoteException e) {
-//			logger.fatal("RemoteException: " + e.getMessage());
-//		} catch (NullPointerException e) {
-//			logger.fatal("NullPointerException: " + e.getMessage());
-//			// e.printStackTrace();
-//		} catch (Exception e) {
-//			logger.fatal("Exception: " + e.getMessage());
-//			// e.printStackTrace();
-//		}
 	}
 
 	/**

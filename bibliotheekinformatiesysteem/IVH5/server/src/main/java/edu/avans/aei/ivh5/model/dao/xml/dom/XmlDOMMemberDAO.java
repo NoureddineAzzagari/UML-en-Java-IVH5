@@ -16,6 +16,7 @@ import org.w3c.dom.NodeList;
 import edu.avans.aei.ivh5.model.dao.api.MemberDAOInf;
 import edu.avans.aei.ivh5.model.domain.Book;
 import edu.avans.aei.ivh5.model.domain.Copy;
+import edu.avans.aei.ivh5.model.domain.ImmutableMember;
 import edu.avans.aei.ivh5.model.domain.Loan;
 import edu.avans.aei.ivh5.model.domain.Member;
 
@@ -118,10 +119,10 @@ public class XmlDOMMemberDAO implements MemberDAOInf {
 	 * 
 	 * @author Robin Schellius
 	 */
-	public ArrayList<String> findAllMembers() {
+	public ArrayList<ImmutableMember> findAllMembers() {
 		logger.debug("findAllMembers");
 
-		ArrayList<String> result = new ArrayList<String>();
+		ArrayList<ImmutableMember> result = new ArrayList<ImmutableMember>();
 
 		if (document != null) {
 			// Get all <member> elements from the document
@@ -131,16 +132,20 @@ public class XmlDOMMemberDAO implements MemberDAOInf {
 				Node node = list.item(i);
 				if (node instanceof Element) {
 					Element child = (Element) node;
+
 					String membershipNr = child.getAttribute("membershipNumber");
-					if(membershipNr != null) 
-						result.add(membershipNr);
+					String firstname = child.getAttribute("firstname");
+					String lastname = child.getAttribute("lastname");
+
+					logger.debug("Adding " + membershipNr + " to result");
+					result.add(new Member(Integer.parseInt(membershipNr), firstname, lastname));
 				}
 			}
 		} else {
 			logger.error("XML document is null!");
 		}
 		
-		logger.debug("returning " + result.toString());
+		logger.debug("returning result: " + result.size() + " items");
 		return result;
     }
 

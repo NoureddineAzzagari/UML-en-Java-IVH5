@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.EventListener;
+import java.util.HashMap;
 
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
@@ -16,7 +17,8 @@ import javax.swing.event.ListSelectionListener;
 
 import org.apache.log4j.Logger;
 
-import edu.avans.aei.ivh5.api.RemoteMemberAdminManagerIF;
+import edu.avans.aei.ivh5.api.RemoteMemberAdminClientIF;
+import edu.avans.aei.ivh5.api.RemoteMemberInfo;
 import edu.avans.aei.ivh5.model.domain.ImmutableMember;
 import edu.avans.aei.ivh5.model.domain.Member;
 import edu.avans.aei.ivh5.util.Settings;
@@ -45,12 +47,12 @@ public class Controller implements ActionListener, EventListener, ListSelectionL
 	private UserInterface userinterface = null;
 	
 	// Reference to the member manager.
-	private RemoteMemberAdminManagerIF manager = null;
+	private RemoteMemberAdminClientIF manager = null;
 	
 	/**
 	 * Constructor, initializing generally required references to user interface components.
 	 */
-	public Controller(RemoteMemberAdminManagerIF mgr) 
+	public Controller(RemoteMemberAdminClientIF mgr) 
 	{
 		logger.debug("Constructor");
 		manager = mgr;
@@ -70,7 +72,7 @@ public class Controller implements ActionListener, EventListener, ListSelectionL
 	 * 
 	 * @param userinterface
 	 */
-	public void setManagerRef(RemoteMemberAdminManagerIF mgr) {
+	public void setManagerRef(RemoteMemberAdminClientIF mgr) {
 		this.manager = mgr;
 	}
 
@@ -81,9 +83,9 @@ public class Controller implements ActionListener, EventListener, ListSelectionL
 	 * @param servicename Name of the service to find the host on.
 	 * @param membershipNr Number of the manager to be found.
 	 */
-	public boolean doFindMember(String hostname, String servicename, int membershipNr) 
+	public boolean doFindMember(int membershipNr) 
 	{
-		logger.debug("doFindMember " + membershipNr + " on " + servicename + " at " + hostname);
+		logger.debug("doFindMember " + membershipNr);
 		
 		Member member;
 		boolean memberFound = false;
@@ -92,14 +94,14 @@ public class Controller implements ActionListener, EventListener, ListSelectionL
 			logger.error("Manager or userinterface is null!");
 		} else {
 			try {
-				member = manager.findMember(hostname, servicename, membershipNr);
+				member = manager.findMember(membershipNr);
 
 				if (member != null) {
 					userinterface.setMemberDetails(member);
 					memberFound = true;
 				} else {
-					logger.debug("Member " + membershipNr + " not found at "+ servicename);
-					userinterface.setStatusText("Lidnummer " + membershipNr + " niet gevonden");
+					logger.debug("Member " + membershipNr + " not found");
+					userinterface.setStatusText("Member " + membershipNr + " not found.");
 				}
 			} catch (RemoteException e) {
 				logger.error("Error: " + e.getMessage());
@@ -109,32 +111,33 @@ public class Controller implements ActionListener, EventListener, ListSelectionL
 	}
 
 	/**
-	 * 
-	 * @param membershipNr
+	 * Find all members on all hosts and services.
 	 */
-	public void doFindAllMembers(String hostname, String servicename) {
-		logger.debug("doFindAllMembers on " + servicename + " at " + hostname);
+	public void doFindAllMembers() {
+		logger.debug("doFindAllMembers on all hosts/services");
 
-		ArrayList<String> memberIDs = null;
+		ArrayList<RemoteMemberInfo> members = null;
+		ArrayList<String> visitedServices = new ArrayList<String>();
 
 		if (manager != null) {
 			try {
-				memberIDs = manager.findAllMembers(hostname, servicename);
+				members = manager.findAllMembers(visitedServices);
 			} catch (RemoteException e) {
 				logger.error("Error finding members: " + e.getMessage());
 			}
 
-			if (memberIDs != null) {
-				logger.debug("Found members " + memberIDs.toString());
-				userinterface.setMemberListData(memberIDs);
+			if (members != null) {
+				logger.debug("Found " + members.size() + " members");
+				// userinterface.setMemberListData(members);
 			} else {
-				logger.debug("No members found on the given service.");
-				userinterface.setStatusText("Geen informatie gevonden.");
+				logger.debug("No members found on any of the available services.");
+				userinterface.setStatusText("No members found.");
 			}
 		} else {
 			logger.error("Manager is null! Could not find members!");
 		}
 	}
+
 
 	/**
 	 * This method handles list selection events. Whenever the user selects a row in the memberlist
@@ -149,6 +152,10 @@ public class Controller implements ActionListener, EventListener, ListSelectionL
         // rows and even individual columns. We first wait until the user is finished adjusting. 
         if(e.getValueIsAdjusting() == false) {
 
+    		String hostname = Settings.props.getProperty(Settings.propRmiHostName);
+    		String servicename = Settings.props.getProperty(Settings.propRmiServiceGroup) 
+    				+ Settings.props.getProperty(Settings.propRmiServiceName);
+
         	// There could be multiple rows (or columns) selected, even 
         	// though ListSelectionModel = SINGLE_SELECTION. Find out which 
         	// indexes are selected.
@@ -157,11 +164,11 @@ public class Controller implements ActionListener, EventListener, ListSelectionL
             for (int i = minIndex; i <= maxIndex; i++) {
                 if (lsm.isSelectedIndex(i)) 
                 {
-                    selectedMember = (String) userinterface.getDataTableModel().getValueAt(i, 0);
-                    if (selectedMember != null && !selectedMember.equals("")) {                        
-                        logger.debug("Selected member = " + selectedMember);
-                        doFindMember("localhost", userinterface.getSelectedService(), Integer.parseInt(selectedMember));
-                    }
+//                    selectedMember = (String) userinterface.getDataTableModel().getValueAt(i, 0);
+//                    if (selectedMember != null && !selectedMember.equals("")) {                        
+//                        logger.debug("Selected member = " + selectedMember);
+//                        // doFindMember(hostname, servicename, Integer.parseInt(selectedMember));
+//                    }
                 }
             }
         }
@@ -183,6 +190,10 @@ public class Controller implements ActionListener, EventListener, ListSelectionL
 	@Override
 	public void actionPerformed(ActionEvent e) {
 	
+		String hostname = Settings.props.getProperty(Settings.propRmiHostName);
+		String servicename = Settings.props.getProperty(Settings.propRmiServiceGroup) 
+				+ Settings.props.getProperty(Settings.propRmiServiceName);
+		
 		if (e.getActionCommand().equals("FIND_MEMBER")) {
 			try {
 				/**
@@ -191,26 +202,24 @@ public class Controller implements ActionListener, EventListener, ListSelectionL
 				 * of services. Therefore we select hostname and service name from the properties. 
 				 */
 				int membershipNr = Integer.parseInt(userinterface.getSearchValue().trim());
-
-				String hostname = Settings.props.getProperty(Settings.propRmiHostName);
-				String servicename = Settings.props.getProperty(Settings.propRmiServiceGroup) 
-						+ Settings.props.getProperty(Settings.propRmiServiceName);
-				
 				userinterface.eraseMemberDetails();
-				doFindMember(hostname, servicename, membershipNr);
+				doFindMember(membershipNr);
 			} catch (NumberFormatException ex) {
 				logger.error("Wrong input, only numbers allowed");
 				userinterface.setStatusText("Wrong input, only numbers allowed.");
 				userinterface.setSearchBoxText("");
 			}
-		} else if (e.getActionCommand().equals("SELECT_SERVICE")) {
+		} else if (e.getActionCommand().equals("GET_SERVICES")) {
 			try {
-				logger.debug("Selected service = " + userinterface.getSelectedService());
-				userinterface.eraseMemberDetails();
-				doFindAllMembers(Settings.props.getProperty(Settings.propRmiHostName), 
-						userinterface.getSelectedService());
+				logger.debug("Get all services");
+
+				// doGetAvailableServices();
+				
+				doFindAllMembers();
+			
 			} catch (Exception ex) {
 				logger.error("Error: " + ex.getMessage());
+				ex.printStackTrace();
 			}
 		}
 	}

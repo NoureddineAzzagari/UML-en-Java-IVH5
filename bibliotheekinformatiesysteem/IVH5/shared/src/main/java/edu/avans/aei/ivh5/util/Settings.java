@@ -28,7 +28,7 @@ public class Settings {
 	public static final String propDbUser = "mysql.username";
 	public static final String propDbPassword = "mysql.password";
 	public static final String propDbConnectionString = "mysql.connectionstring";
-	public static final String propDbDriver = "mysql.dbdriver";
+	public static final String propDbDriver = "mysql.drivername";
 	public static final String propXmlFileName = "xml.filename";
 	public static final String propXmlSchema = "xml.schema";
 

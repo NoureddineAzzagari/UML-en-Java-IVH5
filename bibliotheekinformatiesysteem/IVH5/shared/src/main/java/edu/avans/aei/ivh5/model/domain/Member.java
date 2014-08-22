@@ -302,4 +302,16 @@ public class Member implements ImmutableMember, Serializable {
         // membershipNumber is uniek, dus voldoende als hashcode.
         return membershipNumber;
     }
+    
+    /**
+     * Returns the membershipNumber when member.toString() is called. Utility method
+     * for debugging purposes.
+     *  
+     * @return membershipNumber as a String.
+     */
+    @Override
+    public String toString() {
+    	return Integer.toString(membershipNumber);
+    }
+    
 }

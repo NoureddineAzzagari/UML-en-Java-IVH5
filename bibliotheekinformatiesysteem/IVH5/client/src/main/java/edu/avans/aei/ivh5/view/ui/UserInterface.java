@@ -4,13 +4,11 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -20,7 +18,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
@@ -30,7 +27,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.TableColumn;
 
 import org.apache.log4j.Logger;
-
+import edu.avans.aei.ivh5.view.ui.DataTableModel;
 import edu.avans.aei.ivh5.control.Controller;
 import edu.avans.aei.ivh5.model.domain.ImmutableMember;
 
@@ -54,8 +51,6 @@ public class UserInterface extends JFrame {
 	private JComboBox<String> cmbSelectService;
 	private Dimension preferredSize = new Dimension(480, 140);
 
-	private String hostname;
-	
 	// The controller handles all work that follows from events or actions.
 	private Controller controller;
 	
@@ -109,7 +104,7 @@ public class UserInterface extends JFrame {
 		frame.getContentPane().add(setupStatusInfoPanel(), BorderLayout.SOUTH);
 
 		frame.setVisible(true);
-	}
+}
 	
 	
 	/**
@@ -145,17 +140,13 @@ public class UserInterface extends JFrame {
 		frame.getRootPane().setDefaultButton(btnSearch);
 		pnlSearch.add(btnSearch);
 
-		cmbSelectService = new JComboBox<String>();
-		cmbSelectService.setModel(new DefaultComboBoxModel<String>(new String[] {"Library/Breda"}));
-		pnlSearch.add(cmbSelectService);
-
-		JButton btnListMembers = new JButton("List");
+		JButton btnListServices = new JButton("Find all members");
 		// The controller handles the action for this button.
-		btnListMembers.addActionListener(controller);
+		btnListServices.addActionListener(controller);
 		// Set a name for the command of this button, so we can retrieve 
 		// the button in the Controller class.
-		btnListMembers.setActionCommand("SELECT_SERVICE");
-		pnlSearch.add(btnListMembers);
+		btnListServices.setActionCommand("GET_SERVICES");
+		pnlSearch.add(btnListServices);
 
 		return pnlSearch;
 	}
@@ -340,7 +331,7 @@ public class UserInterface extends JFrame {
 		txtFirstname.setText(member.getFirstname());
 		txtLastname.setText(member.getLastname());
 		txtCityname.setText(member.getCity());
-		txtStreetname.setText(member.getStreet());
+		txtStreetname.setText(member.getStreet() + " " + member.getHouseNumber());
 		// More information to be displayed.
 	}
 	
@@ -392,10 +383,6 @@ public class UserInterface extends JFrame {
 		return dataTableModel;
 	}
 
-	public String getSelectedService() {
-		return (String) cmbSelectService.getSelectedItem();
-	}
-
 	public String getSearchValue() {
 		return txtSearchBox.getText();
 	}
@@ -414,6 +401,8 @@ public class UserInterface extends JFrame {
 		txtCityname.setText("");
 		txtStreetname.setText("");
 	}
+
+
 }
 
 

@@ -2,6 +2,8 @@
  */
 package edu.avans.aei.ivh5.model.main;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -11,7 +13,7 @@ import java.rmi.server.UnicastRemoteObject;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
-import edu.avans.aei.ivh5.api.RemoteMemberAdminManagerIF;
+import edu.avans.aei.ivh5.api.RemoteMemberAdminClientIF;
 import edu.avans.aei.ivh5.util.Settings;
 
 /**
@@ -23,19 +25,12 @@ import edu.avans.aei.ivh5.util.Settings;
  */
 public class LibraryServer {
 
-	// The following variables are initialized by reading properties from the property file.
-	// Host/IP-address of the RMI registry
-	static private String hostname;	
-	// Name identifying this server in the RMI registry
-	static private String servicename;
-	// Logging configuration
-	static private String logconfigfile;
 	// Implements the specific DAO functionality (MySQL, XML).
 	static public String daofactoryclassname;
 	// Implements the remote access DAO functionality.
 	static public String rmifactoryclassname;
 	// Access to remote manager
-	static private RemoteMemberAdminManagerIF	stub; 
+	static private RemoteMemberAdminClientIF	stub; 
 
 	// Get a logger instance for the current class
 	static Logger logger = Logger.getLogger(LibraryServer.class);
@@ -94,7 +89,7 @@ public class LibraryServer {
 
 			logger.debug("Creating stub");
 			MemberAdminManagerImpl obj = new MemberAdminManagerImpl(service);
-			stub = (RemoteMemberAdminManagerIF) UnicastRemoteObject.exportObject(obj, 0);
+			stub = (RemoteMemberAdminClientIF) UnicastRemoteObject.exportObject(obj, 0);
 
 			logger.debug("Locating registry on '" + hostname + "'");
 			Registry registry = LocateRegistry.getRegistry(hostname);
@@ -104,9 +99,10 @@ public class LibraryServer {
 			logger.info("Server ready");
 		} catch (java.rmi.ConnectException e) {
 			logger.fatal("Could not connect: " + e.getMessage());
+			logger.fatal("(is rmiregistry running?)");
 		} catch (java.security.AccessControlException e) {
 			logger.fatal("No access: " + e.getMessage());
-			logger.fatal("(are the webserver and rmiregistry running?)");
+			logger.fatal("(is the HTTP webserver running?)");
 		} catch (Exception e) {
 			logger.fatal(e.toString());
 		}
@@ -130,7 +126,7 @@ public class LibraryServer {
 		} catch (java.rmi.NoSuchObjectException e) {
 			logger.error("Server not found in registry.");
 		} catch (Exception e) {
-			logger.error(e.toString());
+			logger.error("Could not contact registry.");
 		} finally {
 			logger.info("Bye.");
 		}
@@ -193,7 +189,7 @@ class ShutdownHook extends Thread {
 		try {
 			LibraryServer.exit(service);
 		} catch (RemoteException e) {
-			System.out.println("Error exiting: " + e.getMessage());
+			System.out.println("Error exiting: could not contact remote server or registry.");
 		}
 	}
 }

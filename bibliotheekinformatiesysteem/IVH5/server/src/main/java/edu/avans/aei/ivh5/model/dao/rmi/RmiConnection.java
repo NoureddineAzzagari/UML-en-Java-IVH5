@@ -4,7 +4,6 @@
  */
 package edu.avans.aei.ivh5.model.dao.rmi;
 
-import java.rmi.AccessException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -36,7 +35,7 @@ public class RmiConnection {
 	 * @param hostname
 	 * @return
 	 */
-	private static Registry getRegistry(String hostname) {
+	public static Registry getRegistry(String hostname) {
 		
 		logger.debug("getRegistry on " + hostname);
 		
@@ -58,20 +57,6 @@ public class RmiConnection {
 		}
 		return registries.get(hostname);
 	}
-
-    public static HashMap<String, String> getAvailableServices(String hostname) {
-    	
-        String[] serviceNames;
-
-        Thread t = new Thread(new RmiConnection.listServices("DUMMY DUMMY!"));
-        t.start();
-
-        serviceNames = new String[]{"Dummy!"};
-        
-		logger.debug("Contents of registry: " + Arrays.toString(serviceNames));
-		return null;
-
-    }
 
 	/**
 	 * 
@@ -141,13 +126,15 @@ public class RmiConnection {
     	}
     	
     	/**
-    	 * 
+	     * The thread's main method that runs and does the work.
     	 */
 	    public void run() {
-	        try {
-	        	
+	        try {	        	
 	        	String[] list = getRegistry(hostname).list();
-
+	        	
+	        	if(list != null) {
+	        		logger.debug("Found services: " + Arrays.toString(list));
+	        	}
 	        } catch (RemoteException e) {
 				logger.error(e.getMessage());
 			}

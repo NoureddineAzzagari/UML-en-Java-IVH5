@@ -48,11 +48,12 @@ public class MySqlConnection {
 		
         // Initialize using previously read properties; invalid otherwise.
         username = Settings.props.getProperty(Settings.propDbUser);
-        password = Settings.props.getProperty(Settings.propDbUser);
+        password = Settings.props.getProperty(Settings.propDbPassword);
         drivername = Settings.props.getProperty(Settings.propDbDriver);
         connectionstring = Settings.props.getProperty(Settings.propDbConnectionString);
 
 		try {
+			logger.debug("Initializing driver " + drivername);
             Class.forName(drivername).newInstance();
         } catch (Exception e) {
                 logger.fatal("Error initializing driver: " + e.getMessage());

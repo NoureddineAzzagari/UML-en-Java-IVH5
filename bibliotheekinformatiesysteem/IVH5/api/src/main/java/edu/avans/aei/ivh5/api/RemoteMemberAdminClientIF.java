@@ -3,27 +3,16 @@ package edu.avans.aei.ivh5.api;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.HashMap;
-
 import edu.avans.aei.ivh5.model.domain.ImmutableMember;
 import edu.avans.aei.ivh5.model.domain.Member;
 
 /**
- * Interface that describes (some of) the available methods on a remote library server.
+ * Interface that describes the available methods on a remote library server.
  * 
  * @author Robin Schellius
  *
  */
-public interface RemoteMemberAdminManagerIF extends Remote {
-
-	/**
-     * Find all the available services, as seen by the server. A server can have access to other services
-     * on remote machines, so the amount of services can be larger than only the services that the server
-     * shares on the same host.
-     * 
-     * @return A list of <servicename, hostname> pairs, or null if none were found.
-     */
-	public HashMap<String, String> findAvailableServices() throws RemoteException;
+public interface RemoteMemberAdminClientIF extends Remote {
 
 	/**
      * Tries to find the Member object matching the given membership number.
@@ -32,7 +21,7 @@ public interface RemoteMemberAdminManagerIF extends Remote {
      * @return if a matching member was found, a reference to the Member's
      * ImmutableMember interface is returned, null otherwise.
      */
-	public Member findMember(String hostname, String service, int membershipNumber) throws RemoteException;
+	public Member findMember(int membershipNumber) throws RemoteException;
 	
 	/**
 	 * Find all members on a server. Since a request to this method can be invoked
@@ -47,7 +36,7 @@ public interface RemoteMemberAdminManagerIF extends Remote {
 	 * @return A list of retrieved members, or null is none were found.
 	 * @throws RemoteException
 	 */
-	public ArrayList<String> findAllMembers(String hostname, String service) throws RemoteException;
+	public ArrayList<RemoteMemberInfo> findAllMembers(ArrayList<String> visitedServices) throws RemoteException;
 
     /**
      * Removes the given member from the system, including removal from the
@@ -60,4 +49,7 @@ public interface RemoteMemberAdminManagerIF extends Remote {
      */
     public boolean removeMember(ImmutableMember memberToRemove)  throws RemoteException;
 
+    /**
+     * Here we add more methods that could be called by the client.
+     */
 }

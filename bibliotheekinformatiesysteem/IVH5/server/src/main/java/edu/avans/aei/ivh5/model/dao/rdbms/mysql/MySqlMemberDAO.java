@@ -110,16 +110,17 @@ public class MySqlMemberDAO implements MemberDAOInf {
 	 * 
 	 * @author Robin Schellius
 	 */
-	public ArrayList<String> findAllMembers() {
+	public ArrayList<ImmutableMember> findAllMembers() {
 		logger.debug("findAllMembers");
-		ArrayList<String> result = new ArrayList<String>();
+		
+		ArrayList<ImmutableMember> result = new ArrayList<ImmutableMember>();
 	
 	    // First open a database connection
 	    if(connection.openConnection())
 	    {
 	        // If a connection was successfully setup, execute the SELECT statement.
 	        ResultSet resultset = connection.executeSQLStatement(
-	            "SELECT MembershipNumber FROM member;");
+	            "SELECT * FROM member;");
 	
 	        if(resultset != null)
 	        {
@@ -127,10 +128,12 @@ public class MySqlMemberDAO implements MemberDAOInf {
 	            {
 	                while(resultset.next())
 	                {
-	                    String membershipNr = resultset.getString("MembershipNumber");
-	                    result.add(membershipNr);
+	                    result.add(new Member(
+	                    		resultset.getInt("MembershipNumber"),
+	                    		resultset.getString("FirstName"),
+	                    		resultset.getString("LastName")));
+		        		logger.debug("Found " + resultset.getInt("MembershipNumber"));
 	                }
-	        		logger.debug("Found " + result.toString());
 	            }
 	            catch(SQLException e)
 	            {
