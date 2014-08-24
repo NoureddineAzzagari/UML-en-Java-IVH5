@@ -37,6 +37,39 @@
 			</loan>
 		</loans>
 	</member>
+	<member membershipNumber="1010">
+		<firstname>Robert</firstname>
+		<lastname>Verdullemen</lastname>
+		<street>Overkant</street>
+		<housenumber>5</housenumber>
+		<city>Hierde</city>
+		<phoneNumber>046-19682014</phoneNumber>
+		<emailaddress>rdj.verdullemen@avans.nl</emailaddress>
+		<fine>3.75</fine>
+		<loans>
+			<loan copyid="2" lendingperiod="3">
+				<isbn>857865244</isbn>
+			</loan>
+			<loan copyid="1" lendingperiod="2">
+				<isbn>834286544</isbn>
+			</loan>
+		</loans>
+	</member>
+	<member membershipNumber="1011">
+		<firstname>Marieke</firstname>
+		<lastname>Van Zwieten</lastname>
+		<street>Bredaseweg</street>
+		<housenumber>12</housenumber>
+		<city>Ulicoten</city>
+		<phoneNumber>076-19682014</phoneNumber>
+		<emailaddress>mrj.vanzwieten@breda.nl</emailaddress>
+		<fine>0.0</fine>
+		<loans>
+			<loan copyid="2" lendingperiod="3">
+				<isbn>857865244</isbn>
+			</loan>
+		</loans>
+	</member>
 
 	<book>
 		<isbn>857865544</isbn>
