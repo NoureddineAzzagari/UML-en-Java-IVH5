@@ -320,7 +320,10 @@ public class MemberAdminManagerImpl implements RemoteMemberAdminClientIF,
 					if (service.equals(myServicename)
 							&& host.equals(System
 									.getProperty(Settings.propRmiHostName))) {
-						memberList.addAll(findAllMembersOnServer());
+						ArrayList<RemoteMemberInfo> members = findAllMembersOnServer();
+						if(members != null) {
+							memberList.addAll(members);
+						}
 					} else {
 						logger.debug("FindAllMembers at " + host + " "
 								+ service);
@@ -335,7 +338,9 @@ public class MemberAdminManagerImpl implements RemoteMemberAdminClientIF,
 									.lookup(service);
 							ArrayList<RemoteMemberInfo> list = remoteMgr
 									.findAllMembersOnServer();
-							memberList.addAll(list);
+							if(list != null) {
+								memberList.addAll(list);
+							}
 
 						} catch (NotBoundException e) {
 							logger.error("NotBoundException: " + e.getMessage());
@@ -381,9 +386,9 @@ public class MemberAdminManagerImpl implements RemoteMemberAdminClientIF,
 			ArrayList<ImmutableMember> list = memberDAO.findAllMembers();
 			if (list != null && list.size() > 0) {
 				resultList = new ArrayList<RemoteMemberInfo>();
+				String myHostname = System.getProperty(Settings.propRmiHostName);
 				for (ImmutableMember mem : list) {
-					resultList.add(new RemoteMemberInfo("localhost",
-							myServicename, (Member) mem));
+					resultList.add(new RemoteMemberInfo(myHostname,	myServicename, (Member) mem));
 				}
 			}
 		} else {
