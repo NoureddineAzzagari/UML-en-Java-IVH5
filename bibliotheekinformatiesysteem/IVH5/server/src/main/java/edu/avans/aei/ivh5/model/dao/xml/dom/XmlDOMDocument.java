@@ -162,15 +162,19 @@ public class XmlDOMDocument {
 	 * @return The schema which is created from the schema file, or null otherwise.
 	 */
 	private Schema getValidationSchema() {
+
+		logger.debug("getValidationSchema " + xmlSchema);
 		Schema schema = null;
 
 		try {
 			String language = XMLConstants.W3C_XML_SCHEMA_NS_URI;
 			SchemaFactory factory = SchemaFactory.newInstance(language);
-			logger.debug("getValidationSchema " + xmlSchema);
 			File xmlSchemaFile = new File(xmlSchema);
 			if(xmlSchemaFile.exists()) {
 				schema = factory.newSchema(xmlSchemaFile);
+				logger.debug("Schema created");
+			} else {
+				logger.error("Schemafile does not exist.");
 			}
 		} catch (Exception e) {
 			logger.error("Error reading schema file: " + e.getMessage());

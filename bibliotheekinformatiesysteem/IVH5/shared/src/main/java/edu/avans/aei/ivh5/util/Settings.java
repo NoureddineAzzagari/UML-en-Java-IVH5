@@ -31,6 +31,7 @@ public class Settings {
 	public static final String propDbDriver = "mysql.drivername";
 	public static final String propXmlFileName = "xml.filename";
 	public static final String propXmlSchema = "xml.schema";
+	public static final String propRmiServiceHosts = "service.availableservers";
 
 	public static Properties props = new Properties();
 

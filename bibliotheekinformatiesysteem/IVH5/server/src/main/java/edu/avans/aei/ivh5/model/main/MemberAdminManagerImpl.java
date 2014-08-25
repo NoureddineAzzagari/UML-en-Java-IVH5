@@ -18,7 +18,6 @@ import edu.avans.aei.ivh5.api.RemoteMemberAdminClientIF;
 import edu.avans.aei.ivh5.api.RemoteMemberAdminServerIF;
 import edu.avans.aei.ivh5.api.RemoteMemberInfo;
 import edu.avans.aei.ivh5.model.dao.DAOFactory;
-import edu.avans.aei.ivh5.model.dao.rmi.RmiDAOFactory;
 import edu.avans.aei.ivh5.model.dao.api.LoanDAOInf;
 import edu.avans.aei.ivh5.model.dao.api.MemberDAOInf;
 import edu.avans.aei.ivh5.model.dao.api.ReservationDAOInf;
@@ -43,272 +42,357 @@ import edu.avans.aei.ivh5.util.Settings;
  * @see edu.avans.aei.ivh5.model.main.LibraryServer
  * @author ppthgast, rschelli
  */
-public class MemberAdminManagerImpl implements RemoteMemberAdminClientIF, RemoteMemberAdminServerIF {
+public class MemberAdminManagerImpl implements RemoteMemberAdminClientIF,
+		RemoteMemberAdminServerIF {
 
 	// Get a logger instance for the current class
 	static Logger logger = Logger.getLogger(MemberAdminManagerImpl.class);
 
-	// When a member is found, we cache it in a hashmap for fast retrieval in a next search.
+	// When a member is found, we cache it in a hashmap for fast retrieval in a
+	// next search.
 	private HashMap<Integer, Member> members;
 
 	// The factories that provides DAO instances for domain classes.
-	private DAOFactory localDaoFactory; // Handles data requests on the local server.
-	private DAOFactory remoteDaoFactory; // Handles remote data requests via RMI.
+	private DAOFactory daoFactory; // Handles data requests on the local
+										// server.
 
 	// The servicename that identifies this service in the RMI registry.
 	// When finding all available services in the registry we want to exclude
 	// ourselves.
 	private String myServicename;
-	
+
 	/**
 	 * Instantiate and initialize the server stub. The servicename is the name
-	 * that identifies this server in the RMI registry. It is received
-	 * from the server and stored locally for later lookup. When communicating beween
-	 * multiple servers we can thus distinguish ourselves from the remote server.
+	 * that identifies this server in the RMI registry. It is received from the
+	 * server and stored locally for later lookup. When communicating beween
+	 * multiple servers we can thus distinguish ourselves from the remote
+	 * server.
 	 * 
-	 * @param servicename The name that identifies this server in the RMI registry.
+	 * @param servicename
+	 *            The name that identifies this server in the RMI registry.
 	 */
 	public MemberAdminManagerImpl(String servicename) throws RemoteException {
-		
+
 		logger.debug("Constructor using " + servicename);
-		
+
 		// Create a list of members for fast lookup.
 		members = new HashMap<Integer, Member>();
-		
-		// Our 'own' servicename; prevents looking it up in the registry as a remote server.
+
+		// Our 'own' servicename; prevents looking it up in the registry as a
+		// remote server.
 		myServicename = servicename;
 
 		try {
 			// Getting DAOFactory for local and remote data access
-			localDaoFactory = DAOFactory.getDAOFactory(Settings.props.getProperty(Settings.propDataStore));
-			remoteDaoFactory = DAOFactory.getDAOFactory(Settings.props.getProperty(Settings.propDataComm));
+			daoFactory = DAOFactory.getDAOFactory(Settings.props
+					.getProperty(Settings.propDataStore));
 		} catch (NoClassDefFoundError e) {
 			logger.fatal("Error: Class not found! (Is it in the propertyfile?)");
 			logger.fatal(e.getMessage());
 		}
 	}
-	
+
 	/**
 	 * Find a list of available services.
 	 * 
 	 * @return List of servicenames, or null if none were found.
-	 * 
 	 * @throws RemoteException
 	 */
-	public ArrayList<String> findAvailableServices() throws RemoteException {
-		
-		logger.debug("findAvailableServices");
+	// public ArrayList<String> findAvailableServices(String hostname, String
+	// serviceGroup){
+	//
+	// logger.debug("findAvailableServices");
+	//
+	// ArrayList<String> availableServices = null;
+	//
+	// if(remoteDaoFactory != null) {
+	// availableServices = ((RmiDAOFactory)remoteDaoFactory)
+	// .findAvailableServices(hostname, serviceGroup);
+	// } else {
+	// logger.error("Could not contact remote DAO factory!");
+	// }
+	//
+	// return availableServices;
+	// }
 
-		ArrayList<String> availableServices = null;
-		
-		if(remoteDaoFactory != null) {
-			availableServices = ((RmiDAOFactory)remoteDaoFactory).findAvailableServices();
-		} else {
-			logger.error("Could not contact remote DAO factory!");
-		}
-		
-		return availableServices;
-	}
+	// /**
+	// * Find a single Member based on its membershipNumber. If no Member is
+	// * found, null is returned. Before searching in the datasource, we first
+	// * check if it already exists in the list of previously found members.
+	// *
+	// * @param membershipNumber The Member's membershipNumber.
+	// */
+	// public Member findMember(int membershipNumber) throws RemoteException {
+	//
+	// logger.debug("findMember " + membershipNumber);
+	//
+	// MemberDAOInf memberDAO = null;
+	// Member member = null;
+	//
+	// // First do a lookup in the members cache.
+	// member = members.get(membershipNumber);
+	//
+	// if (member == null) {
+	// logger.debug("Member not found in cache, lookup in datasource.");
+	//
+	// if (localDaoFactory != null) {
+	// memberDAO = localDaoFactory.getMemberDAO();
+	//
+	// if(memberDAO != null)
+	// {
+	// member = memberDAO.findMember(membershipNumber);
+	// if (member != null) {
+	// logger.debug("Member found in datasource.");
+	//
+	// LoanDAOInf loanDAO = localDaoFactory.getLoanDAO();
+	// ArrayList<Loan> loans = loanDAO.findLoans(member);
+	//
+	// if (loans != null) {
+	// for (Loan loan : loans) {
+	// if (loan != null) {
+	// member.addLoan(loan);
+	// }
+	// }
+	// }
+	//
+	// ReservationDAOInf reservationDAO = localDaoFactory.getReservationDAO();
+	// ArrayList<Reservation> reservations =
+	// reservationDAO.findReservations(member);
+	//
+	// if (reservations != null) {
+	// for (Reservation reservation : reservations) {
+	// if (reservation != null) {
+	// member.addReservation(reservation);
+	// }
+	// }
+	// }
+	//
+	// // Cache the member that has been read from the database, to
+	// // avoid querying the database each time a member is needed.
+	// members.put(membershipNumber, member);
+	// } else {
+	// logger.debug("Member not found in datasource.");
+	// }
+	// } else {
+	// logger.debug("MemberDAO not found!");
+	// }
+	// }
+	// }
+	// return member;
+	// }
 
-	
 	/**
-     * Find a single Member based on its membershipNumber. If no Member is
-     * found, null is returned. Before searching in the datasource, we first
-     * check if it already exists in the list of previously found members.
-     * 
-     * @param membershipNumber The Member's membershipNumber.
-     */
-	public Member findMember(int membershipNumber) 	throws RemoteException {
-		
-		logger.debug("findMember " + membershipNumber);
-
-		MemberDAOInf memberDAO = null;
-		Member member = null;
-
-		// First do a lookup in the members cache.
-		member = members.get(membershipNumber);
-
-		if (member == null) {
-			logger.debug("Member not found in cache, lookup in datasource.");
-
-			if (localDaoFactory != null) {
-				memberDAO = localDaoFactory.getMemberDAO();
-				
-				if(memberDAO != null)
-				{
-					member = memberDAO.findMember(membershipNumber);
-					if (member != null) {
-						logger.debug("Member found in datasource.");
-	
-						LoanDAOInf loanDAO = localDaoFactory.getLoanDAO();
-						ArrayList<Loan> loans = loanDAO.findLoans(member);
-	
-						if (loans != null) {
-							for (Loan loan : loans) {
-								if (loan != null) {
-									member.addLoan(loan);
-								}
-							}
-						}
-	
-						ReservationDAOInf reservationDAO = localDaoFactory.getReservationDAO();
-						ArrayList<Reservation> reservations = reservationDAO.findReservations(member);
-	
-						if (reservations != null) {
-							for (Reservation reservation : reservations) {
-								if (reservation != null) {
-									member.addReservation(reservation);
-								}
-							}
-						}
-	
-						// Cache the member that has been read from the database, to
-						// avoid querying the database each time a member is needed.
-						members.put(membershipNumber, member);
-					} else {
-						logger.debug("Member not found in datasource.");
-					}
-				} else {
-					logger.debug("MemberDAO not found!");					
-				}
-			}
-		}
-		return member;
-	}
-
+	 * 
+	 */
 	@Override
 	public Member findMember(String hostname, String service,
 			int membershipNumber) throws RemoteException {
 
 		logger.debug("findMember on " + hostname + " " + service);
-		
+
 		Member member = null;
-		
-		if(service.equals(myServicename)) {
-			// Search in our local DAO, no need to search remote server
-			if(localDaoFactory != null) {
-				MemberDAOInf memberDAO = localDaoFactory.getMemberDAO();
-				member = memberDAO.findMember(membershipNumber);
-			} else {
-				logger.error("Could not contact local DAO factory!");
-			}
-			
+
+		if (service.equals(myServicename)
+				&& hostname
+						.equals(System.getProperty(Settings.propRmiHostName))) {
+
+			member = findMemberOnServer(hostname, service, membershipNumber);
+
 		} else {
 			// Search remote server
 			try {
 				Registry registry = null;
 				RemoteMemberAdminServerIF remoteMgr;
 				registry = RmiConnection.getRegistry(hostname);
-				remoteMgr = (RemoteMemberAdminServerIF) registry.lookup(service);
-				member = remoteMgr.findMember(hostname, service, membershipNumber);
+				remoteMgr = (RemoteMemberAdminServerIF) registry
+						.lookup(service);
+				member = remoteMgr.findMemberOnServer(hostname, service,
+						membershipNumber);
 			} catch (RemoteException e) {
 				logger.error("RemoteException: " + e.getMessage());
 			} catch (NotBoundException e) {
 				logger.error("NotBoundException: " + e.getMessage());
 			}
 		}
-		
-		if(member != null)
+
+		if (member != null)
 			logger.debug("Found member " + member.getMembershipNumber());
 		else
 			logger.debug("Member " + membershipNumber + " not found");
-			
+
 		return member;
 	}
 
 	/**
-	 * <p>Create a list of membershipNumbers of all available Members in the
-	 * datasource of the given service on the given host machine. This can
-	 * result in a lookup on a remote machine.</p>
 	 * 
-	 * <p>The service name is selected by the user via the user interface. The service
-	 * that the user selects could be the local server, or a remote server. In case of a 
-	 * local server we immediately lookup the members in the datasoure. In case of a 
-	 * remote server we setup a connection to the remote server and perform a lookup
-	 * there.</p>
+	 */
+	@Override
+	public Member findMemberOnServer(String hostname, String service,
+			int membershipNumber) throws RemoteException {
+
+		logger.debug("findMemberOnServer on " + hostname + " " + service);
+
+		Member member = null;
+
+		// Search in our local DAO
+		if (daoFactory != null) {
+			MemberDAOInf memberDAO = daoFactory.getMemberDAO();
+			member = memberDAO.findMember(membershipNumber);
+		} else {
+			logger.error("Could not contact local DAO factory!");
+		}
+
+		if (member != null)
+			logger.debug("Found member " + member.getMembershipNumber());
+		else
+			logger.debug("Member " + membershipNumber + " not found");
+
+		return member;
+	}
+
+	/**
+	 * <p>
+	 * Create a list of membershipNumbers of all available Members in the
+	 * datasource of the given service on the given host machine. This can
+	 * result in a lookup on a remote machine.
+	 * </p>
+	 * 
+	 * <p>
+	 * The service name is selected by the user via the user interface. The
+	 * service that the user selects could be the local server, or a remote
+	 * server. In case of a local server we immediately lookup the members in
+	 * the datasoure. In case of a remote server we setup a connection to the
+	 * remote server and perform a lookup there.
+	 * </p>
 	 * 
 	 * @return The list of membershipNumbers of members in the datasource.
 	 * @author Robin Schellius
 	 */
 	@Override
-	public ArrayList<RemoteMemberInfo> findAllMembers(ArrayList<String> visitedServices) 
-			throws RemoteException {
-	
+	public ArrayList<RemoteMemberInfo> findAllMembers() throws RemoteException {
+
 		logger.debug("findAllMembers");
-		logger.debug("Visited services = " + visitedServices.toString());
-	
-		ArrayList<RemoteMemberInfo> memberList = null;
-		ArrayList<String> remainingServices;
 
-		// Process all the available services.
-		try {
-			remainingServices = findAvailableServices();
-			remainingServices.removeAll(visitedServices);
-			logger.debug("Remaining services = " + remainingServices.toString());
+		// ServiceGroup defines the group of services that we can connect to
+		String serviceGroup = Settings.props
+				.getProperty(Settings.propRmiServiceGroup);
 
-			// Our own local service is processed first.
-			if(remainingServices.contains(myServicename)) {
+		// Add our own host to search for available services
+		ArrayList<String> availableHosts = new ArrayList<String>();
+		availableHosts.add(System.getProperty(Settings.propRmiHostName));
 
-				logger.debug("FindAll on " + myServicename);
-				
-				if(localDaoFactory != null) {
-					MemberDAOInf memberDAO = localDaoFactory.getMemberDAO();
-					ArrayList<ImmutableMember> list = memberDAO.findAllMembers();
-					if(list != null && list.size() > 0) {
-						memberList = new ArrayList<RemoteMemberInfo>();
-						for(ImmutableMember mem: list) {
-							memberList.add(new RemoteMemberInfo("localhost", myServicename, (Member)mem));
+		// Find all hosts that we can connect to from the properties
+		String propRemoteHosts = Settings.props
+				.getProperty(Settings.propRmiServiceHosts);
+		if (propRemoteHosts != null) {
+			// Remove spaces
+			propRemoteHosts = propRemoteHosts.replace(" ", "");
+			// Split in substrings
+			String[] remoteHosts = propRemoteHosts.split(",");
+			// Add to list of available hosts, if it's not already there
+			for (String host : remoteHosts) {
+				if (!availableHosts.contains(host))
+					availableHosts.add(host);
+			}
+		}
+		logger.debug("Hosts: " + availableHosts.toString());
+
+		// List of resulting members
+		ArrayList<RemoteMemberInfo> memberList = new ArrayList<RemoteMemberInfo>();
+
+		//
+		// For each host, find the available services and find members they
+		// contain.
+		//
+		for (String host : availableHosts) {
+
+			// Find available services on this host
+			ArrayList<String> availableServices = RmiConnection
+					.findAvailableServices(host, serviceGroup);
+			if (availableServices != null) {
+
+				logger.debug("Connectiong to all services on host " + host
+						+ " ...");
+				for (String service : availableServices) {
+
+					// If this service is our own local service, process it
+					// locally, and add results to memberList
+					if (service.equals(myServicename)
+							&& host.equals(System
+									.getProperty(Settings.propRmiHostName))) {
+						memberList.addAll(findAllMembersOnServer());
+					} else {
+						logger.debug("FindAllMembers at " + host + " "
+								+ service);
+
+						// Do a search on a remote machine
+						try {
+							Registry registry = null;
+							RemoteMemberAdminServerIF remoteMgr;
+
+							registry = RmiConnection.getRegistry(host);
+							remoteMgr = (RemoteMemberAdminServerIF) registry
+									.lookup(service);
+							ArrayList<RemoteMemberInfo> list = remoteMgr
+									.findAllMembersOnServer();
+							memberList.addAll(list);
+
+						} catch (NotBoundException e) {
+							logger.error("NotBoundException: " + e.getMessage());
+						} catch (RemoteException e) {
+							logger.error("RemoteException: " + e.getMessage());
 						}
 					}
-					// myServicename has been searched, so remove it from remaining services
-					remainingServices.remove(myServicename);
-				} else {
-					logger.error("Could not contact local DAO factory!");
 				}
 			}
-			
-			visitedServices.add(myServicename);
-			remainingServices.remove(myServicename);
-			logger.debug("Visited services = " + visitedServices.toString());
-			logger.debug("Remaining services = " + remainingServices.toString());
-			
-			// Process all the remaining services.
-			try {
-				Registry registry = null;
-				RemoteMemberAdminServerIF remoteMgr;
-				
-				for (String service : remainingServices) {
-					logger.debug("FindAll on " + service);
-					try {
-						registry = RmiConnection.getRegistry("localhost");
-						remoteMgr = (RemoteMemberAdminServerIF) registry.lookup(service);
-						ArrayList<RemoteMemberInfo> list = remoteMgr.findAllMembers(visitedServices);
-						memberList.addAll(list);
-						visitedServices.add(service);
-					} catch (NotBoundException e) {
-						logger.error("NotBoundException: " + e.getMessage());
-					}
-				}
-			} catch (RemoteException e) {
-				logger.error("RemoteException: " + e.getMessage());
-			}
-		} catch (RemoteException e) {
-			logger.error("RemoteException: " + e.getMessage());
 		}
 
 		/**
-		 * Since we defined a comparator method on RemoteMemberInfo, we can compare
-		 * objects to each other. The order that was chosen in that method defines the 
-		 * ordering in the sort method. See the RemoteMemberInfo class.
+		 * We want to sort the resulting arraylist, but to do that, we need to
+		 * define how to sort it. Since we defined a comparator method on
+		 * RemoteMemberInfo, we can compare objects to each other. The order
+		 * that was chosen in that method defines the ordering in the sort
+		 * method. See the RemoteMemberInfo class.
 		 */
 		Collections.sort(memberList);
-		
+
 		int count = (memberList == null) ? 0 : memberList.size();
 		logger.debug("Returning " + count + " items");
-		
+
 		return memberList;
 	}
 
+	/**
+	 * Search for members on the local data source.
+	 * 
+	 * @return A list of RemoteMemberInfo objects, or null of none were found.
+	 * @see RemoteMemberInfo
+	 */
+	@Override
+	public ArrayList<RemoteMemberInfo> findAllMembersOnServer()
+			throws RemoteException {
+
+		logger.debug("FindAllMembersOnServer " + myServicename);
+
+		ArrayList<RemoteMemberInfo> resultList = null;
+
+		if (daoFactory != null) {
+			MemberDAOInf memberDAO = daoFactory.getMemberDAO();
+			ArrayList<ImmutableMember> list = memberDAO.findAllMembers();
+			if (list != null && list.size() > 0) {
+				resultList = new ArrayList<RemoteMemberInfo>();
+				for (ImmutableMember mem : list) {
+					resultList.add(new RemoteMemberInfo("localhost",
+							myServicename, (Member) mem));
+				}
+			}
+		} else {
+			logger.error("Could not contact local DAO factory!");
+		}
+
+		return resultList;
+
+	}
 
 	/**
 	 * 
@@ -334,7 +418,7 @@ public class MemberAdminManagerImpl implements RemoteMemberAdminClientIF, Remote
 
 			if (result) {
 				// Let the member remove itself from the database.
-				MemberDAOInf memberDAO = localDaoFactory.getMemberDAO();
+				MemberDAOInf memberDAO = daoFactory.getMemberDAO();
 				result = memberDAO.removeMember(member);
 
 				// In case something goes wrong here, we need to roll back.

@@ -16,4 +16,4 @@ start java -cp .\bin;.\libs\log4j-1.2.17.jar;.\libs\mysql-connector-java-5.1.32.
 ::
 :: 		-Djava.security.debug=access,failure
 
-@cd C:\dev\workspace\workspace-team\bibliotheekinformatiesysteem\IVH5\server
+@cd C:\dev\workspace\workspace-team\bibliotheekinformatiesysteem\IVH5\

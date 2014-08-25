@@ -4,9 +4,11 @@
  */
 package edu.avans.aei.ivh5.model.dao.rmi;
 
+import java.rmi.AccessException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -29,6 +31,9 @@ public class RmiConnection {
 	// A list of available registries, possibly on other remote hosts.
 	private static HashMap<String, Registry> registries = 
 			new HashMap<String, Registry>();
+	
+	// The list of services that we can connect to
+	private static ArrayList<String> availableServices = null;
 	
 	/**
 	 * 
@@ -56,6 +61,45 @@ public class RmiConnection {
 			// e.printStackTrace();
 		}
 		return registries.get(hostname);
+	}
+
+	/**
+	 * Find all available services that can be contacted from this service. This includes
+	 * all services that are listed in the RMI registry on the host that this service is 
+	 * running on, and could include more remote registries and services if available.
+	 * 
+	 * @return
+	 */
+	public static ArrayList<String> findAvailableServices(String hostname, String serviceGroup) {
+		
+		logger.debug("findAvailableServices at " + hostname + " using " + serviceGroup);
+	
+		// Make sure we start with a fresh list.
+		availableServices = null;
+		String[] listOfServices = null;
+		Registry registry;
+	
+		try {
+			registry = LocateRegistry.getRegistry(hostname);
+			listOfServices = registry.list();
+	
+			if(listOfServices != null) {
+				availableServices = new ArrayList<String>();
+				for(String servicename: listOfServices) {
+					// Return only services that share the given service group name
+					if(servicename.startsWith(serviceGroup)) {
+						availableServices.add(servicename);
+					}
+				}
+				logger.debug("Found " + availableServices.size() + " services: " + availableServices.toString());
+			}
+		} catch (AccessException e) {
+			logger.error("AccessException: " + e.getMessage());
+		} catch (RemoteException e) {
+			logger.error("RemoteException: Could not contact host " + hostname);
+		}
+	
+		return availableServices;
 	}
 
 	/**

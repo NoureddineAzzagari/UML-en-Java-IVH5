@@ -10,7 +10,6 @@ import edu.avans.aei.ivh5.model.dao.DAOFactory;
 import edu.avans.aei.ivh5.model.dao.api.LoanDAOInf;
 import edu.avans.aei.ivh5.model.dao.api.MemberDAOInf;
 import edu.avans.aei.ivh5.model.dao.api.ReservationDAOInf;
-import edu.avans.aei.ivh5.model.dao.rmi.RmiDAOFactory;
 
 /**
  * This factory provides the MySQL data source implementation. Clients can

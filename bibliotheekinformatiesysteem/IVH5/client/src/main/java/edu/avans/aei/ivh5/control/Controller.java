@@ -80,39 +80,39 @@ public class Controller implements ActionListener, EventListener, ListSelectionL
 		this.manager = mgr;
 	}
 
-	/**
-	 * Find the member identified by membershipNr and display its information.
-	 * 
-	 * @param hostname Name/IP address of the host to find the member on.
-	 * @param servicename Name of the service to find the host on.
-	 * @param membershipNr Number of the manager to be found.
-	 */
-	public boolean doFindMember(int membershipNr) 
-	{
-		logger.debug("doFindMember " + membershipNr);
-		
-		Member member;
-		boolean memberFound = false;
-
-		if (manager == null || userinterface == null) {
-			logger.error("Manager or userinterface is null!");
-		} else {
-			try {
-				member = manager.findMember(membershipNr);
-
-				if (member != null) {
-					userinterface.setMemberDetails(member);
-					memberFound = true;
-				} else {
-					logger.debug("Member " + membershipNr + " not found");
-					userinterface.setStatusText("Member " + membershipNr + " not found.");
-				}
-			} catch (RemoteException e) {
-				logger.error("Error: " + e.getMessage());
-			}
-		}
-		return memberFound;
-	}
+//	/**
+//	 * Find the member identified by membershipNr and display its information.
+//	 * 
+//	 * @param hostname Name/IP address of the host to find the member on.
+//	 * @param servicename Name of the service to find the host on.
+//	 * @param membershipNr Number of the manager to be found.
+//	 */
+//	public boolean doFindMember(int membershipNr) 
+//	{
+//		logger.debug("doFindMember " + membershipNr);
+//		
+//		Member member;
+//		boolean memberFound = false;
+//
+//		if (manager == null || userinterface == null) {
+//			logger.error("Manager or userinterface is null!");
+//		} else {
+//			try {
+//				member = manager.findMember(membershipNr);
+//
+//				if (member != null) {
+//					userinterface.setMemberDetails(member);
+//					memberFound = true;
+//				} else {
+//					logger.debug("Member " + membershipNr + " not found");
+//					userinterface.setStatusText("Member " + membershipNr + " not found.");
+//				}
+//			} catch (RemoteException e) {
+//				logger.error("Error: " + e.getMessage());
+//			}
+//		}
+//		return memberFound;
+//	}
 
 	/**
 	 * Find the member identified by membershipNr and display its information.
@@ -152,7 +152,7 @@ public class Controller implements ActionListener, EventListener, ListSelectionL
 
 		if (manager != null) {
 			try {
-				globalMemberList = manager.findAllMembers(new ArrayList<String>());
+				globalMemberList = manager.findAllMembers();
 			} catch (RemoteException e) {
 				logger.error("Error finding members: " + e.getMessage());
 			}
