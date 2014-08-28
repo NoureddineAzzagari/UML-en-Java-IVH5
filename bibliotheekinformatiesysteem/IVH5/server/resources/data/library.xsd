@@ -4,12 +4,24 @@
 	xmlns:tns="http://www.example.org/library">
 
     <element name="library">
-    	<complexType>
-    		<sequence>
-		        <element name="member" type="tns:MemberType" maxOccurs="unbounded" minOccurs="1"></element>
-    			<element name="book" type="tns:BookType" maxOccurs="unbounded" minOccurs="1"></element>
-    		</sequence>
-    	</complexType>
+		<complexType>
+           <sequence>
+				<element name="members">
+					<complexType>
+			            <sequence>
+				    		<element name="member" type="tns:MemberType" maxOccurs="unbounded" minOccurs="0"></element>
+			            </sequence>
+					</complexType>
+				</element>
+				<element name="items">
+					<complexType>
+			            <sequence>
+				    		<element name="book" type="tns:BookType" maxOccurs="unbounded" minOccurs="0"></element>
+			            </sequence>
+					</complexType>
+				</element>
+            </sequence>
+		</complexType>
     </element>
 
     <complexType name="BookType">
