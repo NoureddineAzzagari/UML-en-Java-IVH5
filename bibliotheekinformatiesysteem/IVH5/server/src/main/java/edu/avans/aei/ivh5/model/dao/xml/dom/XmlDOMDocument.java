@@ -30,7 +30,7 @@ import org.xml.sax.SAXException;
 import edu.avans.aei.ivh5.util.Settings;
 
 /**
- * XmlDOMDocument reads the XML input document that functions as a data source for the
+ * XmlDOMDocument contains the XML input document that functions as a data source for the
  * XML DOM data access objects. It validates and builds the document object model (DOM). 
  * The DOM is used throughout the application to perform CRUD-operations on the XML data. 
  * It could be viewed as an in-memory database, and needs to be saved at regular times.
