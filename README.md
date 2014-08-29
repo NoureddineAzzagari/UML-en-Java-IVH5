@@ -9,20 +9,15 @@ Dit project bevat de Java code voor het bibliotheek informatie systeem dat in pe
 
 ## Vereisten ##
 1. Java JDK
-2. Werkende en draaiende database
+2. MySql database
 3. Eventueel [Eclipse Luna](http://www.eclipse.org/), NetBeans, [Notepad++](http://www.notepad-plus-plus.org/)
 
-Voor de IVP4 en IVH5 versie eventueel:
+Voor de IVP4 en IVH5 versie:
 
-4. [Gradle](http://www.gradle.org/) build automation tool 
-5. [GIT](http://www.git-scm.com/) version management 
-6. [Sonar](http://www.sonarqube.org/) code quality tool
+1. Webserver
+2. [Gradle](http://www.gradle.org/) build automation tool 
+3. [Sonar](http://www.sonarqube.org/) code quality tool
 
-### What is this repository for? ###
-
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
 
 ### How do I get set up? ###
 
