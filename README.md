@@ -3,9 +3,9 @@
 Dit project bevat de Java code voor het bibliotheek informatie systeem dat in periodes IVP3 en IVP4 als worked example voor de studenten beschikbaar is. De IVP3 versie bevat de Javacode die bij het onderwijsmateriaal uit die periode past, met de bijbehorende software architectuur. De IVP4 versie hoort bij het onderwijs uit de bijbehorende periode. De Java code, architectuur en ontwikkeltools zijn daar geavanceerder.
 
 ## Quick links ##
-1. [IVP3 versie](https://bitbucket.org/avansivh5docenten/bibliotheek-informatie-systeem/src/64523064b74cc6f328e32be1950a5abb8d4d31c1/bibliotheekinformatiesysteem/IVP3/?at=master)
-2. [IVP4 versie](https://bitbucket.org/avansivh5docenten/bibliotheek-informatie-systeem/src/a22f25d12415fad88aff4db1890730192595cf4d/bibliotheekinformatiesysteem/IVP4/?at=master)
-3. [IVH5 versie](https://bitbucket.org/avansivh5docenten/bibliotheek-informatie-systeem/src/6abb147af7132c68d6ae2a5be8f50c933dfd89c1/bibliotheekinformatiesysteem/IVH5/?at=master)
+1. [IVP3 versie](https://bitbucket.org/avansivh5docenten/worked-example/src/4d8e691602246124d1a0a3e9b38b48c3e03c53b6/worked-example/IVP3/?at=master)
+2. [IVP4 versie](https://bitbucket.org/avansivh5docenten/worked-example/src/4d8e691602246124d1a0a3e9b38b48c3e03c53b6/worked-example/IVP4/?at=master)
+3. [IVH5 versie](https://bitbucket.org/avansivh5docenten/worked-example/src/4d8e691602246124d1a0a3e9b38b48c3e03c53b6/worked-example/IVH5/?at=master)
 
 ## Vereisten ##
 1. Java JDK
