@@ -6,6 +6,7 @@
 *.log
 *.log.*
 *.jar
+*.vpp~*
 
 # Bestanden met een ! ervoor niet negeren
 #!lib.a
