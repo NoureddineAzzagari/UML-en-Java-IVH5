@@ -1,0 +1,14 @@
+Database setup:
+
+* de datase connectie gebruikt de voglende login:
+  username: biblio1
+  password: boekje
+
+  (zie ook java code)
+
+* In MySQL:
+	1) maak een database aan genaamd 'library'
+	2) importeer de file Bibliotheek-DDL.sql
+	   nu worden alle tabellen aangemaakt
+	3) importeer de file Bibliotheek-Data.sql
+	   nu worden alle tabellen gevuld met data
