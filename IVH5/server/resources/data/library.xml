@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="library.xsl"?>
-<tns:library xmlns:tns="http://www.example.org/library" 
+
+<lib:library xmlns:lib="http://www.avans.nl/ivh5/worked-example" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://www.example.org/library library.xsd">
+	xsi:schemaLocation="http://www.avans.nl/ivh5/worked-example library.xsd">
 
 	<members>
 		<member membershipNumber="1004">
@@ -86,4 +87,4 @@
 		</book>
 	</items>
 	
-</tns:library>
+</lib:library>
