@@ -144,7 +144,7 @@ public class UserInterface extends JFrame {
 		btnListServices.addActionListener(controller);
 		// Set a name for the command of this button, so we can retrieve 
 		// the button in the Controller class.
-		btnListServices.setActionCommand("GET_SERVICES");
+		btnListServices.setActionCommand("FIND_ALL_MEMBERS");
 		pnlSearch.add(btnListServices);
 
 		return pnlSearch;

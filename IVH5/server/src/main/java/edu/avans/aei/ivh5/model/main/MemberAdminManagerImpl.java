@@ -277,13 +277,16 @@ public class MemberAdminManagerImpl implements RemoteMemberAdminClientIF,
 		String serviceGroup = Settings.props
 				.getProperty(Settings.propRmiServiceGroup);
 
-		// Add our own host to search for available services
+		// A future addition could be to search multiple hosts for members.
 		ArrayList<String> availableHosts = new ArrayList<String>();
+
+		// Currently we only search one single host - the one this server is running on.
+		// Add our own host to search for available services
 		availableHosts.add(System.getProperty(Settings.propRmiHostName));
 
-		// Find all hosts that we can connect to from the properties
-		String propRemoteHosts = Settings.props
-				.getProperty(Settings.propRmiServiceHosts);
+		// Find all hosts that we can connect to from the properties 
+		String propRemoteHosts = Settings.props.getProperty(Settings.propRmiServiceHosts);
+
 		if (propRemoteHosts != null) {
 			// Remove spaces
 			propRemoteHosts = propRemoteHosts.replace(" ", "");
@@ -295,7 +298,7 @@ public class MemberAdminManagerImpl implements RemoteMemberAdminClientIF,
 					availableHosts.add(host);
 			}
 		}
-		logger.debug("Hosts: " + availableHosts.toString());
+		logger.debug("Available hosts: " + availableHosts.toString());
 
 		// List of resulting members
 		ArrayList<RemoteMemberInfo> memberList = new ArrayList<RemoteMemberInfo>();

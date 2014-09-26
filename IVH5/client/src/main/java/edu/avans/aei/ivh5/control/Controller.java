@@ -115,14 +115,17 @@ public class Controller implements ActionListener, EventListener, ListSelectionL
 			logger.error("Manager is null! Could not find members!");
 		}
 
+		// Count the number of members that we found.
 		int count = (globalMemberList == null) ? 0 : globalMemberList.size();
+		// Construct a status message.
 		String status = "Found " + count + " members"; 
 		logger.debug(status);
 		userinterface.setStatusText(status);
 		
+		// If we found any results, set the results in the DataModel.
+		// Setting the values in the DataModel will automatically 
+		// update the table and display the contents.
 		if(count > 0) {
-			// Setting the values in the datamodel will automatically 
-			// update the table and display the contents.
 	 		DataTableModel data = userinterface.getDataTableModel();
 			data.setValues(globalMemberList);
 		}
@@ -169,7 +172,7 @@ public class Controller implements ActionListener, EventListener, ListSelectionL
 				userinterface.setStatusText("Wrong input, only numbers allowed.");
 				userinterface.setSearchBoxText("");
 			}
-		} else if (e.getActionCommand().equals("GET_SERVICES")) {
+		} else if (e.getActionCommand().equals("FIND_ALL_MEMBERS")) {
 			/**
 			 * Do a search for all members on all services, and display them in the table.
 			 */
