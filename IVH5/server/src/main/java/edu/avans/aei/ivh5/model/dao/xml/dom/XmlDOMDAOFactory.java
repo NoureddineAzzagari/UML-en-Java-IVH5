@@ -23,18 +23,30 @@ public class XmlDOMDAOFactory extends DAOFactory {
 	// Get a logger instance for the current class
 	static Logger logger = Logger.getLogger(XmlDOMDAOFactory.class);
 
+	/**
+	 * Constructor.
+	 */
 	public XmlDOMDAOFactory() {
 		logger.debug("Factory constructed.");
     }
     
+	/**
+	 * Return the XML DOM implementation of the MemberDAO interface.
+	 */
 	public MemberDAOInf getMemberDAO() {
 		return new XmlDOMMemberDAO();
 	}
 	
+	/**
+	 * Return the XML DOM implementation of the LoanDAO interface.
+	 */
 	public LoanDAOInf getLoanDAO() {
 		return new XmlDOMLoanDAO();
 	}
 	
+	/**
+	 * Return the XML DOM implementation of the ReservationDAO interface.
+	 */
 	public ReservationDAOInf getReservationDAO() {
 		return new XmlDOMReservationDAO();
 	}

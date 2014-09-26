@@ -10,6 +10,7 @@ import edu.avans.aei.ivh5.model.dao.api.MemberDAOInf;
 import edu.avans.aei.ivh5.model.dao.api.ReservationDAOInf;
 
 /**
+ * <p>
  * The DAO Factory is an abstract class that provides the functionality for creating
  * data access objects for different data source implementations. A data source can be 
  * anything that can hold data, such as a relational database, XML file, flat file, 
@@ -17,11 +18,11 @@ import edu.avans.aei.ivh5.model.dao.api.ReservationDAOInf;
  * ask to create a specific factory, which in turn can create specific data access objects
  * for the given data source implementation. The DAO's handle the persistent storage of 
  * the specific domain class, such as (in this case) a Member, Loan of Reservation.
- * 
+ * </p><p>
  * Clients can ask this class to create a DAOFactory instance for a specific 
  * implementation, based on the classname that is provided. The implementation
  * for the specific data source has to extend from this DAOFactory class.
- * 
+ * </p>
  * @author Robin Schellius
  * 
  */
@@ -36,15 +37,25 @@ public abstract class DAOFactory {
 	 * to extend DAOFactory, which forces it to implement the abstract methods to 
 	 * get domain objects from this factory.
 	 * 
-	 * @param factoryClassName
-	 * @return
+	 * @param factoryClassName The string indicating the complete package name of the 
+	 * factory class that must be loaded. 
+	 * <br/>Example factoryClassName: 
+	 * <code>edu.avans.aei.ivh5.model.dao.rdbms.mysql.MySqlDAOFactory</code>
+	 * 
+	 * @return An object instance of the requested factory class.
+	 * @see edu.avans.aei.ivh5.model.dao.rdbms.mysql.MySqlDAOFactory
+	 * @see edu.avans.aei.ivh5.model.dao.xml.dom.XmlDOMDAOFactory
+	 *  
 	 */
 	public static DAOFactory getDAOFactory(String factoryClassName) {
 
 		DAOFactory factoryInstance = null;
 		
 		try {
+			// Create a class using the factoryClassName.
 			Class<?> factoryClass = Class.forName(factoryClassName);
+			
+			// Create an instance of the class that we created.
 			factoryInstance = (DAOFactory)factoryClass.newInstance();
 		} catch (ClassNotFoundException e) {
             logger.error(e.getMessage());

@@ -24,9 +24,7 @@ import edu.avans.aei.ivh5.util.Settings;
 public class LibraryServer {
 
 	// Implements the specific DAO functionality (MySQL, XML).
-	static public String daofactoryclassname;
-	// Implements the remote access DAO functionality.
-	static public String rmifactoryclassname;
+	// static public String daofactoryclassname;
 	// Access to remote manager
 	static private RemoteMemberAdminClientIF	stub; 
 

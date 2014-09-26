@@ -36,14 +36,18 @@ public class LibraryClient {
 	static Logger logger = Logger.getLogger(LibraryClient.class);
 
 	/**
-	 * Constructor.
+	 * Constructor. Locate the registry, lookup the service name that was provided via
+	 * the properties file, and instantiate a RemoteMemberAdminManagerClient stub.
 	 * 
 	 * @param hostname The host where the server is running.
+	 * @see RemoteMemberAdminClientIF
 	 */
 	public LibraryClient(String hostname) {
 
 		logger.debug("Constructor using " + hostname);
 
+		// The service name consists of a group name and a service name.
+		// The group name enables finding all services within a given group.
 		String service = Settings.props.getProperty(Settings.propRmiServiceGroup) + 
 				Settings.props.getProperty(Settings.propRmiServiceName);
 
@@ -109,7 +113,7 @@ public class LibraryClient {
 		PropertyConfigurator.configure(Settings.props.getProperty(Settings.propLogConfigFile));
 		logger.info("Starting application");
 
-		// Create the client.
+		// Create the client, and connect it to the given (server) hostname.
 		String hostname = System.getProperty(Settings.propRmiHostName);
 		new LibraryClient(hostname);
 	}

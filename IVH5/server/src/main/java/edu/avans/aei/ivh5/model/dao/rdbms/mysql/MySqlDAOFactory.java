@@ -23,6 +23,9 @@ public class MySqlDAOFactory extends DAOFactory {
 	// Get a logger instance for the current class
 	static Logger logger = Logger.getLogger(MySqlDAOFactory.class);
 
+	/**
+	 * Empty constructor.
+	 */
 	public MySqlDAOFactory() {
 		logger.debug("Factory constructed.");
     }

@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package edu.avans.aei.ivh5.model.dao.xml.dom;
 
 import java.util.ArrayList;
@@ -44,7 +40,7 @@ public class XmlDOMMemberDAO implements MemberDAOInf {
 	}
 
 	/**
-	 * Tries to find the member identified by the given membership number in the
+	 * Try to find the member identified by the given membership number in the
 	 * persistent data store. All loans and reservations for the member are
 	 * loaded as well. In this POC, the reserved books and/or lend copies of the
 	 * books are not loaded - it is out of scope for now.
@@ -105,7 +101,7 @@ public class XmlDOMMemberDAO implements MemberDAOInf {
 		}
 		
 		if (member == null)
-			logger.debug("member not found");
+			logger.debug("Member not found");
 
 		return member;
 	}
@@ -180,8 +176,8 @@ public class XmlDOMMemberDAO implements MemberDAOInf {
 
 		//
 		// For consistency reasons, we should check whether the newMember
-		// doesn't already exist in our datasource. Since this file is only
-		// for demonstration purpose, we do not perfom that check here.
+		// doesn't already exist in our data source. Since this file is only
+		// for demonstration purpose, we do not perform that check here.
 		//
 
 		// Get the members element, of which there is only one.
@@ -199,8 +195,7 @@ public class XmlDOMMemberDAO implements MemberDAOInf {
 		// or shorter: member.setAttribute("id", "1");
 
 		Element firstname = document.createElement("firstname");
-		firstname
-				.appendChild(document.createTextNode(newMember.getFirstname()));
+		firstname.appendChild(document.createTextNode(newMember.getFirstname()));
 		member.appendChild(firstname);
 
 		Element lastname = document.createElement("lastname");
@@ -212,8 +207,7 @@ public class XmlDOMMemberDAO implements MemberDAOInf {
 		member.appendChild(street);
 
 		Element houseNumber = document.createElement("housenumber");
-		houseNumber.appendChild(document.createTextNode(newMember
-				.getHouseNumber()));
+		houseNumber.appendChild(document.createTextNode(newMember.getHouseNumber()));
 		member.appendChild(houseNumber);
 
 		Element city = document.createElement("city");
@@ -221,13 +215,11 @@ public class XmlDOMMemberDAO implements MemberDAOInf {
 		member.appendChild(city);
 
 		Element phoneNumber = document.createElement("phoneNumber");
-		phoneNumber.appendChild(document.createTextNode(newMember
-				.getPhoneNumber()));
+		phoneNumber.appendChild(document.createTextNode(newMember.getPhoneNumber()));
 		member.appendChild(phoneNumber);
 
 		Element emailAddress = document.createElement("emailaddress");
-		emailAddress.appendChild(document.createTextNode(newMember
-				.getEmailaddress()));
+		emailAddress.appendChild(document.createTextNode(newMember.getEmailaddress()));
 		member.appendChild(emailAddress);
 
 		Element fine = document.createElement("fine");

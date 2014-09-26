@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package edu.avans.aei.ivh5.model.dao.rdbms.mysql;
 
 import java.sql.Connection;
@@ -15,7 +11,11 @@ import org.apache.log4j.Logger;
 import edu.avans.aei.ivh5.util.Settings;
 
 /**
- *
+ * This class manages the connection to the MySQL database. In the current implementation
+ * the connection to the database is created before each use, and closed directly after it.
+ * This is an implementation choice; a different approach could have been to have a single 
+ * database connection that is reused throughout the entire application.
+ * 
  * @author ppthgast, rschelli
  */
 public class MySqlConnection {
@@ -23,11 +23,15 @@ public class MySqlConnection {
 	// Get a logger instance for the current class
 	static Logger logger = Logger.getLogger(MySqlConnection.class);
 
+	// Username to connect to the database
 	private String username;
+	// password to connect to the database
 	private String password;
+	// drivername used to connect to the MySQL database server
 	private String drivername;	
+	// connectionstring to connect to the database
 	private String connectionstring;
-    
+	// the connection that is created.
     private Connection connection;
     
     // The Statement object has been defined as a field because some methods
@@ -37,7 +41,8 @@ public class MySqlConnection {
     private Statement statement;
     
     /**
-     * 
+     * Constructor. Initialize the database settings and create the database 
+     * driver class. We do not make a connection yet.
      */
     public MySqlConnection()
     {
@@ -61,8 +66,9 @@ public class MySqlConnection {
     }
         
     /**
+     * Open the connection to the database.
      * 
-     * @return
+     * @return True when the connection is open, false otherwise.
      */
     public boolean openConnection()
     {
@@ -102,8 +108,9 @@ public class MySqlConnection {
     }
     
     /**
+     * Check whether an open connection is available.
      * 
-     * @return
+     * @return True when the connection is open, false otherwise.
      */
     public boolean connectionIsOpen()
     {
@@ -130,7 +137,7 @@ public class MySqlConnection {
     }
     
     /**
-     * 
+     * Close the current connection.
      */
     public void closeConnection()
     {
@@ -148,9 +155,10 @@ public class MySqlConnection {
     }
     
     /**
+     * Execute the given SQL query.
      * 
-     * @param query
-     * @return
+     * @param query The query to be executed
+     * @return ResultSet if results were found, <code>null</code> otherwise.
      */
     public ResultSet executeSQLStatement(String query)
     {

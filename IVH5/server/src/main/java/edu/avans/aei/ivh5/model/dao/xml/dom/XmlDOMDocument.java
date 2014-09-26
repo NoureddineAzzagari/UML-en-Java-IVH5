@@ -69,7 +69,7 @@ public class XmlDOMDocument {
 	 * Get the XML document that functions as the data source. We try to validate
 	 * it, if the given XSD file is available.
 	 * 
-	 * @return
+	 * @return The XML DOM document that holds objects representing the XML elements in the file.
 	 */
 	public Document getDocument() {
 
@@ -109,8 +109,7 @@ public class XmlDOMDocument {
 		logger.debug("writing XML document to file " + xmlFilename);
 
 		try {
-			TransformerFactory transformerFactory = TransformerFactory
-					.newInstance();
+			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 			Transformer transformer = transformerFactory.newTransformer();
 			DOMSource source = new DOMSource(document);
 			StreamResult result = new StreamResult(new File(xmlFilename));
@@ -126,6 +125,7 @@ public class XmlDOMDocument {
 	}
 
 	/**
+	 * Build a DOM document using the XML input filename.
 	 * 
 	 * @param filename The file that provides the XML contents to create the document object model.
 	 * @return The DOM document that was created, or null otherwise.
@@ -134,8 +134,7 @@ public class XmlDOMDocument {
 
 		logger.debug("buildDocument");
 
-		DocumentBuilderFactory builderFactory = DocumentBuilderFactory
-				.newInstance();
+		DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = null;
 		try {
 			builder = builderFactory.newDocumentBuilder();
