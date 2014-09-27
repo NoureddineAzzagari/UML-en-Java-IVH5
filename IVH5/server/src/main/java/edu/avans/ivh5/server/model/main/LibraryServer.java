@@ -61,6 +61,11 @@ public class LibraryServer {
 			return;
 		}
 		
+		/**
+		 *  Install the security manager. The SecurityManager looks for the system property
+		 *  java.security.policy, which points to the se
+		 */
+		
 		if (System.getSecurityManager() == null) {
 			System.setSecurityManager(new SecurityManager());
 		}

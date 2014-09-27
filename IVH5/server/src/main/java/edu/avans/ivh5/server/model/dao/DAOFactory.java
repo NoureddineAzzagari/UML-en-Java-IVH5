@@ -52,15 +52,15 @@ public abstract class DAOFactory {
 		DAOFactory factoryInstance = null;
 		
 		try {
-			// Create a class using the factoryClassName.
+			logger.debug("Loading class "+ factoryClassName);
 			Class<?> factoryClass = Class.forName(factoryClassName);
 			
-			// Create an instance of the class that we created.
+			logger.debug("Creating an instance of the class that we created");
 			factoryInstance = (DAOFactory)factoryClass.newInstance();
 		} catch (ClassNotFoundException e) {
-            logger.error(e.getMessage());
+            logger.fatal("ClassNotFoundException: " + e.getMessage());
 		} catch (Exception e) {
-            logger.error(e.getMessage());
+            logger.fatal("Exception" + e.getMessage());
 		}
 		
 		return factoryInstance;

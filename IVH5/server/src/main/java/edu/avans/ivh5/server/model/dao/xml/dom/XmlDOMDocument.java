@@ -59,10 +59,10 @@ public class XmlDOMDocument {
 		
 		// Read filenames from the previously installed properties; undefined otherwise.
 		xmlFilename = Settings.props.getProperty(Settings.propXmlFileName);
-		xmlSchema = Settings.props.getProperty(Settings.propXmlFileName);
+		xmlSchema = Settings.props.getProperty(Settings.propXmlSchema);
 
 		logger.debug("xmlFilename = " + xmlFilename);
-		logger.debug("xmlSchema = " + xmlFilename);
+		logger.debug("xmlSchema = " + xmlSchema);
 	}
 
 	/**

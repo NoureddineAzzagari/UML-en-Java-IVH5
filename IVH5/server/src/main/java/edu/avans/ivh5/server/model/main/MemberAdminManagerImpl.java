@@ -8,7 +8,6 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 
@@ -18,14 +17,10 @@ import edu.avans.ivh5.api.RemoteMemberAdminClientIF;
 import edu.avans.ivh5.api.RemoteMemberAdminServerIF;
 import edu.avans.ivh5.api.RemoteMemberInfo;
 import edu.avans.ivh5.server.model.dao.DAOFactory;
-import edu.avans.ivh5.server.model.dao.api.LoanDAOInf;
 import edu.avans.ivh5.server.model.dao.api.MemberDAOInf;
-import edu.avans.ivh5.server.model.dao.api.ReservationDAOInf;
 import edu.avans.ivh5.server.model.dao.rmi.RmiConnection;
 import edu.avans.ivh5.shared.model.domain.ImmutableMember;
-import edu.avans.ivh5.shared.model.domain.Loan;
 import edu.avans.ivh5.shared.model.domain.Member;
-import edu.avans.ivh5.shared.model.domain.Reservation;
 import edu.avans.ivh5.shared.util.Settings;
 
 /**
@@ -40,10 +35,10 @@ import edu.avans.ivh5.shared.util.Settings;
  * 
  * @see RemoteMemberAdminClientIF
  * @see edu.avans.ivh5.server.model.main.LibraryServer
- * @author ppthgast, rschelli
+ * @author Robin Schellius
  */
-public class MemberAdminManagerImpl implements RemoteMemberAdminClientIF,
-		RemoteMemberAdminServerIF {
+public class MemberAdminManagerImpl 
+		implements RemoteMemberAdminClientIF, RemoteMemberAdminServerIF {
 
 	// Get a logger instance for the current class
 	static Logger logger = Logger.getLogger(MemberAdminManagerImpl.class);
@@ -284,20 +279,20 @@ public class MemberAdminManagerImpl implements RemoteMemberAdminClientIF,
 		// Add our own host to search for available services
 		availableHosts.add(System.getProperty(Settings.propRmiHostName));
 
-		// Find all hosts that we can connect to from the properties 
-		String propRemoteHosts = Settings.props.getProperty(Settings.propRmiServiceHosts);
-
-		if (propRemoteHosts != null) {
-			// Remove spaces
-			propRemoteHosts = propRemoteHosts.replace(" ", "");
-			// Split in substrings
-			String[] remoteHosts = propRemoteHosts.split(",");
-			// Add to list of available hosts, if it's not already there
-			for (String host : remoteHosts) {
-				if (!availableHosts.contains(host))
-					availableHosts.add(host);
-			}
-		}
+//		// Find all hosts that we can connect to from the properties 
+//		String propRemoteHosts = Settings.props.getProperty(Settings.propRmiServiceHosts);
+//
+//		if (propRemoteHosts != null) {
+//			// Remove spaces
+//			propRemoteHosts = propRemoteHosts.replace(" ", "");
+//			// Split in substrings
+//			String[] remoteHosts = propRemoteHosts.split(",");
+//			// Add to list of available hosts, if it's not already there
+//			for (String host : remoteHosts) {
+//				if (!availableHosts.contains(host))
+//					availableHosts.add(host);
+//			}
+//		}
 		logger.debug("Available hosts: " + availableHosts.toString());
 
 		// List of resulting members
