@@ -1,20 +1,21 @@
 apply plugin: "jacoco"
 apply plugin: "sonar-runner"
 
+// Change this path to your local webserver setting.
+def webserverDir = 'c:/dev/xampp/htdocs/classes'
+	
 subprojects {
 	apply plugin: "java"
 	apply plugin: "eclipse"
-    apply plugin: 'ivy-publish'
 
     version = '1.0'			// version will be postfixed to jar-name
-    group = 'nl.avans.aei'	// used in gradle publish
-	
+    group = 'edu.avans'		// used in gradle publish
+
 	repositories {
         mavenCentral()
 		flatDir {
 			name "webserver"
-			// Change this path to your local webserver setting.
-			dirs 'c:/dev/xampp/htdocs/classes'
+			dirs webserverDir
 		}
 	}
 
@@ -26,15 +27,6 @@ subprojects {
 	uploadArchives {
 		repositories {
 			add project.repositories.webserver
-			/*
-			ivy {
-				credentials {
-					username "username"
-					password "pw"
-				}
-				url "http://repo.mycompany.com"
-			}
-			*/
 		}
 	}
 }
@@ -48,11 +40,6 @@ project(':api') {
     dependencies {
         compile project(':shared')
     }
-	
-	artifacts {
-		// Set the artifacts to be used in uploadArchives.
-		// Default the .jar is used.
-	}
 }
 
 project(':server') {
@@ -66,7 +53,7 @@ project(':server') {
         testCompile "junit:junit:4.11"
     }
 
-	def webdir = project.file(new File("c:/dev/xampp/htdocs/classes"), PathValidation.DIRECTORY)
+	def webdir = project.file(new File(webserverDir), PathValidation.DIRECTORY)
 
 	//
 	// deploylocal plaatst alle gerefereerde libraries in /server/build/deploy.
@@ -104,20 +91,11 @@ project(':server') {
 	
 	// Remove all from deployment directory after task 'clean' 
 	task removeDeploymentDirs(type: Delete) {
-		new File("c:/dev/xampp/htdocs/classes/bin/").deleteDir()
-		new File("c:/dev/xampp/htdocs/classes/resources/").deleteDir()
-		new File("c:/dev/xampp/htdocs/classes/libs/").deleteDir()
+		new File(webserverDir + "/bin/").deleteDir()
+		new File(webserverDir + "/resources/").deleteDir()
+		new File(webserverDir + "/libs/").deleteDir()
 	}
 	clean.finalizedBy removeDeploymentDirs
-
-	//associating the task that produces the artifact with the configuration
-	artifacts {
-		archives file('build/deploy/mysql-connector-java-5.1.31.jar')
-		archives file('build/deploy/log4j-1.2.17.jar')
-		archives file('build/deploy/serverlog.cnf')
-		archives file('build/deploy/server.policy')
-	}
-	
 }
 
 project(':client') {
@@ -155,34 +133,5 @@ project(':shared') {
     dependencies {
         compile 'log4j:log4j:1+'
         testCompile "junit:junit:4.11"
-    }
-
-	artifacts {
-		// Set the artifacts to be used in uploadArchives.
-		// Default the .jar is used.
-	}
-}
-
-subprojects {
-	// Via gradle publish publiceer je de artifacts met ivy.
-    publishing {
-        repositories {
-			// add project.repositories.fileRepo
-            ivy {
-                url "${rootProject.buildDir}/repo" // change to point to your repo, e.g. http://my.org/repo
-            }
-        }
-        publications {
-            ivy(IvyPublication) {
-                from components.java
-                // artifact(sourceJar) {
-                //    type "source"
-                //    conf "runtime"
-                // }
-                // descriptor.withXml {
-                //    asNode().info[0].appendNode('description', description)
-                // }
-            }
-        }
     }
 }
