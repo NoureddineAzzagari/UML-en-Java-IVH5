@@ -6,6 +6,6 @@
 :: Zorg ervoor dat de registry en de LibraryServer gestart zijn.
 ::
 
-java -cp .\client\build\deploy;.\client\build\deploy\log4j-1.2.17.jar edu.avans.aei.ivh5.view.main.LibraryClient -properties ./client/resources/client.properties
+java -cp .\client\build\deploy;.\client\build\deploy\log4j-1.2.17.jar edu.avans.ivh5.client.view.main.LibraryClient -properties ./client/resources/client.properties
 
 :: @pause
