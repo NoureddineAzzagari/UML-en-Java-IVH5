@@ -52,9 +52,8 @@ public class MemberAdminManagerImpl implements RemoteMemberAdminClientIF,
 	// next search.
 	private HashMap<Integer, Member> members;
 
-	// The factories that provides DAO instances for domain classes.
-	private DAOFactory daoFactory; // Handles data requests on the local
-										// server.
+	// The factory that provides DAO instances for domain classes.
+	private DAOFactory daoFactory; 
 
 	// The servicename that identifies this service in the RMI registry.
 	// When finding all available services in the registry we want to exclude
@@ -93,96 +92,18 @@ public class MemberAdminManagerImpl implements RemoteMemberAdminClientIF,
 	}
 
 	/**
-	 * Find a list of available services.
+	 * <p>
+	 * Find a member on a specific host and RMI service.
+	 * </p><p>
+	 * This method can be called by either a client or a remote server. In both cases, we need to 
+	 * distinguish between finding a member on 'our' server, or finding a member on a different, remote
+	 * server. Finding a member on 'our' server means doing a findMember via the DAO factory; finding
+	 * a remote member means setting up a remote connection and repeating the findMember method there.
+	 * </p>
 	 * 
-	 * @return List of servicenames, or null if none were found.
-	 * @throws RemoteException
-	 */
-	// public ArrayList<String> findAvailableServices(String hostname, String
-	// serviceGroup){
-	//
-	// logger.debug("findAvailableServices");
-	//
-	// ArrayList<String> availableServices = null;
-	//
-	// if(remoteDaoFactory != null) {
-	// availableServices = ((RmiDAOFactory)remoteDaoFactory)
-	// .findAvailableServices(hostname, serviceGroup);
-	// } else {
-	// logger.error("Could not contact remote DAO factory!");
-	// }
-	//
-	// return availableServices;
-	// }
-
-	// /**
-	// * Find a single Member based on its membershipNumber. If no Member is
-	// * found, null is returned. Before searching in the datasource, we first
-	// * check if it already exists in the list of previously found members.
-	// *
-	// * @param membershipNumber The Member's membershipNumber.
-	// */
-	// public Member findMember(int membershipNumber) throws RemoteException {
-	//
-	// logger.debug("findMember " + membershipNumber);
-	//
-	// MemberDAOInf memberDAO = null;
-	// Member member = null;
-	//
-	// // First do a lookup in the members cache.
-	// member = members.get(membershipNumber);
-	//
-	// if (member == null) {
-	// logger.debug("Member not found in cache, lookup in datasource.");
-	//
-	// if (localDaoFactory != null) {
-	// memberDAO = localDaoFactory.getMemberDAO();
-	//
-	// if(memberDAO != null)
-	// {
-	// member = memberDAO.findMember(membershipNumber);
-	// if (member != null) {
-	// logger.debug("Member found in datasource.");
-	//
-	// LoanDAOInf loanDAO = localDaoFactory.getLoanDAO();
-	// ArrayList<Loan> loans = loanDAO.findLoans(member);
-	//
-	// if (loans != null) {
-	// for (Loan loan : loans) {
-	// if (loan != null) {
-	// member.addLoan(loan);
-	// }
-	// }
-	// }
-	//
-	// ReservationDAOInf reservationDAO = localDaoFactory.getReservationDAO();
-	// ArrayList<Reservation> reservations =
-	// reservationDAO.findReservations(member);
-	//
-	// if (reservations != null) {
-	// for (Reservation reservation : reservations) {
-	// if (reservation != null) {
-	// member.addReservation(reservation);
-	// }
-	// }
-	// }
-	//
-	// // Cache the member that has been read from the database, to
-	// // avoid querying the database each time a member is needed.
-	// members.put(membershipNumber, member);
-	// } else {
-	// logger.debug("Member not found in datasource.");
-	// }
-	// } else {
-	// logger.debug("MemberDAO not found!");
-	// }
-	// }
-	// }
-	// return member;
-	// }
-
-	/**
-	 * 
+	 * @param hostname The host to find the member on.
+	 * @param service Name of the service to search the member on.
+	 * @param membershipNumber ID of the member to be found.
 	 */
 	@Override
 	public Member findMember(String hostname, String service,
@@ -193,8 +114,7 @@ public class MemberAdminManagerImpl implements RemoteMemberAdminClientIF,
 		Member member = null;
 
 		if (service.equals(myServicename)
-				&& hostname
-						.equals(System.getProperty(Settings.propRmiHostName))) {
+				&& hostname.equals(System.getProperty(Settings.propRmiHostName))) {
 
 			member = findMemberOnServer(hostname, service, membershipNumber);
 
@@ -224,7 +144,11 @@ public class MemberAdminManagerImpl implements RemoteMemberAdminClientIF,
 	}
 
 	/**
+	 * Find a member on a specific host and RMI service.
 	 * 
+	 * @param hostname The host to find the member on.
+	 * @param service Name of the service to search the member on.
+	 * @param membershipNumber ID of the member to be found.
 	 */
 	@Override
 	public Member findMemberOnServer(String hostname, String service,
