@@ -49,7 +49,7 @@ project(':server') {
 	archivesBaseName = "library-server"
 	
     dependencies {
-        compile project(':shared'), project(':api'), 'mysql:mysql-connector-java:5.1+', 'log4j:log4j:1+'
+        compile project(':shared'), project(':api'), 'mysql:mysql-connector-java:5.1.33', 'log4j:log4j:1+'
         testCompile "junit:junit:4.11"
     }
 
