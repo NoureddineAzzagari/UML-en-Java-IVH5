@@ -196,10 +196,11 @@ public class MemberAdminManagerImpl
 		String serviceGroup = Settings.props
 				.getProperty(Settings.propRmiServiceGroup);
 
+		//
 		// A future addition could be to search multiple hosts for members.
-		ArrayList<String> availableHosts = new ArrayList<String>();
-
 		// Currently we only search one single host - the one this server is running on.
+		//
+		ArrayList<String> availableHosts = new ArrayList<String>();
 		// Add our own host to search for available services
 		availableHosts.add(System.getProperty(Settings.propRmiHostName));
 
