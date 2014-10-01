@@ -24,18 +24,22 @@ public class RmiConnection {
 	// Get a logger instance for the current class
 	static Logger logger = Logger.getLogger(RmiConnection.class);
 	
+	// 
 	static Object remoteService = null;
+	
+	// The name of the host to connect to
 	public static String hostname = null;
+	// The name of the service to connect to
 	public static String servicename = null;
 	
 	// A list of available registries, possibly on other remote hosts.
-	private static HashMap<String, Registry> registries = 
-			new HashMap<String, Registry>();
+	private static HashMap<String, Registry> registries = new HashMap<String, Registry>();
 	
 	// The list of services that we can connect to
 	private static ArrayList<String> availableServices = null;
 	
 	/**
+	 * Method to get and return a reference to the RMI registry on the given server.
 	 * 
 	 * @param hostname
 	 * @return
@@ -45,6 +49,7 @@ public class RmiConnection {
 		logger.debug("getRegistry on " + hostname);
 		
 		try {
+			// Check if we have previously found the requested registry
 			if (registries.containsKey(hostname) && (registries.get(hostname) != null)) {
 				logger.debug("Found registry in cache.");
 			} else {
@@ -103,9 +108,9 @@ public class RmiConnection {
 	}
 
 	/**
+	 * Internal class to get a service using a separate thread.
 	 * 
 	 * @author Robin Schellius
-	 *
 	 */
     public static class getService implements Runnable {
 	
@@ -131,7 +136,7 @@ public class RmiConnection {
 		public void run() {
 	    	
 			logger.debug(Thread.currentThread().getName() + 
-					" Connecting to " + service + " on host "  + hostname);
+					"Connecting to " + service + " on host "  + hostname);
 			
 	        try {
 	            Registry registry = getRegistry(hostname);
@@ -153,15 +158,16 @@ public class RmiConnection {
     }
 
     /**
+     * Threaded class to get a list of services from a given host.
      * 
      * @author Robin Schellius
-     *
      */
     public static class listServices implements Runnable {
 
     	private static String hostname;
     	
     	/**
+    	 * Constructor
     	 * 
     	 * @param host
     	 */
