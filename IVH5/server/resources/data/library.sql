@@ -155,14 +155,14 @@ INSERT INTO `book` (`ISBN`, `Title`, `Author`, `Edition`) VALUES
 --
 
 INSERT INTO `member` (`MembershipNumber`, `FirstName`, `LastName`, `Street`, `HouseNumber`, `City`, `PhoneNumber`, `EmailAddress`, `Fine`) VALUES
-(1000, 'Pascal', 'van Gastel', 'Lovensdijkstraat', '61', 'Breda', '0765238754', 'ppth.vangastel@avans.nl', 0),
-(1001, 'Erco', 'Argante', 'Hogeschoollaan', '1', 'Breda', '0765231234', 'e.argante@avans.nl', 0),
-(1002, 'Marice', 'Bastiaensen', 'Lovensdijkstraat', '63', 'Breda', '0765236789', 'mmcm.bastiaensen@avans.nl', 5),
-(1003, 'Karel', 'Van Dam', 'Buitendijk', '63', 'Breda', '0765223489', 'info@server.com', 0),
-(1006, 'Marieke', 'Van Dam', 'Binnenlaan', '4', 'Breda', '0765223489', 'info@server.com', 0),
-(1007, 'Eveline', 'Van Dam', 'Markt', '65', 'Breda', '0765223489', 'info@server.com', 0),
-(1008, 'Sjoerd', 'Van Dam', 'Dijklaan', '112', 'Breda', '0765223489', 'info@server.com', 0),
-(1009, 'Jan', 'Montizaan', 'Straatnaam', '1', 'Breda', '0765223489', 'info@server.com', 0);
+(2000, 'Pascal', 'van Gastel', 'Lovensdijkstraat', '61', 'Breda', '0765238754', 'ppth.vangastel@avans.nl', 0),
+(2001, 'Erco', 'Argante', 'Hogeschoollaan', '1', 'Breda', '0765231234', 'e.argante@avans.nl', 0),
+(2002, 'Marice', 'Bastiaensen', 'Lovensdijkstraat', '63', 'Breda', '0765236789', 'mmcm.bastiaensen@avans.nl', 5),
+(2003, 'Karel', 'Van Dam', 'Buitendijk', '63', 'Breda', '0765223489', 'info@server.com', 0),
+(2006, 'Marieke', 'Van Dam', 'Binnenlaan', '4', 'Breda', '0765223489', 'info@server.com', 0),
+(2007, 'Eveline', 'Van Dam', 'Markt', '65', 'Breda', '0765223489', 'info@server.com', 0),
+(2008, 'Sjoerd', 'Van Dam', 'Dijklaan', '112', 'Breda', '0765223489', 'info@server.com', 0),
+(2009, 'Jan', 'Montizaan', 'Straatnaam', '1', 'Breda', '0765223489', 'info@server.com', 0);
 
 --
 -- Dumping data for table `copy`
@@ -177,7 +177,7 @@ INSERT INTO `copy` (`CopyID`, `LendingPeriod`, `BookISBN`) VALUES
 --
 
 INSERT INTO `loan` (`ReturnDate`, `MembershipNr`, `CopyID`) VALUES
-('2013-10-16', 1000, 10001);
+('2013-10-16', 2000, 10001);
 
 
 --
@@ -185,4 +185,4 @@ INSERT INTO `loan` (`ReturnDate`, `MembershipNr`, `CopyID`) VALUES
 --
 
 INSERT INTO `reservation` (`ReservationDate`, `MembershipNumber`, `BookISBN`) VALUES
-('2013-09-29', 1001, 1111);
+('2013-09-29', 2001, 1111);

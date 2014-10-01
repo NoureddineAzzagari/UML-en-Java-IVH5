@@ -203,20 +203,20 @@ public class MemberAdminManagerImpl
 		// Add our own host to search for available services
 		availableHosts.add(System.getProperty(Settings.propRmiHostName));
 
-//		// Find all hosts that we can connect to from the properties 
-//		String propRemoteHosts = Settings.props.getProperty(Settings.propRmiServiceHosts);
-//
-//		if (propRemoteHosts != null) {
-//			// Remove spaces
-//			propRemoteHosts = propRemoteHosts.replace(" ", "");
-//			// Split in substrings
-//			String[] remoteHosts = propRemoteHosts.split(",");
-//			// Add to list of available hosts, if it's not already there
-//			for (String host : remoteHosts) {
-//				if (!availableHosts.contains(host))
-//					availableHosts.add(host);
-//			}
-//		}
+		// Find all hosts that we can connect to from the properties 
+		String propRemoteHosts = Settings.props.getProperty(Settings.propRmiServiceHosts);
+
+		if (propRemoteHosts != null) {
+			// Remove spaces
+			propRemoteHosts = propRemoteHosts.replace(" ", "");
+			// Split in substrings
+			String[] remoteHosts = propRemoteHosts.split(",");
+			// Add to list of available hosts, if it's not already there
+			for (String host : remoteHosts) {
+				if (!availableHosts.contains(host))
+					availableHosts.add(host);
+			}
+		}
 		logger.debug("Available hosts: " + availableHosts.toString());
 
 		// List of resulting members
