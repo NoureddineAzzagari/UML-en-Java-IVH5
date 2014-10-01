@@ -146,8 +146,10 @@ public class LibraryClient {
 				errorFound = true;
 		}
 		if (errorFound) {
-			System.out.println("Use: -properties [filename or URL]");
-			System.out.println("     -properties client.properties");
+			System.out.println("Error reading command line parameters.");
+			System.out.println("Usage: -properties [filename or URL]");
+			System.out.println("       -properties client.properties");
+			System.exit(0);
 		}
 		return propertiesfilename;
 	}
