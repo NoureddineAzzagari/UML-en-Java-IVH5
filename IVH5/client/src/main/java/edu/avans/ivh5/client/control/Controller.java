@@ -149,24 +149,27 @@ public class Controller implements ActionListener, EventListener, ListSelectionL
 	
 		if (e.getActionCommand().equals("FIND_MEMBER")) {
 			/**
-			 * Find Member is called when the user inserts a Membership nr and presses Search.
-			 * In that case, we only search on our 'own local server', not in the cloud
-			 * of services. Therefore we select hostname and service name from the properties. 
+			 * Find Member is called when the user inserts a 
+			 * membershipNr and presses Search.
 			 */
 			try {	
 				int membershipNr = Integer.parseInt(userinterface.getSearchValue().trim());
 				
-				// We have to find membershipNr in the globalMemberList, since we have
-				// to find the host and service it lives on
-				for(RemoteMemberInfo member : globalMemberList) {
-					if(member.getMember().getMembershipNumber() == membershipNr) {
-						// Found it
-						String host = member.getHostname();
-						String service = member.getServicename();
-						userinterface.eraseMemberDetails();
-						doFindMember(host, service, membershipNr);
+				if(null == globalMemberList) {
+					logger.debug("Cannot perform search; first find all members.");
+				} else {
+					// We have to find membershipNr in the globalMemberList, since we have
+					// to find the host and service it lives on
+					for(RemoteMemberInfo member : globalMemberList) {
+						if(member.getMember().getMembershipNumber() == membershipNr) {
+							// Found it
+							String host = member.getHostname();
+							String service = member.getServicename();
+							userinterface.eraseMemberDetails();
+							doFindMember(host, service, membershipNr);
+						}
 					}
-				}				
+				}
 			} catch (NumberFormatException ex) {
 				logger.error("Wrong input, only numbers allowed");
 				userinterface.setStatusText("Wrong input, only numbers allowed.");
@@ -174,7 +177,8 @@ public class Controller implements ActionListener, EventListener, ListSelectionL
 			}
 		} else if (e.getActionCommand().equals("FIND_ALL_MEMBERS")) {
 			/**
-			 * Do a search for all members on all services, and display them in the table.
+			 * Do a search for all members on all available services, and 
+			 * display them in the table.
 			 */
 			try {
 				logger.debug("Find all members on all hosts/services");
