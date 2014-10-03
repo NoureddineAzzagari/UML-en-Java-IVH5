@@ -8,11 +8,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.ArrayList;
-import java.util.Collections;
 
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -29,7 +26,6 @@ import javax.swing.table.TableColumn;
 import org.apache.log4j.Logger;
 
 import edu.avans.ivh5.client.control.Controller;
-import edu.avans.ivh5.client.view.ui.DataTableModel;
 import edu.avans.ivh5.shared.model.domain.ImmutableMember;
 
 /**

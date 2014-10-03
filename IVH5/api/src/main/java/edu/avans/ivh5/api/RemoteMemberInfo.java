@@ -1,10 +1,8 @@
 package edu.avans.ivh5.api;
 
 import java.io.Serializable;
-import java.util.Comparator;
 
 import edu.avans.ivh5.shared.model.domain.ImmutableMember;
-import edu.avans.ivh5.shared.model.domain.Member;
 
 /**
  * <p>

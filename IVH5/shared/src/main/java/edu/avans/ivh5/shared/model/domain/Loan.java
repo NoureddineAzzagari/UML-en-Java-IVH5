@@ -13,7 +13,12 @@ import java.util.Date;
  */
 public class Loan implements Serializable {
     
-    private Date returnDate;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	private Date returnDate;
     
     private Member member;
     private Copy copy;

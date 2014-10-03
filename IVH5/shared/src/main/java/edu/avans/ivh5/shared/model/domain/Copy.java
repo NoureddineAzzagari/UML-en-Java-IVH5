@@ -12,7 +12,11 @@ import java.io.Serializable;
  */
 public class Copy implements Serializable {
     
-    private int copyID;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private int copyID;
     private int lendingPeriod;
     
     // null indien exmplaar niet uitgeleend.

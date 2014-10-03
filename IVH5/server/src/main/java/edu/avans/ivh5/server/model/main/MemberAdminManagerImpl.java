@@ -196,20 +196,17 @@ public class MemberAdminManagerImpl
 		String serviceGroup = Settings.props
 				.getProperty(Settings.propRmiServiceGroup);
 
-		// A future addition could be to search multiple hosts for members.
+		// A list of available hosts for searching
 		ArrayList<String> availableHosts = new ArrayList<String>();
-
-		// Currently we only search one single host - the one this server is running on.
 		// Add our own host to search for available services
 		availableHosts.add(System.getProperty(Settings.propRmiHostName));
-
-		// Find all hosts that we can connect to from the properties 
+		// Find all hosts that we can connect to from the properties
+		// Returns a comma-separated list, possibly containing spaces.
 		String propRemoteHosts = Settings.props.getProperty(Settings.propRmiServiceHosts);
-
 		if (propRemoteHosts != null) {
 			// Remove spaces
 			propRemoteHosts = propRemoteHosts.replace(" ", "");
-			// Split in substrings
+			// Split into substrings
 			String[] remoteHosts = propRemoteHosts.split(",");
 			// Add to list of available hosts, if it's not already there
 			for (String host : remoteHosts) {
@@ -229,19 +226,16 @@ public class MemberAdminManagerImpl
 		for (String host : availableHosts) {
 
 			// Find available services on this host
-			ArrayList<String> availableServices = RmiConnection
-					.findAvailableServices(host, serviceGroup);
+			ArrayList<String> availableServices = RmiConnection.findAvailableServices(host, serviceGroup);
 			if (availableServices != null) {
 
-				logger.debug("Connectiong to all services on host " + host
-						+ " ...");
+				logger.debug("Connectiong to all services on host " + host);
 				for (String service : availableServices) {
 
 					// If this service is our own local service, process it
 					// locally, and add results to memberList
 					if (service.equals(myServicename)
-							&& host.equals(System
-									.getProperty(Settings.propRmiHostName))) {
+							&& host.equals(System.getProperty(Settings.propRmiHostName))) {
 						ArrayList<RemoteMemberInfo> members = findAllMembersOnServer();
 						if(members != null) {
 							memberList.addAll(members);
@@ -256,10 +250,8 @@ public class MemberAdminManagerImpl
 							RemoteMemberAdminServerIF remoteMgr;
 
 							registry = RmiConnection.getRegistry(host);
-							remoteMgr = (RemoteMemberAdminServerIF) registry
-									.lookup(service);
-							ArrayList<RemoteMemberInfo> list = remoteMgr
-									.findAllMembersOnServer();
+							remoteMgr = (RemoteMemberAdminServerIF) registry.lookup(service);
+							ArrayList<RemoteMemberInfo> list = remoteMgr.findAllMembersOnServer();
 							if(list != null) {
 								memberList.addAll(list);
 							}

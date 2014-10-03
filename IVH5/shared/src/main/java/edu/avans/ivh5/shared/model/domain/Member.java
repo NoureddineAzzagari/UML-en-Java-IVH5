@@ -15,7 +15,11 @@ import java.util.ArrayList;
 
 public class Member implements ImmutableMember, Serializable {
     
-    private int membershipNumber;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private int membershipNumber;
     private String firstname;
     private String lastname;
     private String street;

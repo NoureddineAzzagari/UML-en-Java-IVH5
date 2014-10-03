@@ -2,9 +2,9 @@ package edu.avans.ivh5.server.model.dao.rdbms.mysql;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.ResultSet;
 
 import org.apache.log4j.Logger;
 

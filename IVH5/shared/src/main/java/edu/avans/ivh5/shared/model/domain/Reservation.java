@@ -12,7 +12,12 @@ import java.util.Date;
  * @author ppthgast
  */
 public class Reservation implements Serializable {
-    private Date reservationDate;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	private Date reservationDate;
     
     private Member member;
     private Book book;
