@@ -45,7 +45,8 @@ public class MemberAdminManagerImpl
 
 	// When a member is found, we cache it in a hashmap for fast retrieval in a
 	// next search.
-	private HashMap<Integer, Member> members;
+	// private HashMap<Integer, Member> members;
+	private ArrayList<RemoteMemberInfo> members;
 
 	// The factory that provides DAO instances for domain classes.
 	private DAOFactory daoFactory; 
@@ -70,8 +71,9 @@ public class MemberAdminManagerImpl
 		logger.debug("Constructor using " + servicename);
 
 		// Create a list of members for fast lookup.
-		members = new HashMap<Integer, Member>();
-
+		// members = new HashMap<Integer, Member>();
+		members = new ArrayList<RemoteMemberInfo>();
+				
 		// Our 'own' servicename; prevents looking it up in the registry as a
 		// remote server.
 		myServicename = servicename;
@@ -231,37 +233,11 @@ public class MemberAdminManagerImpl
 
 				logger.debug("Connectiong to all services on host " + host);
 				for (String service : availableServices) {
+					
+					FindMembersTask findMembersTask = new FindMembersTask(host, service);
+					Thread findMembersThread = new Thread(findMembersTask);
+					findMembersThread.start();
 
-					// If this service is our own local service, process it
-					// locally, and add results to memberList
-					if (service.equals(myServicename)
-							&& host.equals(System.getProperty(Settings.propRmiHostName))) {
-						ArrayList<RemoteMemberInfo> members = findAllMembersOnServer();
-						if(members != null) {
-							memberList.addAll(members);
-						}
-					} else {
-						logger.debug("FindAllMembers at " + host + " "
-								+ service);
-
-						// Do a search on a remote machine
-						try {
-							Registry registry = null;
-							RemoteMemberAdminServerIF remoteMgr;
-
-							registry = RmiConnection.getRegistry(host);
-							remoteMgr = (RemoteMemberAdminServerIF) registry.lookup(service);
-							ArrayList<RemoteMemberInfo> list = remoteMgr.findAllMembersOnServer();
-							if(list != null) {
-								memberList.addAll(list);
-							}
-
-						} catch (NotBoundException e) {
-							logger.error("NotBoundException: " + e.getMessage());
-						} catch (RemoteException e) {
-							logger.error("RemoteException: " + e.getMessage());
-						}
-					}
 				}
 			}
 		}
@@ -280,7 +256,79 @@ public class MemberAdminManagerImpl
 
 		return memberList;
 	}
+	
+	/**
+	 * Threaded class to find members on a given host using the given service name.
+	 * 
+	 * @author rschelli
+	 *
+	 */
+	private class FindMembersTask implements Runnable {
 
+		private String hostname;
+		private String servicename;
+		
+		/**
+		 * Constructor
+		 * 
+		 * @param hostname
+		 * @param service
+		 */
+		public FindMembersTask(String host, String service) {
+			logger.debug(Thread.currentThread().getName() + " Constructor");
+			
+			hostname = host;
+			servicename = service;
+		}
+		
+		/* 
+		 * Run the actual task of finding members.
+		 */
+		@Override
+		public void run() {
+
+			logger.debug(Thread.currentThread().getName() + " starting task");
+
+			// List of resulting members
+			ArrayList<RemoteMemberInfo> membersFound = null;
+			
+			// If this service is our own local service, process it
+			// locally, and add results to memberList
+			if (servicename.equals(myServicename)
+					&& hostname.equals(System.getProperty(Settings.propRmiHostName))) 
+			{
+				try {
+					membersFound = findAllMembersOnServer();
+				} catch (RemoteException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} else {
+				logger.debug("FindAllMembers at " + hostname + " "	+ servicename);
+
+				// Do a search on a remote machine
+				try {
+					Registry registry = null;
+					RemoteMemberAdminServerIF remoteMgr;
+
+					// Connect to the remote registry and lookup the service
+					registry = RmiConnection.getRegistry(hostname);
+					remoteMgr = (RemoteMemberAdminServerIF) registry.lookup(servicename);
+					// Perform the actual operation
+					membersFound = remoteMgr.findAllMembersOnServer();
+
+				} catch (NotBoundException e) {
+					logger.error("NotBoundException: " + e.getMessage());
+				} catch (RemoteException e) {
+					logger.error("RemoteException: " + e.getMessage());
+				}
+			}
+			if(membersFound != null) {
+				members.addAll(membersFound);
+			}
+		}
+	}
+	
 	/**
 	 * Search for members on the local data source.
 	 * 
@@ -345,7 +393,7 @@ public class MemberAdminManagerImpl
 			}
 
 			// Finally, remove the member from the map in this manager.
-			members.remove(membershipNumber);
+			// members.remove(membershipNumber);
 		} else {
 			result = false;
 		}
