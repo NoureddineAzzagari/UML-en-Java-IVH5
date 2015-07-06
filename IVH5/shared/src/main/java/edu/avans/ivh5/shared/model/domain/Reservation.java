@@ -11,6 +11,7 @@ import java.util.Date;
  *
  * @author ppthgast
  */
+@SuppressWarnings("serial")
 public class Reservation implements Serializable {
     private Date reservationDate;
     

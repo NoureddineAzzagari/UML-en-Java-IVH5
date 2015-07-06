@@ -11,6 +11,7 @@ import java.util.Date;
  *
  * @author ppthgast
  */
+@SuppressWarnings("serial")
 public class Loan implements Serializable {
     
     private Date returnDate;

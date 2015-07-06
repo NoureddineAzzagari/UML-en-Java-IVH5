@@ -10,6 +10,7 @@ import java.io.Serializable;
  *
  * @author ppthgast
  */
+@SuppressWarnings("serial")
 public class Copy implements Serializable {
     
     private int copyID;

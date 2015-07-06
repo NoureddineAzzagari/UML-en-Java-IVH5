@@ -49,7 +49,7 @@ public class MySqlReservationDAO implements ReservationDAOInf {
     {
 		logger.debug("findReservations");
 
-        ArrayList<Reservation> reservations = new ArrayList<>();
+        ArrayList<Reservation> reservations = new ArrayList<Reservation>();
         
         if(member != null)
         {

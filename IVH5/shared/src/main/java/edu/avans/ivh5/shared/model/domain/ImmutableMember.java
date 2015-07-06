@@ -12,6 +12,7 @@ import java.rmi.Remote;
  *
  * @author ppthgast
  */
+@SuppressWarnings("serial")
 public interface ImmutableMember extends Remote {
     
     /**

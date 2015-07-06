@@ -1,0 +1,17 @@
+C:\dev\workspace\worked-example\IVH5\server\src\main\java\edu\avans\ivh5\server\model\dao\xml\dom\XmlDOMDAOFactory.java
+C:\dev\workspace\worked-example\IVH5\server\src\main\java\edu\avans\ivh5\server\model\dao\rdbms\mysql\MySqlConnection.java
+C:\dev\workspace\worked-example\IVH5\server\src\main\java\edu\avans\ivh5\server\model\dao\xml\dom\XmlDOMReservationDAO.java
+C:\dev\workspace\worked-example\IVH5\server\src\main\java\edu\avans\ivh5\server\model\dao\xml\dom\XmlDOMMemberDAO.java
+C:\dev\workspace\worked-example\IVH5\server\src\main\java\edu\avans\ivh5\server\model\main\LibraryServer.java
+C:\dev\workspace\worked-example\IVH5\server\src\main\java\edu\avans\ivh5\server\model\dao\DAOFactory.java
+C:\dev\workspace\worked-example\IVH5\server\src\main\java\edu\avans\ivh5\server\model\dao\xml\dom\XmlDOMDocument.java
+C:\dev\workspace\worked-example\IVH5\server\src\main\java\edu\avans\ivh5\server\model\dao\rdbms\mysql\MySqlMemberDAO.java
+C:\dev\workspace\worked-example\IVH5\server\src\main\java\edu\avans\ivh5\server\model\dao\rdbms\mysql\MySqlDAOFactory.java
+C:\dev\workspace\worked-example\IVH5\server\src\main\java\edu\avans\ivh5\server\model\main\MemberAdminManagerImpl.java
+C:\dev\workspace\worked-example\IVH5\server\src\main\java\edu\avans\ivh5\server\model\dao\rdbms\mysql\MySqlReservationDAO.java
+C:\dev\workspace\worked-example\IVH5\server\src\main\java\edu\avans\ivh5\server\model\dao\rmi\RmiConnection.java
+C:\dev\workspace\worked-example\IVH5\server\src\main\java\edu\avans\ivh5\server\model\dao\api\ReservationDAOInf.java
+C:\dev\workspace\worked-example\IVH5\server\src\main\java\edu\avans\ivh5\server\model\dao\rdbms\mysql\MySqlLoanDAO.java
+C:\dev\workspace\worked-example\IVH5\server\src\main\java\edu\avans\ivh5\server\model\dao\xml\dom\XmlDOMLoanDAO.java
+C:\dev\workspace\worked-example\IVH5\server\src\main\java\edu\avans\ivh5\server\model\dao\api\LoanDAOInf.java
+C:\dev\workspace\worked-example\IVH5\server\src\main\java\edu\avans\ivh5\server\model\dao\api\MemberDAOInf.java

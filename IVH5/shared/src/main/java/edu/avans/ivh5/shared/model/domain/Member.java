@@ -12,7 +12,7 @@ import java.util.ArrayList;
  *
  * @author ppthgast
  */
-
+@SuppressWarnings("serial")
 public class Member implements ImmutableMember, Serializable {
     
     private int membershipNumber;

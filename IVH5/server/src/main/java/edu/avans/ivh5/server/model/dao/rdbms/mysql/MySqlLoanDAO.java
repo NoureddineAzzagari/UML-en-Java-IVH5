@@ -49,7 +49,7 @@ public class MySqlLoanDAO implements LoanDAOInf
     {
 		logger.debug("findLoans");
 
-		ArrayList<Loan> loans = new ArrayList<>();
+		ArrayList<Loan> loans = new ArrayList<Loan>();
         
         if(member != null)
         {
