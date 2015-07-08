@@ -4,7 +4,7 @@ Dit project bevat de Java code voor het bibliotheek informatie systeem zoals dat
 
 ## Requirements ##
 1. Java JDK1.8
-2. Maven
+2. Maven 3.3.1 of hoger (!)
 3. IDE [Eclipse](http://www.eclipse.org/), NetBeans, [SublimeText](http://www.sublimetext.com/)
 4. Webserver, bv. Apache via XAMPP
 5. MySql database
@@ -26,7 +26,7 @@ Een andere handige optie is om een fork te maken van dit project. Je hebt dan ee
 Een opmerking vooraf: de scripts in het worked example gaan uit van een Windows omgeving. De scripts zijn nog niet getest op Apple MacOS.
 
 1. Installeer Java 1.8, als je dat nog niet gedaan hebt. Voeg het pad naar de Java map toe aan je PATH omgevingsvariabele. Voeg ook de systeemvariabele JAVA_HOME toe; deze wijst naar de map waar Java 1.8 staat. Test dit door in een commandvenster `java -version` uit te voeren.
-2. Installeer Maven. Voeg het pad naar maven\bin ook toe aan je PATH omgevingsvariable (op Windows). Test dit door het commando `mvn -version` in een commandvenster uit te voeren.
+2. Installeer Maven. Voeg het pad naar maven\bin ook toe aan je PATH omgevingsvariable (op Windows). Test dit door het commando `mvn -version` in een commandvenster uit te voeren. Je hebt Maven 3.3.1 of hoger nodig.
 3. Start MySQL en importeer het IVH5\server\resources\data\library.sql script.
 
 Java RMI gebruikt in ons geval Apache als webserver om code te delen. Alle code komt straks in de map 'IVH5/target' te staan, die we beschikbaar moeten maken via de URL [localhost/classes](http://localhost/classes). We voegen daarom een ALIAS toe aan het 'xampp/apache/conf/httpd.conf' bestand. Zoek in dat bestand naar '<IfModule alias_module>' en voeg daaronder toe:
