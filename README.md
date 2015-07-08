@@ -29,7 +29,7 @@ Een opmerking vooraf: de scripts in het worked example gaan uit van een Windows 
 2. Installeer Maven. Voeg het pad naar maven\bin ook toe aan je PATH omgevingsvariable (op Windows). Test dit door het commando `mvn -version` in een commandvenster uit te voeren.
 3. Zorg dat je XAMPP hebt geïnstalleerd. Java RMI gebruikt in ons geval Apache als webserver om code te delen. Alle code komt straks in de map 'IVH5/target' te staan, die we beschikbaar moeten maken via de URL 'localhost/classes'. We voegen daarom een ALIAS toe aan het 'xampp/apache/conf/httpd.conf' bestand. Zoek in dat bestand naar '<IfModule alias_module>' en voeg daaronder toe:
 
-       Alias /classes "C:/dev/workspace/worked-example/IVH5/target"
+       `Alias /classes "C:/dev/workspace/worked-example/IVH5/target"`
 
 We moeten ook een Virtual Directory maken. Voeg onderaan 'httpd.conf' toe:
 
