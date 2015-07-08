@@ -28,9 +28,13 @@ Een opmerking vooraf: de scripts in het worked example gaan uit van een Windows 
 1. Installeer Java 1.8, als je dat nog niet gedaan hebt. Voeg het pad naar de Java map toe aan je PATH omgevingsvariabele. Voeg ook de systeemvariabele JAVA_HOME toe; deze wijst naar de map waar Java 1.8 staat. Test dit door in een commandvenster `java -version` uit te voeren.
 2. Installeer Maven. Voeg het pad naar maven\bin ook toe aan je PATH omgevingsvariable (op Windows). Test dit door het commando `mvn -version` in een commandvenster uit te voeren.
 3. Start MySQL en importeer het IVH5\server\resources\data\library.sql script.
-4. Zorg dat je XAMPP hebt geïnstalleerd. Java RMI gebruikt in ons geval Apache als webserver om code te delen. Alle code komt straks in de map 'IVH5/target' te staan, die we beschikbaar moeten maken via de URL [localhost/classes](http://localhost/classes). We voegen daarom een ALIAS toe aan het 'xampp/apache/conf/httpd.conf' bestand. Zoek in dat bestand naar '<IfModule alias_module>' en voeg daaronder toe:
+
+Java RMI gebruikt in ons geval Apache als webserver om code te delen. Alle code komt straks in de map 'IVH5/target' te staan, die we beschikbaar moeten maken via de URL [localhost/classes](http://localhost/classes). We voegen daarom een ALIAS toe aan het 'xampp/apache/conf/httpd.conf' bestand. Zoek in dat bestand naar '<IfModule alias_module>' en voeg daaronder toe:
+
         Alias /classes "C:/dev/workspace/worked-example/IVH5/target"
+
 We moeten ook een Virtual Directory maken. Voeg onderaan 'httpd.conf' toe:
+
         <Directory "C:/dev/workspace/worked-example/IVH5/target">
                 Options All
                 AllowOverride All
@@ -38,6 +42,7 @@ We moeten ook een Virtual Directory maken. Voeg onderaan 'httpd.conf' toe:
                 Allow from all
                 Require all granted
         </Directory>
+
 Let op, pas de directories aan aan je eigen installatie!
 
 ## Building ##
