@@ -5,7 +5,7 @@ Dit project bevat de Java code voor het bibliotheek informatie systeem zoals dat
 ## Requirements ##
 1. Java JDK1.8
 2. Maven
-3. IDE [Eclipse Luna](http://www.eclipse.org/), NetBeans, [SublimeText](http://www.sublimetext.com/)
+3. IDE [Eclipse](http://www.eclipse.org/), NetBeans, [SublimeText](http://www.sublimetext.com/)
 4. Webserver, bv. Apache via XAMPP
 5. MySql database
 
@@ -70,7 +70,6 @@ Je kunt met Maven werken vanuit Eclipse of NetBeans, maar vanaf de commandline h
 > My Computer > Properties > Advanced system settings > Environment variables. 
 > Je kunt dan vanaf de commandline direct `mvn` aanroepen.
 
-### Maven commands ###
 In de volgende tabel vind je een overzicht van de belangrijkste Maven commando's. 
 
 | Command | Actie                    |
