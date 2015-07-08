@@ -33,13 +33,13 @@ Een opmerking vooraf: de scripts in het worked example gaan uit van een Windows 
 
 We moeten ook een Virtual Directory maken. Voeg onderaan 'httpd.conf' toe:
 
-       <Directory "C:/dev/workspace/worked-example/IVH5/target">
-              Options All
-              AllowOverride All
-              Order allow,deny
-              Allow from all
-              Require all granted
-       </Directory>
+        <Directory "C:/dev/workspace/worked-example/IVH5/target">
+                Options All
+                AllowOverride All
+                Order allow,deny
+                Allow from all
+                Require all granted
+        </Directory>
 
 Let op, pas de directories aan aan je eigen installatie!
 
