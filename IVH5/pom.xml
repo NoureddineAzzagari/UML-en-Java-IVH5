@@ -22,24 +22,24 @@
 		<module>client</module>
 	</modules>
 
-  <dependencies>
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>1.2.14</version>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.11</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>mysql</groupId>
-      <artifactId>mysql-connector-java</artifactId>
-      <version>5.1.21</version>
-    </dependency>
-  </dependencies>
+	<dependencies>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.33</version>
+		</dependency>
+	</dependencies>
 
 
 	<build>
@@ -73,6 +73,28 @@
 										<include>**/*.properties</include>
 										<include>**/*.logconfig</include>
 										<include>**/*.policy</include>
+										<include>**/*.policy</include>
+									</includes>
+									<filtering>true</filtering>
+								</resource>
+							</resources>	
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-necessary-xml-files</id>
+						<!-- here the phase you need -->
+						<phase>validate</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/target/resources/data</outputDirectory>
+							<resources>	
+								<resource>
+									<directory>server/resources/data</directory>
+									<includes>
+										<include>**/*.xml</include>
+										<include>**/*.xsd</include>
 									</includes>
 									<filtering>true</filtering>
 								</resource>
@@ -94,7 +116,6 @@
 									<includes>
 										<include>*.jar</include>
 									</includes>
-									<filtering>true</filtering>
 								</resource>
 								<resource>
 									<directory>${basedir}/shared/target</directory>
@@ -104,14 +125,12 @@
 									<excludes>
 										<exclude>*-tests.jar</exclude>
 									</excludes>
-									<filtering>true</filtering>
 								</resource>
 								<resource>
 									<directory>${basedir}/api/target</directory>
 									<includes>
 										<include>*.jar</include>
 									</includes>
-									<filtering>true</filtering>
 								</resource>
 							</resources>	
 						</configuration>

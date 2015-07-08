@@ -14,4 +14,4 @@
 :: can access the code at the codebase.
 ::
 
-rmiregistry -J-Djava.rmi.server.codebase="http://localhost/classes/bin/"
+rmiregistry -J-Djava.rmi.server.codebase="http://localhost/classes/library-server.jar http://localhost/classes/library-shared.jar http://localhost/classes/library-api.jar"
