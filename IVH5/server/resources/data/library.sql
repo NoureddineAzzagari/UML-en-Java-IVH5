@@ -155,14 +155,12 @@ INSERT INTO `book` (`ISBN`, `Title`, `Author`, `Edition`) VALUES
 --
 
 INSERT INTO `member` (`MembershipNumber`, `FirstName`, `LastName`, `Street`, `HouseNumber`, `City`, `PhoneNumber`, `EmailAddress`, `Fine`) VALUES
-(2000, 'Pascal', 'van Gastel', 'Lovensdijkstraat', '61', 'Breda', '0765238754', 'ppth.vangastel@avans.nl', 0),
-(2001, 'Erco', 'Argante', 'Hogeschoollaan', '1', 'Breda', '0765231234', 'e.argante@avans.nl', 0),
-(2002, 'Marice', 'Bastiaensen', 'Lovensdijkstraat', '63', 'Breda', '0765236789', 'mmcm.bastiaensen@avans.nl', 5),
-(2003, 'Karel', 'Van Dam', 'Buitendijk', '63', 'Breda', '0765223489', 'info@server.com', 0),
-(2006, 'Marieke', 'Van Dam', 'Binnenlaan', '4', 'Breda', '0765223489', 'info@server.com', 0),
-(2007, 'Eveline', 'Van Dam', 'Markt', '65', 'Breda', '0765223489', 'info@server.com', 0),
-(2008, 'Sjoerd', 'Van Dam', 'Dijklaan', '112', 'Breda', '0765223489', 'info@server.com', 0),
-(2009, 'Jan', 'Montizaan', 'Straatnaam', '1', 'Breda', '0765223489', 'info@server.com', 0);
+(2000, 'Erco', 'Argante', 'Hogeschoollaan', '1', 'Breda', '0765231234', 'e.argante@avans.nl', 0),
+(2001, 'Karel', 'Van Dam', 'Buitendijk', '63', 'Breda', '0765223489', 'info@server.com', 0),
+(2002, 'Marieke', 'Van Dam', 'Binnenlaan', '4', 'Breda', '0765223489', 'info@server.com', 0),
+(2003, 'Eveline', 'Van Dam', 'Markt', '65', 'Breda', '0765223489', 'info@server.com', 0),
+(2004, 'Sjoerd', 'Van Dam', 'Dijklaan', '112', 'Breda', '0765223489', 'info@server.com', 0),
+(2005, 'Jan', 'Montizaan', 'Straatnaam', '1', 'Breda', '0765223489', 'info@server.com', 0);
 
 --
 -- Dumping data for table `copy`
