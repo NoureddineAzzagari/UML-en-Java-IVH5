@@ -27,12 +27,10 @@ Een opmerking vooraf: de scripts in het worked example gaan uit van een Windows 
 
 1. Installeer Java 1.8, als je dat nog niet gedaan hebt. Voeg het pad naar de Java map toe aan je PATH omgevingsvariabele. Voeg ook de systeemvariabele JAVA_HOME toe; deze wijst naar de map waar Java 1.8 staat. Test dit door in een commandvenster `java -version` uit te voeren.
 2. Installeer Maven. Voeg het pad naar maven\bin ook toe aan je PATH omgevingsvariable (op Windows). Test dit door het commando `mvn -version` in een commandvenster uit te voeren.
-3. Zorg dat je XAMPP hebt geïnstalleerd. Java RMI gebruikt in ons geval Apache als webserver om code te delen. Alle code komt straks in de map 'IVH5/target' te staan, die we beschikbaar moeten maken via de URL 'localhost/classes'. We voegen daarom een ALIAS toe aan het 'xampp/apache/conf/httpd.conf' bestand. Zoek in dat bestand naar '<IfModule alias_module>' en voeg daaronder toe:
-
+3. Start MySQL en importeer het IVH5\server\resources\data\library.sql script.
+4. Zorg dat je XAMPP hebt geïnstalleerd. Java RMI gebruikt in ons geval Apache als webserver om code te delen. Alle code komt straks in de map 'IVH5/target' te staan, die we beschikbaar moeten maken via de URL [localhost/classes](http://localhost/classes). We voegen daarom een ALIAS toe aan het 'xampp/apache/conf/httpd.conf' bestand. Zoek in dat bestand naar '<IfModule alias_module>' en voeg daaronder toe:
         Alias /classes "C:/dev/workspace/worked-example/IVH5/target"
-
 We moeten ook een Virtual Directory maken. Voeg onderaan 'httpd.conf' toe:
-
         <Directory "C:/dev/workspace/worked-example/IVH5/target">
                 Options All
                 AllowOverride All
@@ -40,15 +38,14 @@ We moeten ook een Virtual Directory maken. Voeg onderaan 'httpd.conf' toe:
                 Allow from all
                 Require all granted
         </Directory>
-
 Let op, pas de directories aan aan je eigen installatie!
 
-4. Start MySQL en importeer het IVH5\server\resources\data\library.sql script.
+## Building ##
 5. Open een commandvenster en navigeer naar de map 'worked-example\IVH5' via `cd <pad naar IVH5>`.
 6. Bouw de code via `mvn package`. In de map IVH5 moet nu een map 'target' beschikbaar zijn met alle JARs, dependencies en resources.
 
 ## Running ##
-4. Start Apache en de MySQL database server. Via de URL 'localhost\classes' moeten rmiregistry, server en client de classbestanden kunnen bereiken. Controleer dus in de browser dat je daar de JARs, dependencies en resources kunt zien.
+4. Start Apache en de MySQL database server. Via de URL [localhost/classes](http://localhost/classes) moeten rmiregistry, server en client de classbestanden kunnen bereiken. Controleer dus in de browser dat je daar de JARs, dependencies en resources kunt zien.
 5. Start de rmiregistry via het script `1-start_rmiregistry.bat`.
 6. Start de servers via het script `2-startserver.bat`.
 7. Start de client via het script `3-startclient.bat`.
@@ -69,7 +66,7 @@ Je kunt met Maven werken vanuit Eclipse of NetBeans, maar vanaf de commandline h
 > Je kunt dan vanaf de commandline direct `mvn` aanroepen.
 
 ### Maven commands ###
-In de volgende tabel vind je een overzicht van de belangrijkste Gradle commando's. Gebruik: `gradle command`. 
+In de volgende tabel vind je een overzicht van de belangrijkste Maven commando's. 
 
 | Command | Actie                    |
 | ------------- | ------------------------------ |
