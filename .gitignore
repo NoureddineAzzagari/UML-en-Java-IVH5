@@ -30,6 +30,7 @@ repos/
 .settings/
 .gradle/
 .metadata/
+target/
 
 # Negeer doc/notes.txt, maar niet doc/server/arch.txt
 doc/*.txt
