@@ -1,6 +1,6 @@
 # IVH5 Java worked example - RMI Bibliotheek Informatie Systeem #
 
-Dit project bevat de Java code voor het bibliotheek informatie systeem zoals dat in de periode IVH5 als worked example beschikbaar is.
+Dit project bevat de Java code voor het bibliotheekinformatiesysteem zoals dat in de periode IVH5 als worked example beschikbaar is.
 
 ## Requirements ##
 1. Java JDK1.8
@@ -11,7 +11,7 @@ Dit project bevat de Java code voor het bibliotheek informatie systeem zoals dat
 
 Daarnaast:
 
-6. [GIT](http://www.git-scm.com/) versie beheer software
+6. [GIT](http://www.git-scm.com/) versie beheersoftware
 7. Jenkins
 8. [Sonar](http://www.sonar.com/) code quality tool
 
@@ -20,12 +20,12 @@ Download het project, of, beter nog, open een commandvenster en clone dit projec
 
         git clone https://rschellius@bitbucket.org/AEI-informatica/worked-example.git
 
-Een andere handige optie is om een fork te maken van dit project. Je hebt dan een copie in je eigen repository, waar je rechten hebt om code in te checken. Daarna clone je je eigen fork op dezelfde wijze als hierboven.
+Een andere handige optie is om een fork te maken van dit project. Je hebt dan een kopie in je eigen repository, waar je rechten hebt om code in te checken. Daarna clone je je eigen fork op dezelfde wijze als hierboven.
 
 ## How do I get set up? ##
-Een opmerking vooraf: de scripts in het worked example gaan uit van een Windows omgeving. De scripts zijn nog niet getest op Apple MacOS.
+Een opmerking vooraf: de scripts in het worked example gaan uit van een Windowsomgeving. De scripts zijn nog niet getest op Apple MacOS.
 
-1. Installeer Java 1.8, als je dat nog niet gedaan hebt. Voeg het pad naar de Java map toe aan je PATH omgevingsvariabele. Voeg ook de systeemvariabele JAVA_HOME toe; deze wijst naar de map waar Java 1.8 staat. Test dit door in een commandvenster `java -version` uit te voeren.
+1. Installeer Java 1.8, als je dat nog niet gedaan hebt. Voeg het pad naar de Java-map toe aan je omgevingsvariabele PATH. Voeg ook de systeemvariabele JAVA_HOME toe; deze wijst naar de map waar Java 1.8 staat. Test dit door in een commandvenster `java -version` uit te voeren.
 2. Installeer Maven. Voeg het pad naar maven\bin ook toe aan je PATH omgevingsvariable (op Windows). Test dit door het commando `mvn -version` in een commandvenster uit te voeren. Je hebt Maven 3.3.1 of hoger nodig.
 3. Start MySQL en importeer het IVH5\server\resources\data\library.sql script.
 
