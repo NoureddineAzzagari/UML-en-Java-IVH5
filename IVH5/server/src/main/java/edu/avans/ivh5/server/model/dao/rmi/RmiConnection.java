@@ -132,7 +132,6 @@ public class RmiConnection {
 	    /**
 	     * The thread's main method that runs and does the work.
 	     */
-		@Override
 		public void run() {
 	    	
 			logger.debug(Thread.currentThread().getName() + 

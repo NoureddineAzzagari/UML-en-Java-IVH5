@@ -100,7 +100,6 @@ public class MemberAdminManagerImpl
 	 * @param service Name of the service to search the member on.
 	 * @param membershipNumber ID of the member to be found.
 	 */
-	@Override
 	public Member findMember(String hostname, String service,
 			int membershipNumber) throws RemoteException {
 
@@ -145,7 +144,6 @@ public class MemberAdminManagerImpl
 	 * @param service Name of the service to search the member on.
 	 * @param membershipNumber ID of the member to be found.
 	 */
-	@Override
 	public Member findMemberOnServer(String hostname, String service,
 			int membershipNumber) throws RemoteException {
 
@@ -187,7 +185,6 @@ public class MemberAdminManagerImpl
 	 * @return The list of membershipNumbers of members in the datasource.
 	 * @author Robin Schellius
 	 */
-	@Override
 	public ArrayList<RemoteMemberInfo> findAllMembers() throws RemoteException {
 
 		logger.debug("findAllMembers");
@@ -296,7 +293,6 @@ public class MemberAdminManagerImpl
 	 * @return A list of RemoteMemberInfo objects, or null of none were found.
 	 * @see RemoteMemberInfo
 	 */
-	@Override
 	public ArrayList<RemoteMemberInfo> findAllMembersOnServer()
 			throws RemoteException {
 

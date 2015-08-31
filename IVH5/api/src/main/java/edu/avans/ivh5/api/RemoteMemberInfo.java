@@ -70,7 +70,6 @@ public class RemoteMemberInfo implements Serializable, Comparable<RemoteMemberIn
 	 * This method defines how we order two objects in the array. We chose here to 
 	 * order on membershipNr, but any attribute could have been chosen.
 	 */
-	@Override
 	public int compareTo(RemoteMemberInfo toCompareTo) {
 		
 		// 'our' membershipNr

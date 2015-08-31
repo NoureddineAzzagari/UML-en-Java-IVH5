@@ -144,7 +144,6 @@ public class Controller implements ActionListener, EventListener, ListSelectionL
 	 * 
 	 * @param ActionEvent The event that is fired by the JVM whenever an action occurs.
 	 */
-	@Override
 	public void actionPerformed(ActionEvent e) {
 	
 		if (e.getActionCommand().equals("FIND_MEMBER")) {

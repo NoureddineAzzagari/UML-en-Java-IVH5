@@ -79,7 +79,6 @@ public class LibraryClient {
 		 */
 	    EventQueue.invokeLater(new Runnable() {
 
-            @Override
             public void run() {
             	new UserInterface(controller).display();
             }

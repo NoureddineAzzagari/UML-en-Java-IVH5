@@ -16,13 +16,12 @@ import edu.avans.ivh5.shared.model.domain.Member;
 public interface RemoteMemberAdminClientIF extends Remote {
 
 	/**
-     * Tries to find the Member object matching the given membership number.
-     * 
-     * @param membershipNumber the member unique number
-     * @return if a matching member was found, a reference to the Member's
-     * ImmutableMember interface is returned, null otherwise.
-     */
-	// public Member findMember(int membershipNumber) throws RemoteException;
+	 * Find all members on all available servers.  
+	 * 
+	 * @return A list of retrieved members, or null is none were found.
+	 * @throws RemoteException
+	 */
+	public ArrayList<RemoteMemberInfo> findAllMembers() throws RemoteException;
 
 	/**
 	 * Find a member which could possibly be on a remote service, on a remote host.
@@ -34,14 +33,6 @@ public interface RemoteMemberAdminClientIF extends Remote {
 	 * @throws RemoteException
 	 */
 	public Member findMember(String hostname, String service, int membershipNumber) throws RemoteException;
-
-	/**
-	 * Find all members on all available servers.  
-	 * 
-	 * @return A list of retrieved members, or null is none were found.
-	 * @throws RemoteException
-	 */
-	public ArrayList<RemoteMemberInfo> findAllMembers() throws RemoteException;
 
     /**
      * Removes the given member from the system, including removal from the
